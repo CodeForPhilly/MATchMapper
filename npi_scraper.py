@@ -8,10 +8,10 @@ path = os.getcwd()
 df = pd.read_csv(path + '\\hfp.csv', index_col=False)
 df.columns = df.iloc[0]
 df = df[1:]
+df = df[['firstname','lastname','who_id','npi']]
 npi_data = df['npi'].values.tolist()
 npi_final_data = []
 for npi_id in npi_data:
-    print(npi_id)
     if type(npi_id) == str:
         url = 'https://npiregistry.cms.hhs.gov/registry/provider-view/' + npi_id
 
@@ -40,5 +40,13 @@ for npi_id in npi_data:
                 temp_list.append(name)
             npi_dict[temp_list[0]] = temp_list[1]        
         npi_final_data.append(npi_dict)
-print(npi_final_data)
+final_df = pd.DataFrame(npi_final_data)
+final_df = final_df.drop(['Name'], axis=1)
+# final_df.columns = ['Last Updated','Certification Date','NPI','Enumeration Date','NPI Type','Sole Proprietor','Status','Mailing Address','Primary Practice Address','Health Information Exchange','Other Identifiers','Taxonomy','Yes','','No','MEDICAID','Secondary Practice Address']
+df.columns = ['firstname','lastname','who_id','npi']
+df = df.reset_index(drop=True)
+print(final_df)
+print(df)
+final_df = pd.concat([df, final_df], axis=1)
+final_df.to_csv(path + "\\final_hfp.csv", index=False)
 
