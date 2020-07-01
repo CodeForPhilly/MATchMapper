@@ -23,6 +23,7 @@ for npi_id in npi_data:
         for t in tr_elements[0]:
             i+=1
             name=t.text_content()
+            print('/', name)
             if i == 5:
                 npi_dict['Last Updated'] = name
         i=0
@@ -45,8 +46,6 @@ final_df = final_df.drop(['Name'], axis=1)
 # final_df.columns = ['Last Updated','Certification Date','NPI','Enumeration Date','NPI Type','Sole Proprietor','Status','Mailing Address','Primary Practice Address','Health Information Exchange','Other Identifiers','Taxonomy','Yes','','No','MEDICAID','Secondary Practice Address']
 df.columns = ['firstname','lastname','who_id','npi']
 df = df.reset_index(drop=True)
-print(final_df)
-print(df)
 final_df = pd.concat([df, final_df], axis=1)
 final_df.to_csv(path + "\\final_hfp.csv", index=False)
 

@@ -17,14 +17,24 @@ df_og = df_og.rename({'First Name': 'First', 'Last Name': 'Last'}, axis='columns
 # df_intersection_og_1.dropna(inplace=True)
 # df_intersection_og_1.reset_index(inplace=True)
 
-df_diff_og_1 = df_1[(df_1.First.isin(df_og.First) == False) & (df_1.Last.isin(df_og.Last) == False)]
-df_diff_og_1.to_csv(path + "\\06_23_minus_OG.csv", index=False)
-df_diff_1_og = df_og[(df_og.First.isin(df_1.First) == False) & (df_og.Last.isin(df_1.Last) == False)]
-df_diff_1_og.to_csv(path + "\\OG_minus_06_23.csv", index=False)
-df_diff_og_2 = df_2[(df_2.First.isin(df_og.First) == False) & (df_2.Last.isin(df_og.Last) == False)]
-df_diff_og_2.to_csv(path + "\\06_27_minus_OG.csv", index=False)
-df_diff_2_og = df_og[(df_og.First.isin(df_2.First) == False) & (df_og.Last.isin(df_2.Last) == False)]
-df_diff_2_og.to_csv(path + "\\OG_minus_06_27.csv", index=False)
+df_1_duplicate = df_1[df_1.duplicated(subset=['First','Last'], keep=False)]
+df_2_duplicate = df_2[df_2.duplicated(subset=['First','Last'], keep=False)]
+print(df_2_duplicate)
+
+# df_diff_og_1 = df_1[(df_1.First.isin(df_og.First) == False) | (df_1.Last.isin(df_og.Last) == False)]
+# df_diff_og_1 = pd.concat([df_diff_og_1,df_1_duplicate],join='outer').drop_duplicates().reset_index(drop=True)
+# df_diff_og_1 = df_diff_og_1.merge(df_1_duplicate, on=['First', 'Last'], how='outer')
+# print(df_diff_og_1)
+# df_diff_og_1.to_csv(path + "\\06_23_minus_OG.csv", index=False)
+df_diff_1_og = df_og[(df_og.First.isin(df_1.First) == False) | (df_og.Last.isin(df_1.Last) == False)]
+# df_diff_1_og.to_csv(path + "\\OG_minus_06_23.csv", index=False)
+
+
+#
+# df_diff_og_2 = df_2[(df_2.First.isin(df_og.First) == False) | (df_2.Last.isin(df_og.Last) == False)]
+# df_diff_og_2.to_csv(path + "\\06_27_minus_OG.csv", index=False)
+# df_diff_2_og = df_og[(df_og.First.isin(df_2.First) == False) | (df_og.Last.isin(df_2.Last) == False)]
+# df_diff_2_og.to_csv(path + "\\OG_minus_06_27.csv", index=False)
 # df_diff_og_1 = df_diff_og_1[df_diff_og_1.Last.isin(df_og.Last) == False]
 
-print(df_diff_og_1)
+# print(df_diff_og_1)
