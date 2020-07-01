@@ -19,21 +19,28 @@ for npi_id in npi_data:
         doc = lh.fromstring(page.content)
         tr_elements = doc.xpath('//tr')
         npi_dict = {}
+        # case_num is 0 if the person has no other name. case_num is 1 if the person has other name
+        case_num = 1
         i=0
         for t in tr_elements[0]:
             i+=1
+            name = t.text_content()
+            if i == 3:
+                case_num = 0 if name == "Last Updated:" else 1
+        i=0
+        for t in tr_elements[case_num]:
+            i+=1
             name=t.text_content()
-            print('/', name)
             if i == 5:
                 npi_dict['Last Updated'] = name
         i=0
-        for t in tr_elements[1]:
+        for t in tr_elements[case_num+1]:
             i+=1
             name=t.text_content()
             name = " ".join(name.split())
             if i == 3:
                 npi_dict['Certification Date'] = name
-        for row in tr_elements[2:]:
+        for row in tr_elements[case_num+2:]:
             temp_list = []
             for t in row:
                 name = t.text_content()
