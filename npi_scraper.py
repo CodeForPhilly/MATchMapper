@@ -1,6 +1,7 @@
 import requests
 import lxml.html as lh
 import pandas as pd
+import math
 import os
 
 def adjust_phone_format(phone_number):
@@ -11,12 +12,12 @@ def adjust_phone_format(phone_number):
 
 path = os.getcwd()
 
-df = pd.read_csv(path + '\\hfp.csv', index_col=False)
-df.columns = df.iloc[0]
-df = df[1:]
+df = pd.read_csv(path + '\\data\\BupePrescribers_Phila-in-SAMHSA_2019Q4-2020Q2_528recs.csv', index_col=False)
+# df.columns = df.iloc[0]
+# df = df[1:]
 npi_data = df['npi'].values.tolist()
+npi_data = [str(int(x)) if not math.isnan(float(x)) else 0 for x in npi_data]
 df = df[['who_id']]
-# npi_data = ['1205954138']
 npi_final_data = []
 for npi_id in npi_data:
     if type(npi_id) == str:
@@ -85,17 +86,18 @@ for npi_id in npi_data:
                 npi_dict['Primary Practice Address'] = primary_practice_address
                 npi_dict['Primary Practice Address Phone'] = adjust_phone_format(primary_practice_address_phone)
                 npi_dict['Primary Practice Address Fax'] = primary_practice_address_fax 
-            elif temp_list[0] == "Other Identifiers":
-                if temp_list[1] == "Issuer State Number":
-                    npi_dict['Issuer Info'] = ""
-                else:
-                    medicaid_list = temp_list[1].split("MEDICAID ")[1:]
-                    if len(medicaid_list) > 1:
-                        npi_dict['Issuer Info'] = "| ".join(medicaid_list)
-                    elif len(medicaid_list) == 1:
-                        npi_dict['Issuer Info'] = medicaid_list[0]
-                    else:
-                        raise ValueError("something unexpected with Medicaid input")
+            # elif temp_list[0] == "Other Identifiers":
+            #     if temp_list[1] == "Issuer State Number":
+            #         npi_dict['Issuer Info'] = ""
+            #     else:
+            #         medicaid_list = temp_list[1].split("MEDICAID ")[1:]
+            #         if len(medicaid_list) > 1:
+            #             npi_dict['Issuer Info'] = "| ".join(medicaid_list)
+            #         elif len(medicaid_list) == 1:
+            #             npi_dict['Issuer Info'] = medicaid_list[0]
+            #         else:
+            #             print(temp_list[0], temp_list[1])
+            #             raise ValueError("something unexpected with Medicaid input")
             elif temp_list[0] == "Taxonomy":
                 if temp_list[1].split(" ")[-1] == "Number":
                     npi_dict['Primary Taxonomy'] = ""
@@ -104,11 +106,16 @@ for npi_id in npi_data:
                     npi_dict['Primary Taxonomy License'] = ""   
                 # assuming that there will always be at least one primary taxonomy (as the first taxonomy data) if there is any taxonomy data
                 else:
-                    data_without_header = temp_list[1].split("Yes ")[1]
-                    if "No" in data_without_header:
-                        data = data_without_header.split(" No")[0]
+                    if "Yes" in temp_list[1]:
+                        data_without_header = temp_list[1].split("Yes ")[1]
+                        if "No" in data_without_header:
+                            data = data_without_header.split(" No")[0]
+                        else:
+                            data = data_without_header
+                    elif "No" in temp_list[1]:
+                        data = temp_list[1].split("No ")[1]
                     else:
-                        data = data_without_header
+                        raise ValueError("Unexpected structure for Taxonomy")
                     primary_taxon_code = data.split(" - ")[0]
                     remaining_data = data.split(" - ")[1].split(" ")
                     primary_taxon_license = remaining_data[-1] if len(remaining_data[-2]) == 2 else ""
@@ -131,5 +138,5 @@ final_df = pd.DataFrame(npi_final_data)
 df.columns = ['who_id']
 df = df.reset_index(drop=True)
 final_df = pd.concat([df, final_df], axis=1)
-final_df.to_csv(path + "\\final_hfp.csv", index=False)
+final_df.to_csv(path + "\\data\\final_hfp.csv", index=False)
 
