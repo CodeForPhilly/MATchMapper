@@ -36,12 +36,20 @@ for index, row in df.iterrows():
             samsha_data['Date Certified'] = "Not Buprenorphine Certified Physician"
             samsha_data['Waiver Count'] = "Not Buprenorphine Certified Physician"
         else:
-            samsha_data['Full Name'] = data_list[0].split(' is a')[0]
-            samsha_data['Job'] = data_list[0].split(' is a ')[1][:-2]
-            samsha_data['DEA Registration Number'] = data_list[1].split(': ')[1]
-            samsha_data['Licensed State'] = data_list[2].split(': ')[1]
-            samsha_data['Date Certified'] = data_list[3].split(': ')[1]
-            samsha_data['Waiver Count'] = data_list[4].split('for ')[1].split(' patients')[0]
+            if data_list[0].split(' is a')[0] == (row['firstname'] + ' ' + row['lastname']):
+                samsha_data['Full Name'] = data_list[0].split(' is a')[0]
+                samsha_data['Job'] = data_list[0].split(' is a ')[1][:-2]
+                samsha_data['DEA Registration Number'] = data_list[1].split(': ')[1]
+                samsha_data['Licensed State'] = data_list[2].split(': ')[1]
+                samsha_data['Date Certified'] = data_list[3].split(': ')[1]
+                samsha_data['Waiver Count'] = data_list[4].split('for ')[1].split(' patients')[0]
+            else:
+                samsha_data['Full Name'] = "Name does not match with SAMHSA result"
+                samsha_data['Job'] = "Name does not match with SAMHSA result"
+                samsha_data['DEA Registration Number'] = "Name does not match with SAMHSA result"
+                samsha_data['Licensed State'] = "Name does not match with SAMHSA result"
+                samsha_data['Date Certified'] = "Name does not match with SAMHSA result"
+                samsha_data['Waiver Count'] = "Name does not match with SAMHSA result"
         # print(samsha_data)
         samhsa_data_list.append(samsha_data)
 final_df = pd.DataFrame(samhsa_data_list)
