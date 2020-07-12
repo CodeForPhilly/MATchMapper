@@ -1,18 +1,21 @@
 import requests
 import pandas as pd
 import os
+import time
 
 path = os.getcwd()
 
 df = pd.read_csv(path + '\\data\\BupePrescribers_Phila-in-SAMHSA_2019Q4-2020Q2_528recs.csv', index_col=False)
 npi_data = df['dea_num'].values.tolist()
 npi_data = ["None" if type(x) == float else str(x) for x in npi_data]
-print(npi_data)
 url = 'https://www.samhsa.gov/bupe/lookup-form'
 samhsa_data_list = []
+counter = 1
 for index, row in df.iterrows():
-    if index >=400:
-        print(index, row['npi'])
+        if counter % 100 == 0:
+            time.sleep(300)
+        counter +=1
+        print(str(int(index)+1), row['npi'])
         dea_number = 'A*' if type(row['dea_num']) == float else str(row['dea_num'])
         data = {'practitioner': row['lastname'],
             'dea_number': dea_number,
@@ -33,7 +36,6 @@ for index, row in df.iterrows():
             samsha_data['Date Certified'] = "Not Buprenorphine Certified Physician"
             samsha_data['Waiver Count'] = "Not Buprenorphine Certified Physician"
         else:
-            print(data_string)
             samsha_data['Full Name'] = data_list[0].split(' is a')[0]
             samsha_data['Job'] = data_list[0].split(' is a ')[1][:-2]
             samsha_data['DEA Registration Number'] = data_list[1].split(': ')[1]
