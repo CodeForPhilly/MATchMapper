@@ -39,26 +39,25 @@ for npi_id in npi_data:
         # 'LOCATION" address is the primary practicing location while "MAILING" is the mailing address
         for address in addresses:
             if address['address_purpose'] == 'LOCATION':
-                for key, value in address.items():
-                    if key == "telephone_number":
-                        npi_dict["primary_practice_location_" + key] = adjust_phone_format(value)
-                    # some postal code has a 4 digit number behind that I am using '-' to separate from the main 5 digits
-                    elif key == 'postal_code':
-                        if len(value) > 5:
-                            npi_dict["primary_practice_location_" + key] = value[:5] + '-' + value[5:]
-                        else:
-                            npi_dict["primary_practice_location_" + key] = value
+                prefix = "primary_practice_location_"
             elif address['address_purpose'] == 'MAILING':
-                for key, value in address.items():
-                    if key == "telephone_number":
-                        npi_dict["mailing_location_" + key] = adjust_phone_format(value)
-                    elif key == 'postal_code':
-                        if len(value) > 5:
-                            npi_dict["mailing_location_" + key] = value[:5] + '-' + value[5:]
-                        else:
-                            npi_dict["mailing_location_" + key] = value
+                prefix = "mailing_location_"
             else:
                 raise ValueError("unknown address purpose")
+
+            for key, value in address.items():
+                if key == "telephone_number":
+                    npi_dict[prefix + key] = adjust_phone_format(value)
+                # some postal code has a 4 digit number behind that I am using '-' to separate from the main 5 digits
+                elif key == 'postal_code':
+                    if len(value) > 5:
+                        npi_dict[prefix + key] = value[:5] + '-' + value[5:]
+                    else:
+                        npi_dict[prefix + key] = value
+                else:
+                    npi_dict[prefix + key] = value
+                
+            
         identifiers = result['identifiers']
         if len(identifiers) > 1:
             npi_dict['identifiers'] = ' | '.join([(x['desc'] + ' (' + x['issuer'] + ') ' + x['state'] + ' ' + x['identifier']) if x['issuer'] is not '' else (x['desc'] + ' ' + x['state'] + ' ' + x['identifier']) for x in identifiers])
@@ -79,6 +78,14 @@ for npi_id in npi_data:
             npi_dict['primary_taxonomy_code'] = taxonomies[0]['code']
             npi_dict['primary_taxonomy_state'] = taxonomies[0]['state']
             npi_dict['primary_taxonomy_license'] = taxonomies[0]['license']
+            if len(result['taxonomies']) > 1:
+                for taxonomy in result['taxonomies']:
+                    if taxonomy['desc'] != npi_dict['primary_taxonomy']:
+                        npi_dict['secondary_taxonomy'] = taxonomy['desc'] 
+                        npi_dict['secondary_taxonomy_code'] = taxonomy['code']
+                        npi_dict['secondary_taxonomy_state'] = taxonomy['state']
+                        npi_dict['secondary_taxonomy_license'] = taxonomy['license']
+                        break
         # There could be multiple alternative practice locations but I am only choosing the first one as the secondary practice location
         if result.get('practiceLocations') is not None:
             for key, value in result['practiceLocations'][0].items():
@@ -89,6 +96,9 @@ for npi_id in npi_data:
                             npi_dict["secondary_practice_location_" + key] = value[:5] + '-' + value[5:]
                         else:
                             npi_dict["secondary_practice_location_" + key] = value
+                else:
+                    npi_dict["secondary_practice_location_" + key] = value
+
         
     npi_final_data.append(npi_dict)
 final_df = pd.DataFrame(npi_final_data)
