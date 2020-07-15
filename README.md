@@ -1,2 +1,2 @@
-# hfp_npi_scraper
-Scrape NPI database to update HFP prescibers' info
+# coredata_scrapers
+Scrape NPI database, SAMHSA database, and PALs database for buprenorphine prescriber data
