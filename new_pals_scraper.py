@@ -28,7 +28,7 @@ pals_licenses = pd.DataFrame()
 noresult = []
 
 # lookup providers by looping over df rows
-# search first by DEA number, then by first + last name if no result
+# search first by  first + last
 for i in df.index:
 
     # fill in search parameters
