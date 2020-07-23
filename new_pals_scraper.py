@@ -1,22 +1,28 @@
+from os import pathconf_names
+from numpy.core.numeric import NaN
 import requests
 import json
 import pandas as pd
-import numpy as np
 import os
-#import time  # If website limits number of records within short timeframe, could emulate X-waivers scraper for 5-min pause: time.sleep(300)
+#import time  # I haven't had any issues with timeouts
 
 # make file paths work on both Windows and Mac
 path = os.getcwd()
-data_path = os.path.join(path, 'data', 'BupePrescribers_Phila-in-SAMHSA_2019Q4-2020Q2_528recs.csv')
+data_path = os.path.join(path, 'data', 'new_final_hfp_npi.csv')
 
 # use list of 528 names
 df = pd.read_csv(data_path, index_col=False)
 
-# IN THE FUTURE USE FIRST, LAST AND MIDDLE NAMES FROM NPI
-
-# fix a few names that use hyphens and special characters inconsistently across databases
-df['lastname'] = df['lastname'].replace('Biniaurishvili-Elison', 'Biniaurishvili')
-df['lastname'] = df['lastname'].replace('Baker-Evens', 'Baker Evens')
+# there is probably a way to generalize these changes, but 
+df['last_name'] = df['last_name'].replace('BAKER-EVENS', 'Baker Evens')
+df['last_name'] = df['last_name'].replace('COLON RIVERA', 'Colon-Rivera')
+df['last_name'] = df['last_name'].replace('DE ROOS', 'DeRoos')
+df['last_name'] = df['last_name'].replace('LA JOIE', 'LaJoie')
+df['last_name'] = df['last_name'].replace('LEVITT-GOPIE', 'Gopie')
+df['last_name'] = df['last_name'].replace('OHARA', "O'Hara")
+df['last_name'] = df['last_name'].replace('STOBART-GALLAGHER', 'Stobart Gallagher')
+df['first_name'][df['last_name'] == 'JAGIELLO'] = 'Ben'
+df['first_name'] = df['first_name'].replace('STACY-ANN', 'Stacy Ann')
 
 # URLs to query
 url1 = 'https://www.pals.pa.gov/api/Search/SearchForPersonOrFacilty'  # sic ('Facilty' misspelled in actual URL)
@@ -28,84 +34,87 @@ pals_licenses = pd.DataFrame()
 noresult = []
 
 # lookup providers by looping over df rows
-# search first by  first + last
+# by first + last name, then license no if no result
 for i in df.index:
 
     # fill in search parameters
     data1 = {
             'County': None,
-            'FirstName': df['firstname'][i],  # [_] PULL SERIES FROM df
             'IsFacility': 0,
-            'LastName': df['lastname'][i],  # [_] PULL SERIES FROM df
-            'LicenseNumber': "",  # [_] USE EMPTY STRING
+            'FirstName': df['first_name'][i],
+            #?'MiddleName': "'in': {}".format(middlenames), # change - won't retrieve result if they list initial in NPI and full name in PALS
+            'LastName': df['last_name'][i],
+            'LicenseNumber': "",
             'OptPersonFacility': "Person",
             'PageNo': 1,
             'PersonId': None,
-            # [_] EMPTY STRING probably preferable (catch exceptions)
             'State': ""
     }
 
     page1 = requests.post(url1, data1).json()
 
-    # if results, append results to dataframe
+    # if results, add to dataframe
     if (len(page1) > 0):
-        pals_providers = pals_providers.append(pd.DataFrame.from_dict(page1), ignore_index=True)
+        pals_providers = pals_providers.append(pd.DataFrame(page1), ignore_index=True)
     else:
-        noresult.append((df['firstname'][i], df['lastname'][i], df['dea_num'][i]))
+       noresult.append((df['first_name'][i], df['last_name'][i])) 
 
 
-# limit to relevant professions 
-# doing this after the query for now - is it possible to pass these to the API as an isin or OR statement?
-irrelevant_professions = ['Real Estate Commission', 'Cosmetology', 'Vehicle Board', 'Engineers', 'Accountancy', 'Barber  Examiners', 'Certified Real Est. Appraisers', 'Architects', 'Veterinary Medicine', 'Funeral Directors', 'Crane Operators', 'Auctioneer Examiners', 'Massage Therapy', 'Landscape Architects', 'Dentistry', 'Speech', 'Optometry']
+# FILTER INCORRECT RESULTS
 
-pals_providers = pals_providers[~pals_providers['ProfessionType'].str.strip().isin(irrelevant_professions)]
+# recode empty strings to NaN
+pals_providers = pals_providers.replace(r'^\s*$', NaN, regex = True)
+
+# limit to relevant professions in license database - this should probably be checked occassionally in case they change the categories
+relevant_professions = ['Medicine', 'Nursing', 'Osteopathic Medicine', 'Pharmacy', 'Radiology Personnel', 'Social Work', 'Physical Therapy', 'Occupational Therapy', 'Chiropractic', 'Psychology', 'Podiatry']
+
+pals_providers = pals_providers[pals_providers['ProfessionType'].str.strip().isin(relevant_professions)]
+
+# remove results that don't match on middle initial
+names_orig = df.loc[:, ['first_name', 'middle_name', 'last_name']]
+names_orig = names_orig.rename(columns = {'first_name': 'FirstName', 'last_name': 'LastName'})
+
+pals_providers = pd.merge(pals_providers, names_orig, on = ['FirstName', 'LastName'], how='left')
+
+pals_providers.loc[(pals_providers['MiddleName'].notnull()) & (pals_providers['MiddleName'].notnull()) & (pals_providers['MiddleName'].str[0] != pals_providers['middle_name'].str[0]), 'drop'] = 1
+
+pals_providers = pals_providers.drop(pals_providers[pals_providers['drop'] == 1].index)
+
+# drop columns used for filtering
+pals_providers = pals_providers.drop(columns=['middle_name', 'drop'])
 
 
-# HAVEN'T UPDATED ANYTHING AFTER THIS POINT YET
+# 2nd API
+
 
 # get detailed license info for remaining results
-# for j in pals_providers.index:
-#     data2 = {
-#                 'IsFacility': str(data1['IsFacility']),
-#                 'LicenseId': page1[0]['LicenseId'],
-#                 'LicenseNumber': page1[0]['LicenseNumber'],
-#                 'PersonId': page1[0]['PersonId']
-#                 }
+for j in pals_providers.index:
+    data2 = {
+                'IsFacility': pals_providers['IsFacility'][j],
+                'LicenseId': pals_providers['LicenseId'][j],
+                'LicenseNumber': pals_providers['LicenseNumber'][j],
+                'PersonId': pals_providers['PersonId'][j]
+                }
 
+    page2 = requests.post(url2, data2).text
+    page2 = json.loads(page2)
 
+    # extract pin entry corresponding to license j and add to main dict
+    if (len(page2)['PinItemList'] > 0):
+        pin = page2['PinItemList'][0]
+        page2.update(pin)
 
-# Separate 1st and 2nd loops
+    # the disciplinary records seem to be in random order and key info is in PDFs, so for now I will just flag the people with a record
+    if (len(page2['DisciplinaryActionDetails']) > 0):
+        page2.update({'DisciplinaryAction': 'Y'})
+    else:
+        page2.update({'DisciplinaryAction': 'N'})
 
-        #loop over each license in first page
-        # for j in page1:
-        #     # query 2nd API
-        #     data2 = {
-        #         'IsFacility': str(data1['IsFacility']),
-        #         'LicenseId': page1[0]['LicenseId'],
-        #         'LicenseNumber': page1[0]['LicenseNumber'],
-        #         'PersonId': page1[0]['PersonId']
-        #         }
+    # remove lists from dict
+    rm_list = ['PinItemList', 'PrerequisiteInformation', 'OtherLicenseDetails', 'DisciplinaryActionDetails', 'StatusHistoryList', 'LicenseCSRInformation']
 
-        #     page2 = requests.post(url2, data2).text
-        #     page2 = json.loads(page2)
-        #     # this produces a dictionary that contains lists. It seems that only 'PinItemList' contains info that is not included elsewhere. Extract that and remove the lists.
+    for key in rm_list:
+        del page2[key]
 
-        #     # extract pin entry corresponding to license j and add to main dict
-        #     if (len(page2)['PinItemList'] > 0):
-        #         pin = page2['PinItemList'][0]
-        #         page2.update(pin)
-
-            # the disciplinary records seem to be in random order and key info is in PDFs, so for now I will just flag the people with a record
-            # if (len(page2['DisciplinaryActionDetails']) > 0):
-            #     page2.update({'DisciplinaryAction': 'Y'})
-            # else:
-            #     page2.update({'DisciplinaryAction': 'N'})
-
-            # # remove lists from dict
-            # rm_list = ['PinItemList', 'PrerequisiteInformation', 'OtherLicenseDetails', 'DisciplinaryActionDetails', 'StatusHistoryList', 'LicenseCSRInformation']
-
-            # for key in rm_list:
-            #     del page2[key]
-
-            # # append to license datafrmae
-            # pals_licenses = pals_licenses.append(pd.DataFrame([page2]))
+    # append to license datafrmae
+    pals_licenses = pals_licenses.append(pd.DataFrame([page2]))
