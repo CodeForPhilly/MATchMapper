@@ -72,16 +72,16 @@ pals_providers = pals_providers[pals_providers['ProfessionType'].str.strip().isi
 
 # remove results that don't match on middle initial
 names_orig = df.loc[:, ['first_name', 'middle_name', 'last_name']]
-names_orig = names_orig.rename(columns = {'first_name': 'FirstName', 'last_name': 'LastName'})
+names_orig = names_orig.rename(columns = {'first_name': 'FirstName', 'last_name': 'LastName', 'middle_name': 'middle_name_npi'})
 
 pals_providers = pd.merge(pals_providers, names_orig, on = ['FirstName', 'LastName'], how='left')
 
-pals_providers.loc[(pals_providers['MiddleName'].notnull()) & (pals_providers['MiddleName'].notnull()) & (pals_providers['MiddleName'].str[0] != pals_providers['middle_name'].str[0]), 'drop'] = 1
+pals_providers.loc[(pals_providers['MiddleName'].notnull()) & (pals_providers['middle_name_npi'].notnull()) & (pals_providers['MiddleName'].str[0] != pals_providers['middle_name_npi'].str[0]), 'drop'] = 1
 
 pals_providers = pals_providers.drop(pals_providers[pals_providers['drop'] == 1].index)
 
 # drop columns used for filtering
-pals_providers = pals_providers.drop(columns=['middle_name', 'drop'])
+pals_providers = pals_providers.drop(columns=['drop'])
 
 
 # 2nd API
