@@ -26,11 +26,9 @@ df['first_name'] = df['first_name'].replace('STACY-ANN', 'Stacy Ann')
 
 # URLs to query
 url1 = 'https://www.pals.pa.gov/api/Search/SearchForPersonOrFacilty'  # sic ('Facilty' misspelled in actual URL)
-url2 = "https://www.pals.pa.gov/api/SearchLoggedIn/GetPersonOrFacilityDetails"
 
 # initialize empty dataframes to collect results
 pals_providers = pd.DataFrame()
-pals_licenses = pd.DataFrame()
 noresult = []
 
 # lookup providers by looping over df rows
@@ -85,6 +83,8 @@ pals_providers = pals_providers.drop(columns=['drop'])
 
 
 # 2nd API
+pals_licenses = pd.DataFrame()
+url2 = "https://www.pals.pa.gov/api/SearchLoggedIn/GetPersonOrFacilityDetails"
 
 
 # get detailed license info for remaining results
@@ -100,7 +100,7 @@ for j in pals_providers.index:
     page2 = json.loads(page2)
 
     # extract pin entry corresponding to license j and add to main dict
-    if (len(page2)['PinItemList'] > 0):
+    if (len(page2['PinItemList']) > 0):
         pin = page2['PinItemList'][0]
         page2.update(pin)
 
