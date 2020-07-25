@@ -1,4 +1,4 @@
-from os import pathconf_names
+# from os import pathconf_names
 from numpy.core.numeric import NaN
 import requests
 import json
@@ -34,7 +34,7 @@ noresult = []
 # lookup providers by looping over df rows
 # by first + last name, then license no if no result
 for i in df.index:
-
+    print(i)
     # fill in search parameters
     data1 = {
             'County': None,
@@ -51,6 +51,8 @@ for i in df.index:
 
     page1 = requests.post(url1, data1).json()
 
+    # remove Profession ID since license has a "better" ID???
+    # del page1['Profession ID']
     # if results, add to dataframe
     if (len(page1) > 0):
         pals_providers = pals_providers.append(pd.DataFrame(page1), ignore_index=True)
@@ -118,3 +120,14 @@ for j in pals_providers.index:
 
     # append to license datafrmae
     pals_licenses = pals_licenses.append(pd.DataFrame([page2]))
+
+pals_licenses = pals_licenses[['LicenseTypeInstructions', 'RelationshipLicenseInstructions', 'obtainedBy', 'SpecialityType', 'StatusEffectivedate', 'IssueDate', 'ExpiryDate', 'LastRenewalDate', 'NextRenewal', 'Relationship', 'AssociationDate', 'ShowFullAddress', 'ProfessionId', 'IsActiveLink', 'PinId1','PinId1ShortCode','PinId1Name','LicenseNo','PinType1Code','PinType1Name','ApplicationNo','MasterGroupId1','StatusID1','StatusID1Name','LicenseID','PinMappingID','RecordOwner','RecordOwnerID','ShowOrder','DisciplinaryAction']]
+pals_licenses.reset_index(drop=True, inplace=True)
+pals_providers.reset_index(drop=True, inplace=True)
+print(pals_providers)
+print(pals_licenses)
+final_df = pals_providers.merge(pals_licenses, how='outer', left_index=True, right_index=True)
+final_df.to_csv(os.path.join(path, 'data', 'pals_provider1.csv'), index=False)
+# pals_licenses.to_csv(os.path.join(path, 'data', 'pals_licenses.csv'))
+
+print(final_df)
