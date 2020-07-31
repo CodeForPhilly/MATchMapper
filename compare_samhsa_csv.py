@@ -38,8 +38,8 @@ class SAMHSA_Entry:
 
 path = os.getcwd()
 
-df_1 = pd.read_csv(os.path.join(path, 'samhsa_comparison_data', 'Physician_Locator_07_18_2020_513recs-Phila_still-plus-2.csv'), index_col=False)
-df_2 = pd.read_csv(os.path.join(path, 'samhsa_comparison_data', 'Physician_Locator_07_27_2020_513recs_Phila_still-plus-2.csv'), index_col=False)
+df_1 = pd.read_csv(os.path.join(path, 'samhsa_comparison_data', 'BPLocator_2020-05-07_472recs-for-Philadelphia.csv'), index_col=False)
+df_2 = pd.read_csv(os.path.join(path, 'samhsa_comparison_data', 'BPLocator_2020-06-15_Philadelphia_505recs.csv'), index_col=False)
 
 df_1_set = set()
 df_2_set = set()
@@ -78,8 +78,8 @@ for new_entry in edited_or_added:
         added.add(new_entry)
 
 
-print([str(x) for x in removed])
+print([str(x) for x in removed], len([str(x) for x in removed]))
 print()
-print([str(x) for x in edited])
+print([str(x) for x in edited], len([str(x) for x in edited]))
 print()
-print([str(x) for x in added])
+print([str(x) for x in added], len([str(x) for x in added]))
