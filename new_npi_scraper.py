@@ -91,18 +91,19 @@ for npi_id in npi_data:
         # There could be multiple alternative practice locations but I am only choosing the first one as the secondary practice location
         if result.get('practiceLocations') is not None:
             loc_counter = 2
-            for key, value in result['practiceLocations'][0].items():
-                if key == "telephone_number":
-                    npi_dict["practice_loc" + str(counter) + '_phone'] = adjust_phone_format(value)
-                elif key == 'postal_code':
-                        if len(value) > 5:
-                            npi_dict["practice_loc" + str(counter) + '_zip'] = value[:5] + '-' + value[5:]
-                        else:
-                            npi_dict["practice_loc" + str(counter) + '_zip'] = value
-                elif key == 'fax_number':
-                    npi_dict["practice_loc" + str(counter) + '_fax'] = value
-                else:
-                    npi_dict["practice_loc" + str(counter) + '_' + key] = value
+            for location in result['practiceLocations']:
+                for key, value in location.items():
+                    if key == "telephone_number":
+                        npi_dict["practice_loc" + str(loc_counter) + '_phone'] = adjust_phone_format(value)
+                    elif key == 'postal_code':
+                            if len(value) > 5:
+                                npi_dict["practice_loc" + str(loc_counter) + '_zip'] = value[:5] + '-' + value[5:]
+                            else:
+                                npi_dict["practice_loc" + str(loc_counter) + '_zip'] = value
+                    elif key == 'fax_number':
+                        npi_dict["practice_loc" + str(loc_counter) + '_fax'] = value
+                    else:
+                        npi_dict["practice_loc" + str(loc_counter) + '_' + key] = value
                 loc_counter += 1
         loc_counter = 0
         
