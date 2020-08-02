@@ -39,21 +39,23 @@ for npi_id in npi_data:
         # 'LOCATION" address is the primary practicing location while "MAILING" is the mailing address
         for address in addresses:
             if address['address_purpose'] == 'LOCATION':
-                prefix = "primary_practice_location_"
+                prefix = "practice_loc1_"
             elif address['address_purpose'] == 'MAILING':
-                prefix = "mailing_location_"
+                prefix = "mail_loc_"
             else:
                 raise ValueError("unknown address purpose")
 
             for key, value in address.items():
                 if key == "telephone_number":
-                    npi_dict[prefix + key] = adjust_phone_format(value)
+                    npi_dict[prefix + 'phone'] = adjust_phone_format(value)
                 # some postal code has a 4 digit number behind that I am using '-' to separate from the main 5 digits
                 elif key == 'postal_code':
                     if len(value) > 5:
-                        npi_dict[prefix + key] = value[:5] + '-' + value[5:]
+                        npi_dict[prefix + 'zip'] = value[:5] + '-' + value[5:]
                     else:
-                        npi_dict[prefix + key] = value
+                        npi_dict[prefix + 'zip'] = value
+                elif key == 'fax_number':
+                    npi_dict[prefix + 'fax'] = value
                 else:
                     npi_dict[prefix + key] = value
                 
@@ -88,22 +90,26 @@ for npi_id in npi_data:
                         break
         # There could be multiple alternative practice locations but I am only choosing the first one as the secondary practice location
         if result.get('practiceLocations') is not None:
+            loc_counter = 2
             for key, value in result['practiceLocations'][0].items():
                 if key == "telephone_number":
-                    npi_dict["secondary_practice_location_" + key] = adjust_phone_format(value)
+                    npi_dict["practice_loc" + str(counter) + '_phone'] = adjust_phone_format(value)
                 elif key == 'postal_code':
                         if len(value) > 5:
-                            npi_dict["secondary_practice_location_" + key] = value[:5] + '-' + value[5:]
+                            npi_dict["practice_loc" + str(counter) + '_zip'] = value[:5] + '-' + value[5:]
                         else:
-                            npi_dict["secondary_practice_location_" + key] = value
+                            npi_dict["practice_loc" + str(counter) + '_zip'] = value
+                elif key == 'fax_number':
+                    npi_dict["practice_loc" + str(counter) + '_fax'] = value
                 else:
-                    npi_dict["secondary_practice_location_" + key] = value
-
+                    npi_dict["practice_loc" + str(counter) + '_' + key] = value
+                loc_counter += 1
+        loc_counter = 0
         
     npi_final_data.append(npi_dict)
 final_df = pd.DataFrame(npi_final_data)
 df.columns = ['who_id']
 df = df.reset_index(drop=True)
 final_df = pd.concat([df, final_df], axis=1)
-final_df.to_csv(path + "\\data\\new_final_hfp_npi.csv", index=False)
+final_df.to_csv(path + "\\data\\new_final_hfp_npi2.csv", index=False)
 
