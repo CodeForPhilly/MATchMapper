@@ -75,7 +75,12 @@ for i in df.index:
     else:
        noresult.append((df['first_name'][i], df['last_name'][i])) 
 
+#pals_providers_backup = pals_providers
+
 # FILTER INCORRECT RESULTS
+
+# change dtype to INT64 so that they aren't changed to floats when merged w/ NPI which contains NaNs
+pals_providers[['LicenseId', 'PersonId']] = pals_providers[['LicenseId', 'PersonId']].astype('Int64')
 
 # recode empty strings to NaN
 pals_providers = pals_providers.replace(r'^\s*$', NaN, regex = True)
@@ -96,8 +101,8 @@ npi = npi.rename(columns = {'first_name': 'FirstName', 'last_name': 'LastName', 
 
 pals_providers = pd.merge(pals_providers, npi, how = 'right', on = ['FirstName', 'LastName'])
 
-# remove cases with missing name (no name in NPI)
-pals_providers = pals_providers[~pals_providers['LastName'].isna()]
+# remove cases with missing PersonId (no match in PALS)
+pals_providers = pals_providers[~pals_providers['PersonId'].isna()]
 
 # If there are multiple PersonIds associated with a name, try filtering on middle initial
 pals_providers['person_ids'] = pals_providers.groupby(['FirstName', 'LastName'])['PersonId'].transform(lambda x: x.nunique())
@@ -122,8 +127,10 @@ pals_providers['active_count'] = pals_providers.groupby(['FirstName', 'LastName'
 
 pals_providers = pals_providers[((pals_providers['Status'] != 'Inactive') & (pals_providers['Status'] != 'Expired')) | (pals_providers['active_count'] == 0)]
 
-# drop columns used for filtering
-pals_providers = pals_providers.drop(columns=['active_count', 'drop', 'person_ids'])
+# drop columns used for filtering or duplicated in 2nd API
+pals_providers = pals_providers.drop(columns=['active_count', 'drop', 'person_ids', 'DisciplinaryAction', 'DisciplinaryActionTypeId'])
+
+pals_providers = pals_providers.reset_index(drop=True, inplace=True)
 
 
 # 2ND API
@@ -135,7 +142,7 @@ url2 = "https://www.pals.pa.gov/api/SearchLoggedIn/GetPersonOrFacilityDetails"
 for j in pals_providers.index:
     print(j)
     data2 = {
-                'IsFacility': pals_providers['IsFacility'][j],
+                'IsFacility': 0,
                 'LicenseId': pals_providers['LicenseId'][j],
                 'LicenseNumber': pals_providers['LicenseNumber'][j],
                 'PersonId': pals_providers['PersonId'][j]
@@ -164,13 +171,13 @@ for j in pals_providers.index:
     # append to license datafrmae
     pals_licenses = pals_licenses.append(pd.DataFrame([page2]))
 
+
+# MERGE OUTPUTS
 pals_licenses = pals_licenses[['LicenseTypeInstructions', 'RelationshipLicenseInstructions', 'obtainedBy', 'SpecialityType', 'StatusEffectivedate', 'IssueDate', 'ExpiryDate', 'LastRenewalDate', 'NextRenewal', 'Relationship', 'AssociationDate', 'ShowFullAddress', 'ProfessionId', 'IsActiveLink', 'DisciplinaryAction']]
+
 pals_licenses.reset_index(drop=True, inplace=True)
 pals_providers.reset_index(drop=True, inplace=True)
-print(pals_providers)
-print(pals_licenses)
-final_df = pals_providers.merge(pals_licenses, how='outer', left_index=True, right_index=True)
-final_df.to_csv(os.path.join(path, 'data', 'pals_provider1.csv'), index=False)
-# pals_licenses.to_csv(os.path.join(path, 'data', 'pals_licenses.csv'))
 
-print(final_df)
+final_df = pals_providers.merge(pals_licenses, how='outer', left_index=True, right_index=True)
+
+final_df.to_csv(os.path.join(path, 'data', 'pals_final.csv'), index=False)
