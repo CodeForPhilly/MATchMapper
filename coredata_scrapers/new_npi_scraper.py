@@ -10,6 +10,7 @@ def adjust_phone_format(phone_number):
         phone_number = phone_number.replace(")","-")
     return phone_number
 
+
 path = os.getcwd()
 
 df = pd.read_csv(os.path.join(path, 'data', 'BupePrescribers_Phila-in-SAMHSA_2019Q4-2020Q2_528recs.csv'), index_col=False)
