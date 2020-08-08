@@ -2,7 +2,7 @@
 .idea/shelf/
 .idea/workspace.xml
 .idea/venv/
-# coredata_scrapers/data/
-# coredata_scrapers/samhsa_comparison_data/
-# database/data/
+coredata_scrapers/data/
+coredata_scrapers/samhsa_comparison_data/
+database/data/
 .vscode/
