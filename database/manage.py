@@ -6,7 +6,6 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    print(os.environ)
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MATchMapper.settings')
     try:
         from django.core.management import execute_from_command_line
