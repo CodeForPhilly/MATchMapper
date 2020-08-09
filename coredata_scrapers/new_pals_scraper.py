@@ -10,7 +10,7 @@ import os
 path = os.getcwd()
 data_path = os.path.join(path, 'data', 'new_final_hfp_npi.csv')
 
-# use list of 526 names from NPI results (2 missing from NPI)
+# below repairs are specific to initial list of 526 names from NPI results (Dec 2019 - June 2020)
 df = pd.read_csv(data_path, index_col=False)
 
 # create dicts of name corrections - changes NPI to match PALS
@@ -130,7 +130,8 @@ pals_providers = pals_providers[((pals_providers['Status'] != 'Inactive') & (pal
 # drop columns used for filtering or duplicated in 2nd API
 pals_providers = pals_providers.drop(columns=['active_count', 'drop', 'person_ids', 'DisciplinaryAction', 'DisciplinaryActionTypeId'])
 
-pals_providers = pals_providers.reset_index(drop=True, inplace=True)
+## pals_providers = (SAM DELETED THIS ASSIGNMENT TO DEBUG) 
+pals_providers.reset_index(drop=True, inplace=True)
 
 
 # 2ND API
