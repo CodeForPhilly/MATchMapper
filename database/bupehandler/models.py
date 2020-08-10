@@ -2,16 +2,14 @@ from django.db import models
 from django.utils import timezone
 
 def increment_provider_id():
-    last_provider = helpdesk.objects.all().order_by('provider_id').last()
-
+    last_provider = Provider.objects.all().order_by('provider_id').last()
     if not last_provider:
         return 'P00000000'
 
     provider_id = last_provider.provider_id
-    provider_int = help_id[1:]
+    provider_int = provider_id[1:]
     new_provider_int = int(provider_int) + 1
     new_provider_id = 'P' + str(new_provider_int).zfill(8)
-
     return new_provider_id
 
 class Address(models.Model):
@@ -29,6 +27,9 @@ class Address(models.Model):
     class Meta:
         managed = True
         db_table = 'address'
+
+    def __str__(self):
+        return ', '.join([self.listed_street1, self.listed_street2, self.city, self.state_address, self.zip, self.region1, self.region2])
 
 
 class Affiliate(models.Model):
@@ -50,6 +51,9 @@ class Affiliate(models.Model):
         managed = True
         db_table = 'affiliate'
 
+    def __str__(self):
+        return self.listed_name
+
 class Email(models.Model):
     id = models.CharField(primary_key=True, max_length=30)
     primary_email = models.CharField(max_length=50, blank=True, null=True)
@@ -59,6 +63,9 @@ class Email(models.Model):
     class Meta:
         managed = True
         db_table = 'email'
+
+    def __str__(self):
+        return self.primary_email
 
 
 class Licence(models.Model):
@@ -71,6 +78,9 @@ class Licence(models.Model):
         managed = True
         db_table = 'licence'
 
+    def __str__(self):
+        return self.provider + ' ' + self.cert_state
+
 
 class Npi(models.Model):
     npi = models.IntegerField(primary_key=True)
@@ -80,6 +90,9 @@ class Npi(models.Model):
     class Meta:
         managed = True
         db_table = 'npi'
+    
+    def __str__(self):
+        return self.npi
 
 
 class Phone(models.Model):
@@ -94,6 +107,9 @@ class Phone(models.Model):
         managed = True
         db_table = 'phone'
 
+    def __str__(self):
+        return self.phone_1
+
 
 class ProvSiteRef(models.Model):
     provider = models.ForeignKey('Provider', models.DO_NOTHING, blank=True, null=True)
@@ -102,6 +118,9 @@ class ProvSiteRef(models.Model):
     class Meta:
         managed = True
         db_table = 'prov_site_ref'
+
+    def __str__(self):
+        return self.provider + ' ' + self.site
 
 
 class Provider(models.Model):
@@ -119,6 +138,9 @@ class Provider(models.Model):
     class Meta:
         managed = True
         db_table = 'provider'
+
+    def __str__(self):
+        return self.first_name + ' ' + self.last_name
 
 
 class Site(models.Model):
@@ -355,6 +377,9 @@ class Site(models.Model):
         managed = True
         db_table = 'site'
 
+    def __str__(self):
+        return self.listed_name
+
 
 class Xwaiver(models.Model):
     dea_num = models.CharField(primary_key=True, max_length=10)
@@ -364,3 +389,6 @@ class Xwaiver(models.Model):
     class Meta:
         managed = True
         db_table = 'xwaiver'
+
+    def __str__(self):
+        return self.dea_num
