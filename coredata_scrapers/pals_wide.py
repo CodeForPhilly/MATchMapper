@@ -2,7 +2,8 @@ import os
 import pandas as pd
 
 path = os.getcwd()
-data_path = os.path.join(path, 'data', 'pals_final.csv')
+##TODO: Change input filename below to match whichever installment you're checking
+data_path = os.path.join(path, 'data', 'PALS_tall_yyyy-mm-dd_numnames_.csv')
 final_df = pd.read_csv(data_path, index_col=False)
 
 
@@ -96,4 +97,4 @@ merged = merged.merge(expiry, how='outer', left_index=True, right_index=True)
 
 merged = merged.merge(renewal, how='outer', left_index=True, right_index=True)
 
-merged.to_csv('data/pals_wide.csv')
+merged.to_csv('data/PALS_wide_yyyy-mm-dd_numnames_.csv')
