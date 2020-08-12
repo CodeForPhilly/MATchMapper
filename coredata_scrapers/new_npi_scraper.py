@@ -13,7 +13,8 @@ def adjust_phone_format(phone_number):
 
 path = os.getcwd()
 
-df = pd.read_csv(os.path.join(path, 'data', 'BupePrescribers_Phila-in-SAMHSA_2019Q4-2020Q2_528recs.csv'), index_col=False)
+##TODO: Before running code, change filename to match source of input names
+df = pd.read_csv(os.path.join(path, 'data', 'CURRENT_LIST.csv'), index_col=False)
 npi_data = df['npi'].values.tolist()
 npi_data = [str(int(x)) if not math.isnan(float(x)) else 0 for x in npi_data]
 df = df[['who_id']]
@@ -113,5 +114,5 @@ final_df = pd.DataFrame(npi_final_data)
 df.columns = ['who_id']
 df = df.reset_index(drop=True)
 final_df = pd.concat([df, final_df], axis=1)
-final_df.to_csv(os.path.join(path, 'data', 'new_final_hfp_npi.csv'), index=False)
+final_df.to_csv(os.path.join(path, 'data', 'NPI_info_yyyy-mm-dd_numnames_.csv'), index=False)
 
