@@ -8,9 +8,10 @@ import os
 
 # make file paths work on both Windows and Mac
 path = os.getcwd()
-data_path = os.path.join(path, 'data', 'new_final_hfp_npi.csv')
+data_path = os.path.join(path, 'data', 'NPI_info_yyyy-mm-dd_numnames_.csv')
+##TODO: Change input filename above to match whichever installment you're checking
 
-# below repairs are specific to initial list of 526 names from NPI results (Dec 2019 - June 2020)
+# below repairs are specific to initial list of 526 names (Dec 2019 - June 2020)
 df = pd.read_csv(data_path, index_col=False)
 
 # create dicts of name corrections - changes NPI to match PALS
@@ -181,4 +182,4 @@ pals_providers.reset_index(drop=True, inplace=True)
 
 final_df = pals_providers.merge(pals_licenses, how='outer', left_index=True, right_index=True)
 
-final_df.to_csv(os.path.join(path, 'data', 'pals_final.csv'), index=False)
+final_df.to_csv(os.path.join(path, 'data', 'PALS_tall_yyyy-mm-dd_numnames_.csv'), index=False)
