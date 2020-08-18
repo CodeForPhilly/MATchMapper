@@ -16,6 +16,12 @@ class SAMHSA_Entry:
         self.telephone = str(telephone)
         self.fax = str(fax)
 
+    def to_dictionary(self):
+        return {'name_prefix': self.name_prefix, 'First': self.first_name, 'Last': self.last_name, \
+            'Address': self.address, 'Address Complement': self.address_complement, 'City': self.city, \
+                'County': self.county, 'State': self.state, 'Postal Code': self.postal_code, \
+                    'Telephone': self.telephone, 'Fax': self.fax}
+
      # OVERRIDE
     def __str__(self):
         return str("name_prefix: %s, first_name: %s, last_name: %s, address: %s, address_complement: %s, city: %s, county: %s, state: %s, postal_code: %s, telephone: %s, fax: %s" \
@@ -38,8 +44,8 @@ class SAMHSA_Entry:
 
 path = os.getcwd()
 
-df_1 = pd.read_csv(os.path.join(path, 'samhsa_comparison_data', 'BPLocator_2020-05-07_472recs-for-Philadelphia.csv'), index_col=False)
-df_2 = pd.read_csv(os.path.join(path, 'samhsa_comparison_data', 'BPLocator_2020-06-15_Philadelphia_505recs.csv'), index_col=False)
+df_1 = pd.read_csv(os.path.join(path, 'samhsa_comparison_data', 'BuPLoc_2020-08-03_516recs_Phila.csv'), index_col=False)
+df_2 = pd.read_csv(os.path.join(path, 'samhsa_comparison_data', 'BuPLoc_2020-08-08_519recs_Phila_still-plus-2.csv'), index_col=False)
 
 df_1_set = set()
 df_2_set = set()
@@ -78,8 +84,14 @@ for new_entry in edited_or_added:
         added.add(new_entry)
 
 
-print([str(x) for x in removed], len([str(x) for x in removed]))
-print()
-print([str(x) for x in edited], len([str(x) for x in edited]))
-print()
-print([str(x) for x in added], len([str(x) for x in added]))
+removed_data = [x.to_dictionary() for x in removed]
+edited_data = [x.to_dictionary() for x in edited]
+added_data = [x.to_dictionary() for x in added]
+
+
+removed_df = pd.DataFrame(removed_data)
+removed_csv = removed_df.to_csv(os.path.join(path, 'samhsa_comparison_data', 'removed_data.csv'), index=False)
+edited_df = pd.DataFrame(edited_data)
+edited_csv = edited_df.to_csv(os.path.join(path, 'samhsa_comparison_data', 'edited_data.csv'), index=False)
+added_df = pd.DataFrame(added_data)
+added_csv = added_df.to_csv(os.path.join(path, 'samhsa_comparison_data', 'added_data.csv'), index=False)
