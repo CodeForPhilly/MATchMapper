@@ -38,7 +38,7 @@ class SAMHSA_Entry:
 
     def __hash__(self):
         return hash(self.name_prefix + ' ' + self.first_name + ' ' + self.last_name + ' ' + self.address + ' ' +  \
-        self.address_complement + ' ' + self.city + ' ' + self.county + ' ' + self.state + ' ' + self.postal_code \
+        self.address_complement + ' ' + self.city + ' ' + self.state + ' ' + self.postal_code \
          + ' ' + self.telephone + ' ' + self.fax)
 
 
