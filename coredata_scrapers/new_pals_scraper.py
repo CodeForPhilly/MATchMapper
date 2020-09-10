@@ -1,148 +1,334 @@
-# from os import pathconf_names
 from numpy.core.numeric import NaN
 import requests
 import json
 import pandas as pd
 import os
-#import time  # I haven't had any issues with timeouts
+import re
+import recordlinkage
 
-# make file paths work on both Windows and Mac
 path = os.getcwd()
-data_path = os.path.join(path, 'data', 'NPI_info_yyyy-mm-dd_numnames_.csv')
+data_path = os.path.join(path, 'data', 'NPI_info_2020-08-03_526to528names_samtan_withALLaddresses.xlsx')
 ##TODO: Change input filename above to match whichever installment you're checking
 
-# below repairs are specific to initial list of 526 names (Dec 2019 - June 2020)
-df = pd.read_csv(data_path, index_col=False)
+df = pd.read_excel(data_path, index_col=False)
 
-# create dicts of name corrections - changes NPI to match PALS
+# function for toggling common name format discrepancies
+def name_fixer(name):
+    name = str(name)
+    if " " in name:
+        name = name.replace(" ", "-")
+    elif "-" in name:
+        name = name.replace("-", " ")
+    elif "'" in name:
+        name = name.replace("'", "")
+    return name
+
+# fix a few names that return incorrenct results when searching by license number
 last_names_corrected = {
-    'BAKER-EVENS': 'BAKER EVENS',
     'COLON RIVERA': 'COLON-RIVERA',
-    'DE ROOS': 'DEROOS',
-    'LA JOIE': 'LAJOIE',
     'LEVITT-GOPIE': 'GOPIE',
-    'OHARA': "O'HARA",
-    'STOBART-GALLAGHER': 'STOBART GALLAGHER',
-    'KHATRI': 'KHATRI-CHHETRI',
     "O'BRIEN": 'OBRIEN'
 }
 
-first_names_corrected = {
-    'STACY-ANN': 'STACY ANN'
+df = df.replace({'last_name': last_names_corrected})
+
+# list of relevant professions
+professions = {
+    'Medicine': 37,
+    'Nursing': 43,
+    'Osteopathic Medicine': 36
 }
 
-# update NPI input data with corrected names
-df = df.replace({'last_name': last_names_corrected})
-df = df.replace({'first_name': first_names_corrected})
+# 1st URL to query
+# sic ('Facilty' misspelled in actual URL)
+url1 = 'https://www.pals.pa.gov/api/Search/SearchForPersonOrFacilty'
 
-# and a few more idiosyncratic corrections
-df['first_name'][df['last_name'] == 'JAGIELLO'] = 'BEN'
-df['first_name'][df['last_name'] == 'BAURER'] = 'FREDERIC'
-df['first_name'][df['last_name'] == 'MECHEM'] = 'CHARLES'
-
-
-# URLs to query
-url1 = 'https://www.pals.pa.gov/api/Search/SearchForPersonOrFacilty'  # sic ('Facilty' misspelled in actual URL)
-
-# initialize empty dataframes to collect results
+# initialize empty dataframe to collect results
 pals_providers = pd.DataFrame()
 noresult = []
 
-# lookup providers by looping over df rows
-# by first + last name, then license no if no result
+# loop over rows of NPI data
+# for each name, loop over 3 relevant professions - the URL doesn't seem to accept multiple parameter values
 for i in df.index:
-    print(i)
-    # fill in search parameters
-    data1 = {
+    print("Name", (i + 1), "of", len(df.index))
+    tmp = pd.DataFrame()
+    for j in professions:
+        data1 = {
             'County': None,
             'IsFacility': 0,
             'FirstName': df['first_name'][i],
-            #?'MiddleName': "'in': {}".format(middlenames), # change - won't retrieve result if they list initial in NPI and full name in PALS
             'LastName': df['last_name'][i],
+            'ProfessionId': professions[j],
             'LicenseNumber': "",
             'OptPersonFacility': "Person",
             'PageNo': 1,
             'PersonId': None,
             'State': ""
-    }
+        }
 
-    page1 = requests.post(url1, data1).json()
+        page1 = requests.post(url1, data1).json()
 
-    # remove Profession ID since license has a "better" ID???
-    # del page1['Profession ID']
-    # if results, add to dataframe
-    if (len(page1) > 0):
-        pals_providers = pals_providers.append(pd.DataFrame(page1), ignore_index=True)
+        if len(page1) > 0:
+                tmp = tmp.append(pd.DataFrame(page1), ignore_index=True)
+
+        elif df['primary_taxonomy_license'][i] is not NaN:
+            data1 = {
+                'County': None,
+                'IsFacility': 0,
+                'FirstName': "",
+                'LastName': "",
+                'ProfessionId': professions[j],
+                'LicenseNumber': df['primary_taxonomy_license'][i],
+                'OptPersonFacility': "Person",
+                'PageNo': 1,
+                'PersonId': None,
+                'State': ""
+            }
+
+            page1 = requests.post(url1, data1).json()
+
+            if len(page1) > 0:
+                tmp = tmp.append(pd.DataFrame(page1), ignore_index=True)
+
+            else:
+                data1 = {
+                    'County': None,
+                    'IsFacility': 0,
+                    'FirstName': df['first_name'][i],
+                    'LastName': df['last_name'][i],
+                    'ProfessionId': "",
+                    'LicenseNumber': "",
+                    'OptPersonFacility': "Person",
+                    'PageNo': 1,
+                    'PersonId': None,
+                    'State': ""
+                }
+
+                page1 = requests.post(url1, data1).json()
+
+                if len(page1) > 0:
+                    tmp = tmp.append(pd.DataFrame(page1), ignore_index=True)
+
+                else:
+                   last_alt = name_fixer(df['last_name'][i])
+
+                   data1 = {
+                       'County': None,
+                       'IsFacility': 0,
+                       'FirstName': df['first_name'][i],
+                       'LastName': last_alt,
+                       'ProfessionId': "",
+                       'LicenseNumber': "",
+                       'OptPersonFacility': "Person",
+                       'PageNo': 1,
+                       'PersonId': None,
+                       'State': ""
+                   }
+
+                page1 = requests.post(url1, data1).json()
+
+                if len(page1) > 0:
+                    tmp = tmp.append(pd.DataFrame(page1), ignore_index=True)
+
+        else:
+            data1 = {
+                    'County': None,
+                    'IsFacility': 0,
+                    'FirstName': df['first_name'][i],
+                    'LastName': df['last_name'][i],
+                    'ProfessionId': "",
+                    'LicenseNumber': "",
+                    'OptPersonFacility': "Person",
+                    'PageNo': 1,
+                    'PersonId': None,
+                    'State': ""
+                }
+
+            page1 = requests.post(url1, data1).json()
+
+            if len(page1) > 0:
+                tmp = tmp.append(pd.DataFrame(page1), ignore_index=True)
+
+            else:
+                last_alt = name_fixer(df['last_name'][i])
+
+                data1 = {
+                    'County': None,
+                    'IsFacility': 0,
+                    'FirstName': df['first_name'][i],
+                    'LastName': last_alt,
+                    'ProfessionId': "",
+                    'LicenseNumber': "",
+                    'OptPersonFacility': "Person",
+                    'PageNo': 1,
+                    'PersonId': None,
+                    'State': ""
+                }
+
+                page1 = requests.post(url1, data1).json()
+
+                if len(page1) > 0:
+                    tmp = tmp.append(pd.DataFrame(page1), ignore_index=True)
+
+    if (len(tmp) > 0):
+        pals_providers = pals_providers.append(tmp)
     else:
        noresult.append((df['first_name'][i], df['last_name'][i])) 
 
-#pals_providers_backup = pals_providers
 
-# FILTER INCORRECT RESULTS
+# drop duplicates
+pals_providers = pals_providers.drop_duplicates()
 
-# change dtype to INT64 so that they aren't changed to floats when merged w/ NPI which contains NaNs
-pals_providers[['LicenseId', 'PersonId']] = pals_providers[['LicenseId', 'PersonId']].astype('Int64')
+# remove irrelevant professions
+pals_providers = pals_providers[pals_providers['ProfessionType'].isin(professions.keys())]
 
-# recode empty strings to NaN
-pals_providers = pals_providers.replace(r'^\s*$', NaN, regex = True)
-
-# limit to relevant professions in license database - this should probably be checked occassionally in case they change the categories
-relevant_professions = ['Medicine', 'Nursing', 'Osteopathic Medicine', 'Pharmacy', 'Radiology Personnel', 'Social Work', 'Physical Therapy', 'Occupational Therapy', 'Chiropractic', 'Psychology', 'Podiatry']
-
-pals_providers = pals_providers[pals_providers['ProfessionType'].str.strip().isin(relevant_professions)]
-
-# REMOVE NAMES THAT DO NOT APPEAR IN ORIGINAL NPI DATA
-
-# Change one name that is listed multiple ways in PALS
-pals_providers['LastName'][pals_providers['LastName'] == 'THOMAS-LESLIE'] = 'THOMAS'
-
-# Use a merge to remove cases where the first and last name do not appear in NPI results (this may remove correct results if discrepancies haven't been resolved)
-npi = df[['first_name', 'last_name', 'npi', 'middle_name']]
-npi = npi.rename(columns = {'first_name': 'FirstName', 'last_name': 'LastName', 'middle_name': 'npi_middle'})
-
-pals_providers = pd.merge(pals_providers, npi, how = 'right', on = ['FirstName', 'LastName'])
-
-# remove cases with missing PersonId (no match in PALS)
-pals_providers = pals_providers[~pals_providers['PersonId'].isna()]
-
-# If there are multiple PersonIds associated with a name, try filtering on middle initial
-pals_providers['person_ids'] = pals_providers.groupby(['FirstName', 'LastName'])['PersonId'].transform(lambda x: x.nunique())
-
-pals_providers['drop'] = pd.Series()
-
-for i in pals_providers.index:
-    if pals_providers['person_ids'][i] > 1:
-        if pals_providers['MiddleName'][i] is not NaN and pals_providers['npi_middle'][i] is not NaN:
-            if pals_providers['MiddleName'][i][0] != pals_providers['npi_middle'][i][0]:
-                pals_providers['drop'][i] = 1
-
-pals_providers = pals_providers.drop(pals_providers[pals_providers['drop'] == 1].index)
-
-# recalculate ids per name and flag names with multiple ids
-pals_providers['person_ids'] = pals_providers.groupby(['FirstName', 'LastName'])['PersonId'].transform(lambda x: x.nunique())
-
-pals_providers['PotentialFalsePos'] = pals_providers['person_ids'].apply(lambda x: 1 if x > 1 else 0)
-
-# remove inactive licenses if the person has at least one active license
-pals_providers['active_count'] = pals_providers.groupby(['FirstName', 'LastName'])['Status'].transform(lambda x: (x == 'Active').sum())
-
-pals_providers = pals_providers[((pals_providers['Status'] != 'Inactive') & (pals_providers['Status'] != 'Expired')) | (pals_providers['active_count'] == 0)]
-
-# drop columns used for filtering or duplicated in 2nd API
-pals_providers = pals_providers.drop(columns=['active_count', 'drop', 'person_ids', 'DisciplinaryAction', 'DisciplinaryActionTypeId'])
-
-## pals_providers = (SAM DELETED THIS ASSIGNMENT TO DEBUG) 
 pals_providers.reset_index(drop=True, inplace=True)
 
+# USE FUZZY RECORD MATCH TO REMOVE FALSE POSITIVES
 
-# 2ND API
+# first standardize phone number format
+def phone_format(n):
+    n = re.sub('[^0-9]','', n)
+    return format(int(n[:-1]), ",").replace(",", "-") + n[-1]
+
+pals_providers['PhoneNo1'] = pals_providers['PhoneNo1'].apply(lambda x: NaN if not x else phone_format(x))
+
+df['practice_loc1_phone'] = df['practice_loc1_phone'].str.replace(" ", "")
+df['practice_loc2_phone'] = df['practice_loc2_phone'].str.replace(" ", "")
+df['practice_loc3_phone'] = df['practice_loc3_phone'].str.replace(" ", "")
+df['practice_loc4_phone'] = df['practice_loc4_phone'].str.replace(" ", "")
+df['practice_loc5_phone'] = df['practice_loc5_phone'].str.replace(" ", "")
+df['practice_loc6_phone'] = df['practice_loc6_phone'].str.replace(" ", "")
+df['mail_loc_phone'] = df['mail_loc_phone'].str.replace(" ", "")
+
+# limit to 5-digit zipcode
+df['practice_loc1_zip'] = df['practice_loc1_zip'].str.slice(0,5)
+df['practice_loc2_zip'] = df['practice_loc2_zip'].str.slice(0,5)
+df['practice_loc3_zip'] = df['practice_loc3_zip'].str.slice(0,5)
+df['practice_loc4_zip'] = df['practice_loc4_zip'].str.slice(0,5)
+df['practice_loc5_zip'] = df['practice_loc5_zip'].str.slice(0,5)
+df['practice_loc6_zip'] = df['practice_loc6_zip'].str.slice(0,5)
+df['mail_loc_zip'] = df['mail_loc_zip'].str.slice(0, 5)
+
+# use NPI credential field to create profession type
+df['credential'] = df['credential'].str.replace('.', '')
+
+df['ProfessionType'] = pd.Series()
+
+for i in df.index:
+    if df['credential'][i] is NaN:
+        df['ProfessionType'][i] = NaN
+    elif 'MD' in df['credential'][i]:
+        df['ProfessionType'][i] = 'Medicine'
+    elif ('DO' or 'D O') in df['credential'][i]:
+        df['ProfessionType'][i] = 'Osteopathic Medicine'
+    else:
+        df['ProfessionType'][i] = 'Nursing'
+
+# create full name column for comparison
+df['full_name'] = pd.Series()
+
+for i in df.index:
+    if df['middle_name'][i] is NaN:
+        df['full_name'][i] = df['first_name'][i] + " " + df['last_name'][i]
+    else:
+        df['full_name'][i] = df['first_name'][i] + " " + df['middle_name'][i] + " " + df['last_name'][i]
+
+# create middle initial column
+df['mid_init'] = df['middle_name'].str.slice(0, 1)
+pals_providers['MidInit'] = pals_providers['MiddleName'].str.slice(0, 1)
+
+# select pairs of rows to compare - we will compare every combination since the dataset is manageable in size
+indexer = recordlinkage.Index()
+indexer.full()
+candidates = indexer.index(df, pals_providers)
+
+# select columns for comparison
+compare = recordlinkage.Compare()
+compare.exact('ProfessionType', 'ProfessionType', label = 'ProfessionType')
+compare.exact('primary_taxonomy_license', 'LicenseNumber', label = 'LicenseNumber')
+compare.string('first_name', 'FirstName', threshold = 0.85, label = 'FirstName')
+compare.string('other_names_first_name', 'FirstName', threshold = 0.85, label = 'FirstName_alt')
+compare.string('middle_name', 'MiddleName', threshold = 0.85, label = 'MiddleName')
+compare.exact('mid_init', 'MidInit', label = 'MidInit')
+compare.string('last_name', 'LastName', threshold = 0.85, label = 'LastName')
+compare.string('other_names_last_name', 'LastName', threshold = 0.85, label = 'LastName_alt')
+compare.string('full_name', 'FullName', threshold = 0.85, label = 'FullName_match')
+compare.exact('practice_loc1_zip', 'zipcode', label = 'zip1')
+compare.exact('practice_loc2_zip', 'zipcode', label = 'zip2')
+compare.exact('practice_loc3_zip', 'zipcode', label = 'zip3')
+compare.exact('practice_loc4_zip', 'zipcode', label = 'zip4')
+compare.exact('practice_loc5_zip', 'zipcode', label = 'zip5')
+compare.exact('practice_loc6_zip', 'zipcode', label = 'zip6')
+compare.exact('mail_loc_zip', 'zipcode', label = 'zip7')
+compare.exact('practice_loc1_phone', 'PhoneNo1', label = 'phone1')
+compare.exact('practice_loc2_phone', 'PhoneNo1', label = 'phone2')
+compare.exact('practice_loc3_phone', 'PhoneNo1', label = 'phone3')
+compare.exact('practice_loc4_phone', 'PhoneNo1', label = 'phone4')
+compare.exact('practice_loc5_phone', 'PhoneNo1', label = 'phone5')
+compare.exact('practice_loc6_phone', 'PhoneNo1', label = 'phone6')
+compare.exact('mail_loc_phone', 'PhoneNo1', label = 'phone7')
+
+# compute comparison
+features = compare.compute(candidates, df, pals_providers)
+
+# select pairs w/ at least one matching column
+matches = features[features.sum(axis=1) > 0].reset_index() 
+
+# create scoring system
+matches['zip_match'] = matches.loc[:, 'zip1':'zip7'].sum(axis=1)
+matches['zip_match'] = matches['zip_match'].apply(lambda x: 1 if x > 0 else 0) # indicate pairs with a matching zip
+
+matches['phone_match'] = matches.loc[:, 'phone1':'phone7'].sum(axis=1)
+matches['phone_match'] = matches['phone_match'].apply(lambda x: 1 if x > 0 else 0) # indicate pairs with a matching phone
+
+matches['firstmatch'] = matches.loc[:, 'FirstName':'FirstName_alt'].sum(axis = 1)
+matches['firstmatch'] = matches['firstmatch'].apply(lambda x: 1 if x > 0 else 0) # indicate whether first or firstname_alt name matches
+matches['lastmatch'] = matches.loc[:, 'LastName':'LastName_alt'].sum(axis = 1)
+matches['lastmatch'] = matches['lastmatch'].apply(lambda x: 1 if x > 0 else 0)
+
+matches['lastmatch'] *= 2 # weight last name match more heavily
+
+matches['name_score'] = matches[['firstmatch', 'lastmatch', 'MiddleName', 'MidInit', 'FullName_match']].sum(axis=1)
+
+matches['LicenseNumber'] *= 5 # give greatest weight to matching license no
+
+matches['other_score'] = matches[['zip_match', 'phone_match', 'ProfessionType', 'LicenseNumber']].sum(axis=1)
+
+matches['total_score'] = matches['name_score'] + matches['other_score']
+
+# merge in names
+matches = matches.merge(df['full_name'], left_on = 'level_0', right_index = True)
+matches = matches.merge(pals_providers['FullName'], left_on = 'level_1', right_index = True)
+
+# Keep PALS name w/ highest total score for each NPI name
+matches['name_tot_max'] = matches.groupby('full_name')['total_score'].transform('max')
+
+matches = matches[matches['total_score'] == matches['name_tot_max']]
+
+matches = matches[['FullName', 'full_name']]
+matches = matches.drop_duplicates()
+
+# use inner join to drop PALS results that don't match NPI
+pals_providers = pals_providers.merge(matches, how = 'inner', on = 'FullName')
+
+# manually remove one remaining false pos
+pals_providers = pals_providers[~((pals_providers['FirstName'] == 'KAREN') & (pals_providers['LastName'] == 'HART') & (pals_providers['full_name'] == 'BRANDON DEVOE HART'))]
+
+# merge in NPI numbers
+pals_providers = pals_providers.merge(df[['full_name', 'npi']], how = 'inner', on = 'full_name')
+
+# drop columns used for matches
+pals_providers = pals_providers.drop(columns=['full_name', 'MidInit'])
+
+
+# QUERY 2nd URL to obtain more detailed license info
 pals_licenses = pd.DataFrame()
 url2 = "https://www.pals.pa.gov/api/SearchLoggedIn/GetPersonOrFacilityDetails"
 
-
-# get detailed license info for remaining results
+# loop over 1st url output
 for j in pals_providers.index:
-    print(j)
+    print("License", (j + 1), "of", len(pals_providers.index)+1)
     data2 = {
                 'IsFacility': 0,
                 'LicenseId': pals_providers['LicenseId'][j],
@@ -153,16 +339,11 @@ for j in pals_providers.index:
     page2 = requests.post(url2, data2).text
     page2 = json.loads(page2)
 
-    # extract pin entry corresponding to license j and add to main dict
-    # if (len(page2['PinItemList']) > 0):
-    #     pin = page2['PinItemList'][0]
-    #     page2.update(pin)
-
     # the disciplinary records seem to be in random order and key info is in PDFs, so for now just flag the people with a record
     if (len(page2['DisciplinaryActionDetails']) > 0):
-        page2.update({'DisciplinaryAction': 'Y'})
+        page2.update({'More_Info_See_PALS': 'Y'})
     else:
-        page2.update({'DisciplinaryAction': 'N'})
+        page2.update({'More_Info_See_PALS': 'N'})
 
     # remove lists from dict
     rm_list = ['PinItemList', 'PrerequisiteInformation', 'OtherLicenseDetails', 'DisciplinaryActionDetails', 'StatusHistoryList', 'LicenseCSRInformation']
@@ -175,7 +356,7 @@ for j in pals_providers.index:
 
 
 # MERGE OUTPUTS
-pals_licenses = pals_licenses[['LicenseTypeInstructions', 'RelationshipLicenseInstructions', 'obtainedBy', 'SpecialityType', 'StatusEffectivedate', 'IssueDate', 'ExpiryDate', 'LastRenewalDate', 'NextRenewal', 'Relationship', 'AssociationDate', 'ShowFullAddress', 'ProfessionId', 'IsActiveLink', 'DisciplinaryAction']]
+pals_licenses = pals_licenses[['LicenseTypeInstructions', 'RelationshipLicenseInstructions', 'obtainedBy', 'SpecialityType', 'StatusEffectivedate', 'IssueDate', 'ExpiryDate', 'LastRenewalDate', 'NextRenewal', 'Relationship', 'AssociationDate', 'ShowFullAddress', 'ProfessionId', 'IsActiveLink', 'More_Info_See_PALS']]
 
 pals_licenses.reset_index(drop=True, inplace=True)
 pals_providers.reset_index(drop=True, inplace=True)
