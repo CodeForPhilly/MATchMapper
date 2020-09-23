@@ -5,6 +5,7 @@ import pandas as pd
 import os
 import re
 import recordlinkage
+from datetime import date
 
 path = os.getcwd()
 data_path = os.path.join(path, 'data', 'NPI_info_2020-08-03_526to528names_samtan_withALLaddresses.xlsx')
@@ -273,7 +274,7 @@ compare.exact('mail_loc_phone', 'PhoneNo1', label = 'phone7')
 features = compare.compute(candidates, df, pals_providers)
 
 # select pairs w/ at least one matching column
-matches = features[features.sum(axis=1) > 0].reset_index() 
+matches = features[features.sum(axis=1) > 1].reset_index() 
 
 # create scoring system
 matches['zip_match'] = matches.loc[:, 'zip1':'zip7'].sum(axis=1)
@@ -304,6 +305,9 @@ matches = matches.merge(pals_providers['FullName'], left_on = 'level_1', right_i
 # Keep PALS name w/ highest total score for each NPI name
 matches['name_tot_max'] = matches.groupby('full_name')['total_score'].transform('max')
 
+# Drop 3 incorrect matches that seem to be result of out of state licenses matching
+matches = matches[~matches['FullName'].str.contains('KAREN M HART|VIRGINIA T SHEPHARD|KELLY SUZANNE RAZLER')]
+
 matches = matches[matches['total_score'] == matches['name_tot_max']]
 
 matches = matches[['FullName', 'full_name']]
@@ -311,9 +315,6 @@ matches = matches.drop_duplicates()
 
 # use inner join to drop PALS results that don't match NPI
 pals_providers = pals_providers.merge(matches, how = 'inner', on = 'FullName')
-
-# manually remove one remaining false pos
-pals_providers = pals_providers[~((pals_providers['FirstName'] == 'KAREN') & (pals_providers['LastName'] == 'HART') & (pals_providers['full_name'] == 'BRANDON DEVOE HART'))]
 
 # merge in NPI numbers
 pals_providers = pals_providers.merge(df[['full_name', 'npi']], how = 'inner', on = 'full_name')
@@ -328,7 +329,7 @@ url2 = "https://www.pals.pa.gov/api/SearchLoggedIn/GetPersonOrFacilityDetails"
 
 # loop over 1st url output
 for j in pals_providers.index:
-    print("License", (j + 1), "of", len(pals_providers.index)+1)
+    print("License", (j + 1), "of", len(pals_providers.index))
     data2 = {
                 'IsFacility': 0,
                 'LicenseId': pals_providers['LicenseId'][j],
@@ -356,11 +357,27 @@ for j in pals_providers.index:
 
 
 # MERGE OUTPUTS
-pals_licenses = pals_licenses[['LicenseTypeInstructions', 'RelationshipLicenseInstructions', 'obtainedBy', 'SpecialityType', 'StatusEffectivedate', 'IssueDate', 'ExpiryDate', 'LastRenewalDate', 'NextRenewal', 'Relationship', 'AssociationDate', 'ShowFullAddress', 'ProfessionId', 'IsActiveLink', 'More_Info_See_PALS']]
+pals_licenses = pals_licenses[['LicenseId', 'obtainedBy', 'SpecialityType', 'StatusEffectivedate', 'IssueDate', 'ExpiryDate', 'LastRenewalDate', 'More_Info_See_PALS']]
 
 pals_licenses.reset_index(drop=True, inplace=True)
 pals_providers.reset_index(drop=True, inplace=True)
 
-final_df = pals_providers.merge(pals_licenses, how='outer', left_index=True, right_index=True)
+final_df = pals_providers.merge(pals_licenses, how='outer', left_index=True, right_index=True, on='LicenseId')
 
-final_df.to_csv(os.path.join(path, 'data', 'PALS_tall_yyyy-mm-dd_numnames_.csv'), index=False)
+# drop columns that are always empty
+final_df = final_df.dropna(axis=1, how='all')
+
+# write tall data to csv
+outdate = date.today().strftime('%Y-%m-%d')
+outlen = df.shape[0]
+
+final_df.to_csv(os.path.join(path, 'data', f"PALS_tall_{outdate}_{outlen}_.csv"), index=False)
+
+# write no_result to txt
+with open(os.path.join(path, 'data', f"PALS_noresult_{outdate}_{outlen}_.txt"), 'w') as nofile:
+    nofile.write("No PALS result found for:" + "\n")
+    for name in noresult:
+        nofile.write(name[0] + " " + name[1] + "\n")
+
+
+# Use pals_wide.py to create wide version of output
