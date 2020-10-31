@@ -27,8 +27,6 @@ while has_page:
         key_counter = 0
         for t in tr_elements[i + 1]:
             item = t.text_content()
-            # if key_counter == 0:
-            #     print(item, len(item))
             bupe_provider[headers[key_counter]] = item.strip()
             key_counter += 1
         bupe_locator_data.append(bupe_provider)

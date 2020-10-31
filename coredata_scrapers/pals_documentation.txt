@@ -1,0 +1,20 @@
+# 1. Initial Search
+
+- Uses NPI results as starting point
+- Limited to the 3 professions Josephine determined to be relevant (Medicine, Osteopathic Medicine, Nursing). I could not find a way to pass multiple options to the search, so I loop over the 3 professions, searching each name within each profession.
+- Searches first by first name, last name, profession
+- If no result, searches by license number and profession
+- If still no result, searches by first and last name without the profession codes
+- If still no result, applies a few changes to the names such as replacing hyphens with spaces and vice-versa and re-runs search
+- This produces a result for everyone except the 2 people with out of state licenses. These names are saved to a file called 'pals_noresult.txt'
+
+# 2. Simple Filters
+
+- Drop exact duplicates
+- Drop results from professions other than Medicine, Osteopathic Medicine, Nursing
+
+# 3. Fuzzy Record Matching
+
+- The initial scraper results contain many false positives. For example, when searching by name, PALS treats the input as a base string. Searching John Doe will return any records for John Doe, but also John Doeren, etc. 
+- NPI and PALS do not have a common identifier that is available for all providers. NPI lists a license number that matches the PALS license number for many providers, but some are missing or differ from PALS. Additionally, providers often have multiple license numbers in PALS. 
+- Thus, it is necessary to use several columns of the data to determine which PALS results actually match the providers in the NPI data.
