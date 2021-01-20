@@ -6,7 +6,7 @@ import time
 path = os.getcwd()
 
 ##TODO: Replace filename with current input (must have dea_num column but okay to leave rows blank)
-df = pd.read_csv(os.path.join(path, 'data', 'CURRENT_INPUT.csv'), index_col=False)
+df = pd.read_csv(os.path.join(path, 'data', 'provrecs_samhsa_buplocs_2021-01-16_just-names_for-mm-scripts.csv'), index_col=False)
 npi_data = df['dea_num'].values.tolist()
 npi_data = ["None" if type(x) == float else str(x) for x in npi_data]
 url = 'https://www.samhsa.gov/bupe/lookup-form'
@@ -14,11 +14,12 @@ samhsa_data_list = []
 counter = 1
 for index, row in df.iterrows():
         if counter % 100 == 0:
+            print(samhsa_data_list)
             time.sleep(300)
         counter +=1
         print(str(int(index)+1), row['npi'])
         dea_number = 'A*' if type(row['dea_num']) == float else str(row['dea_num'])
-        data = {'practitioner': row['lastname'],
+        data = {'practitioner': row['name_last'],
             'dea_number': dea_number,
             'form_build_id': 'form-MLgZu20sRJX2-p5eYVmVnVpZfuTyu5DgBYQJEVHe1I8',
             'form_id': 'bupe_pharm_lookup',
@@ -37,7 +38,7 @@ for index, row in df.iterrows():
             samsha_data['Date Certified'] = "NYI"
             samsha_data['Waiver Count'] = "NYI"
         else:
-            if data_list[0].split(' is a')[0] == (row['firstname'] + ' ' + row['lastname']):
+            if data_list[0].split(' is a')[0] == (row['name_first'] + ' ' + row['name_last']):
                 samsha_data['Full Name'] = data_list[0].split(' is a')[0]
                 samsha_data['Job'] = data_list[0].split(' is a ')[1][:-2]
                 samsha_data['DEA Registration Number'] = data_list[1].split(': ')[1]
