@@ -8,7 +8,7 @@ import recordlinkage
 from datetime import date
 
 path = os.getcwd()
-data_path = os.path.join(path, 'data', 'NPI_info_yyyy-mm-dd_numnames_.csv')
+data_path = os.path.join(path, 'data', 'NPI_info_2021-01-20_577.csv')
 ##TODO: Change input filename above to match whichever installment you're checking
 
 df = pd.read_csv(data_path, index_col=False)

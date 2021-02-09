@@ -34,7 +34,7 @@ def main():
             bupe_locator_data.append(bupe_provider)
         page_index += 1
 
-    return pd.DataFrame(bupe_locator_data) 
+    return pd.DataFrame(bupe_locator_data).to_dict('records')
     # file_name = "samhsa_bupe_locator_" + now + ".csv" 
     # final_df.to_csv(os.path.join(os.getcwd(), "data", file_name), index=False)
 
