@@ -13,6 +13,7 @@ from django.utils import timezone
 #     return new_provider_id
 
 class Sitecodes_samhsa_ftloc(models.Model):
+    # I gave all classes an oid (object id for ease of abstraction for backend)
     service_code = models.CharField(primary_key=True, max_length=10)
     category_code = models.CharField(max_length=6)
     category_name = models.CharField(max_length=70)
@@ -30,7 +31,7 @@ class Sitecodes_samhsa_ftloc(models.Model):
         return self.service_name
 
 class Siterecs_samhsa_ftloc(models.Model):
-    rec_id = models.IntegerField(primary_key=True)
+    oid = models.IntegerField(primary_key=True)
     site_id = models.ForeignKey('Sites_all', models.DO_NOTHING)
     date_firstfind = models.DateField()
     date_lastfind = models.DateField()
@@ -281,7 +282,7 @@ class Siterecs_samhsa_ftloc(models.Model):
         return ', '.join([self.street1, self.street2, self.city, self.state_usa, self.zip5])
 
 class Siterecs_samhsa_otp(models.Model):
-    rec_id = models.IntegerField(primary_key=True)
+    oid = models.IntegerField(primary_key=True)
     site_id = models.ForeignKey('Sites_all', models.DO_NOTHING)
     name_program = models.CharField(max_length=120)
     name_dba = models.CharField(max_length=120)
@@ -305,7 +306,7 @@ class Siterecs_samhsa_otp(models.Model):
         return self.name_program
 
 class Siterecs_dbhids_tad(models.Model):
-    rec_id = models.IntegerField(primary_key=True)
+    oid = models.IntegerField(primary_key=True)
     site_id = models.ForeignKey('Sites_all', models.DO_NOTHING)
     date_firstfind = models.DateField()
     date_lastfind = models.DateField()
@@ -320,7 +321,7 @@ class Siterecs_dbhids_tad(models.Model):
         return self.rec_id
 
 class Siterecs_other_srcs(models.Model):
-    rec_id = models.IntegerField(primary_key=True)
+    oid = models.IntegerField(primary_key=True)
     # site_id = models.ForeignKey('Sites_all', models.DO_NOTHING) DO WE NEED site_id for this?
     name1 = models.CharField(max_length=120)
     name2 = models.CharField(max_length=120)
@@ -358,7 +359,7 @@ class Siterecs_other_srcs(models.Model):
         return self.name1
 
 class Sites_all(models.Model):
-    site_id = models.CharField(primary_key=True, max_length=120) # TODO integer or varchar?
+    oid = models.CharField(primary_key=True, max_length=120) # TODO integer or varchar?
     samhsa_ftloc_id = models.ForeignKey('Siterecs_samhsa_ftloc', models.DO_NOTHING)
     samhsa_otp_id = models.ForeignKey('Siterecs_samhsa_otp', models.DO_NOTHING)
     dbhids_tad_id = models.ForeignKey('Siterecs_dbhids_tad', models.DO_NOTHING)
