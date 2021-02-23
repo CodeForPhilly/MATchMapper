@@ -13,15 +13,16 @@ from django.utils import timezone
 #     return new_provider_id
 
 class Sitecodes_samhsa_ftloc(models.Model):
-    # I gave all classes an oid (object id for ease of abstraction for backend)
     service_code = models.CharField(primary_key=True, max_length=10)
     category_code = models.CharField(max_length=6)
     category_name = models.CharField(max_length=70)
-    sa_listings_match = models.CharField(max_length=15)
-    mm_highlights = models.CharField(max_length=15)
     service_name = models.CharField(max_length=120)
     service_description = models.CharField(max_length=999)
-    date_update = models.DateTimeField(default=timezone.now)
+    sa_listings_match = models.CharField(max_length=15) ## Our addition
+    mm_filters = models.CharField(max_length=15) ## Our addition -- renamed _highlights to _filters here and in data table
+    filter_seq = models.IntegerField() ## NEW: Our addition -- fill col from ForMostFilters tab; TODO: does () need parameters??
+    ui_reference = models.CharField(max_length=50) ## NEW: Our addition -- fill col from ForMostFilters tab
+    date_update = models.DateTimeField(default=timezone.now) ## Our addition
 
     class Meta:
         managed = True
@@ -30,9 +31,11 @@ class Sitecodes_samhsa_ftloc(models.Model):
     def __str__(self):
         return self.service_name
 
-class Siterecs_samhsa_ftloc(models.Model):
+# Gave all Siterecs_ classes an oid (object id for ease of abstraction for backend) ## = Audit tables
+
+class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, shouldn't we have blank=False, null=False (neither True)??
     oid = models.IntegerField(primary_key=True)
-    site_id = models.ForeignKey('Sites_all', models.DO_NOTHING)
+    ## site_id = models.ForeignKey('Sites_all', models.DO_NOTHING) ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
     date_firstfind = models.DateField()
     date_lastfind = models.DateField()
     name1 = models.CharField(max_length=120)
@@ -40,7 +43,7 @@ class Siterecs_samhsa_ftloc(models.Model):
     street1 = models.CharField(max_length=120)
     street2 = models.CharField(max_length=120)
     city = models.CharField(max_length=30)
-    state_usa = models.CharField(max_length=120) # TODO change to Enum???
+    state_usa = models.CharField(max_length=120) # TODO change to Enum??? ## Here and for other state_usa: Check whether downloaded data uses abbrev or full names
     zip5 = models.CharField(max_length=5)
     zip4 = models.CharField(max_length=9)
     county = models.CharField(max_length=120)
@@ -50,7 +53,7 @@ class Siterecs_samhsa_ftloc(models.Model):
     website = models.URLField()
     latitude = models.FloatField()
     longitude = models.FloatField()
-    type_facility = models.CharField(max_length=120)
+    type_facility = models.CharField(max_length=10) ## Data unlikely to exceed 4 characters; reduced 120 to 10
     otpa = models.BooleanField(blank=True, null=True)
     otp = models.BooleanField(blank=True, null=True)
     bu = models.BooleanField(blank=True, null=True)
@@ -61,7 +64,7 @@ class Siterecs_samhsa_ftloc(models.Model):
     bwn = models.BooleanField(blank=True, null=True)
     bwon = models.BooleanField(blank=True, null=True)
     beri = models.BooleanField(blank=True, null=True)
-    db_field = models.BooleanField(db_column='db_', blank=True, null=True)  # Field renamed because it ended with '_'.
+    db_field = models.BooleanField(db_column='db_', blank=True, null=True)  ## Added _field to SAMHSA code to avoid ambiguity (SQL keyword)
     mu = models.BooleanField(blank=True, null=True)
     meth = models.BooleanField(blank=True, null=True)
     mm = models.BooleanField(blank=True, null=True)
@@ -124,7 +127,7 @@ class Siterecs_samhsa_ftloc(models.Model):
     md = models.BooleanField(blank=True, null=True)
     mc = models.BooleanField(blank=True, null=True)
     si = models.BooleanField(blank=True, null=True)
-    pi_field = models.BooleanField(db_column='pi_', blank=True, null=True)  # Field renamed because it ended with '_'.
+    pi_field = models.BooleanField(db_column='pi_', blank=True, null=True)  ## Added _field to SAMHSA code to avoid ambiguity (SQL keyword)
     mi = models.BooleanField(blank=True, null=True)
     atr = models.BooleanField(blank=True, null=True)
     fsa = models.BooleanField(blank=True, null=True)
@@ -181,7 +184,7 @@ class Siterecs_samhsa_ftloc(models.Model):
     acc = models.BooleanField(blank=True, null=True)
     acm = models.BooleanField(blank=True, null=True)
     acu = models.BooleanField(blank=True, null=True)
-    add_field = models.BooleanField(db_column='add_', blank=True, null=True)  # Field renamed because it ended with '_'.
+    add_field = models.BooleanField(db_column='add_', blank=True, null=True)  ## Added _field to SAMHSA code to avoid ambiguity (SQL keyword)
     baba = models.BooleanField(blank=True, null=True)
     ccc = models.BooleanField(blank=True, null=True)
     cmha = models.BooleanField(blank=True, null=True)
@@ -283,19 +286,19 @@ class Siterecs_samhsa_ftloc(models.Model):
 
 class Siterecs_samhsa_otp(models.Model):
     oid = models.IntegerField(primary_key=True)
-    site_id = models.ForeignKey('Sites_all', models.DO_NOTHING)
+    ## site_id = models.ForeignKey('Sites_all', models.DO_NOTHING) ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
     name_program = models.CharField(max_length=120)
     name_dba = models.CharField(max_length=120)
     street_address = models.CharField(max_length=120)
     city = models.CharField(max_length=30)
-    state_usa = models.CharField(max_length=120) # TODO change to Enum???
+    state_usa = models.CharField(max_length=120) # TODO change to Enum??? ## As above
     zipcode = models.CharField(max_length=5)
     phone = models.CharField(max_length=12) # Format: ###-###-####
     certification_status = models.CharField(max_length=120)
     date_full_certification = models.DateField() 
     date_firstfind = models.DateField()
     date_lastfind = models.DateField()
-    data_review = models.CharField(max_length=120) # TODO what is this again???
+    data_review = models.CharField(max_length=120) # TODO what is this again??? ## Notes from manual review, e.g. "ZIP typo: corrected 19007 to 19107..."
     date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -305,12 +308,12 @@ class Siterecs_samhsa_otp(models.Model):
     def __str__(self):
         return self.name_program
 
-class Siterecs_dbhids_tad(models.Model):
+class Siterecs_dbhids_tad(models.Model): ## TODO (jkd): Update fields to match actual data compilation!!
     oid = models.IntegerField(primary_key=True)
-    site_id = models.ForeignKey('Sites_all', models.DO_NOTHING)
+    ## site_id = models.ForeignKey('Sites_all', models.DO_NOTHING)  ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
     date_firstfind = models.DateField()
     date_lastfind = models.DateField()
-    data_review = models.CharField(max_length=120) # TODO what is this again???
+    data_review = models.CharField(max_length=120) # TODO what is this again??? ## As above (notes from manual review)
     date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -320,9 +323,11 @@ class Siterecs_dbhids_tad(models.Model):
     def __str__(self):
         return self.rec_id
 
-class Siterecs_other_srcs(models.Model):
+# class Siterecs_hfp_fqhc(models.Model): ## TODO (jkd): Fill in this model!!
+    
+class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous columns!! Note crucial links to other tables!!
     oid = models.IntegerField(primary_key=True)
-    # site_id = models.ForeignKey('Sites_all', models.DO_NOTHING) DO WE NEED site_id for this?
+    # site_id = models.ForeignKey('Sites_all', models.DO_NOTHING) DO WE NEED site_id for this? ## As in all the other Site Audit tables: nixed Jan 26th
     name1 = models.CharField(max_length=120)
     name2 = models.CharField(max_length=120)
     website1 = models.URLField()
@@ -363,6 +368,7 @@ class Sites_all(models.Model):
     samhsa_ftloc_id = models.ForeignKey('Siterecs_samhsa_ftloc', models.DO_NOTHING)
     samhsa_otp_id = models.ForeignKey('Siterecs_samhsa_otp', models.DO_NOTHING)
     dbhids_tad_id = models.ForeignKey('Siterecs_dbhids_tad', models.DO_NOTHING)
+    hfp_fqhc_id = models.ForeignKey('Siterecs_hfp_fqhc', models.DO_NOTHING) ## Added
     other_srcs_id = models.ForeignKey('Siterecs_other_srcs', models.DO_NOTHING)
     name_site = models.CharField(max_length=120)
     name_program = models.CharField(max_length=120)
@@ -371,11 +377,16 @@ class Sites_all(models.Model):
     zip5 = models.CharField(max_length=120)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    mat_avail = models.BooleanField(blank=True)
-    mat_bupe = models.BooleanField(blank=True)
-    mat_mtd = models.BooleanField(blank=True)
-    mat_ntrex = models.BooleanField(blank=True)
-    fqhc = models.BooleanField(blank=True)
+    ## TODO: Identify how to link relevant fields from Audit tables to Enum fields below!!
+    mat_avail = models.BooleanField(blank=True) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
+    mat_bupe = models.BooleanField(blank=True) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
+    mat_mtd = models.BooleanField(blank=True) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
+    mat_ntrex = models.BooleanField(blank=True) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
+    fqhc = models.BooleanField(blank=True) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
+    ## primary_care = models...  ## TODO: Add as Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
+    archival_only = models.BooleanField(blank=True) ## Added to mark records not approved for Finder listings
+    ## why_hidden = models... ## TODO: Add as Enum to identify reason(s) for non-approval (4 options to start: "Site closed", "Data needs review", "Record redundant", "Other")
+    ## TODO: Add other fields for key filters (age, insurance, services, etc.)!!
     date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
