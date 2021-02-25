@@ -324,7 +324,7 @@ class Siterecs_dbhids_tad(models.Model): ## TODO (jkd): Update fields to match a
     op = models.BooleanField(blank=False)
     mh_tx = models.BooleanField(blank=False)
     wih_induction = models.BooleanField(blank=False)
-    walk_in_hours ## TODO: Retain for reference or delete as unreliable?
+    # walk_in_hours ## TODO: Retain for reference or delete as unreliable?
     coe = models.BooleanField(blank=False)
     other_notes = models.CharField(max_length=150) ## Current max = 111char but second = just 52char
     date_firstfind = models.DateField()
