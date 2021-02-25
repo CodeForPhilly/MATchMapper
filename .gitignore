@@ -10,3 +10,4 @@ MATchMapperEnv/
 .env
 Pipfile
 database/MATchMapper/__pycache__/
+venv
