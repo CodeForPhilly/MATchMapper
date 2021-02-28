@@ -10,6 +10,19 @@ from rest_framework import status
 from rest_framework.response import Response
 import json
 from django.core.exceptions import ObjectDoesNotExist
+from .serializers import Sitecodes_samhsa_ftlocSerializer, Siterecs_samhsa_ftlocSerializer, Siterecs_samhsa_otpSerializer, Siterecs_dbhids_tadSerializer, Siterecs_other_srcsSerializer, Sites_allSerializer
+from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Siterecs_other_srcs, Sites_all
+
+
+@api_view(["GET", "POST", "DELETE"])
+@csrf_exempt
+@permission_classes([IsAuthenticated])
+def sites_all_display(request): 
+    sites_all_objects = Sites_all.objects.all()
+    print(sites_all_objects)
+    sites_all_serializer = Sites_allSerializer(sites_all_objects, many=True)
+    return render(request,"bupehandler/sites_all.html", {"sites_all" : sites_all_serializer.data})
+
 
 # @api_view(["GET", "POST", "DELETE"])
 # @csrf_exempt

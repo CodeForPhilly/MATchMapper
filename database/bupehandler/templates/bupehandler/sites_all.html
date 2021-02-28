@@ -1,0 +1,19 @@
+<html> 
+    <head> 
+        <title> Sites all data</title>
+    </head>
+    <body> 
+    <div> 
+    Sites all data: 
+    </div>
+    {% for dict in sites_all %}
+    <div> 
+    {% for key, value in dict.items %}
+    <div> 
+    {{ key }}: {{ value}}
+    </div>
+    </div>
+    {%endfor%}
+    {%endfor%}
+    </body>
+</html>
