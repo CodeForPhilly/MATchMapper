@@ -299,18 +299,18 @@ class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, s
 class Siterecs_samhsa_otp(models.Model):
     oid = models.IntegerField(primary_key=True)
     ## site_id = models.ForeignKey('Sites_all', models.DO_NOTHING) ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
-    name_program = models.CharField(max_length=120)
-    name_dba = models.CharField(max_length=120)
+    name_program = models.CharField(max_length=250)
+    name_dba = models.CharField(max_length=120,blank=True, null=True)
     street_address = models.CharField(max_length=120)
     city = models.CharField(max_length=30)
     state_usa = models.CharField(max_length=120) # TODO change to Enum??? ## Match above class
-    zipcode = models.CharField(max_length=5)
+    zipcode = models.CharField(max_length=10)
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####) -- extended max_length to 20 to accommodate occasional extensions
     certification_status = models.CharField(max_length=120)
-    date_full_certification = models.DateField()
+    date_full_certification = models.DateField(blank=True, null=True)
     date_firstfind = models.DateField()
     date_lastfind = models.DateField()
-    data_review = models.CharField(max_length=250) # TODO what is this again??? ## Notes from manual review, e.g. "ZIP typo: corrected 19007 to 19107..."
+    data_review = models.CharField(max_length=250,blank=True, null=True) # TODO what is this again??? ## Notes from manual review, e.g. "ZIP typo: corrected 19007 to 19107..."
     date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -432,7 +432,7 @@ class Sites_all(models.Model):
     samhsa_ftloc_id = models.ManyToManyField('Siterecs_samhsa_ftloc')
 
     #samhsa_ftloc_id = models.ForeignKey('Siterecs_samhsa_ftloc', blank=True, null=True,on_delete=models.CASCADE)
-    samhsa_otp_id = models.ForeignKey('Siterecs_samhsa_otp', blank=True, null=True,on_delete=models.CASCADE)
+    samhsa_otp_id = models.ManyToManyField('Siterecs_samhsa_otp', blank=True, null=True)
     dbhids_tad_id = models.ForeignKey('Siterecs_dbhids_tad', blank=True, null=True,on_delete=models.CASCADE)
     hfp_fqhc_id = models.ForeignKey('Siterecs_hfp_fqhc', blank=True, null=True,on_delete=models.CASCADE) ## Added
     other_srcs_id = models.ForeignKey('Siterecs_other_srcs', blank=True, null=True,on_delete=models.CASCADE)
