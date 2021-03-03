@@ -38,8 +38,8 @@ class Sitecodes_samhsa_ftloc(models.Model):
 # Gave all Siterecs_ classes an oid (object id for ease of abstraction for backend) ## = Audit tables
 
 class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, shouldn't we have blank=False, null=False (neither True)??
-    oid = models.IntegerField(primary_key=True)
-    site_id = models.ManyToManyField('Sites_all', through = Sites_ftloc) ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
+    oid = models.ManyToManyField('Sites_all', through = Sites_ftloc,primary_key=True)
+    ###site_id = models.ManyToManyField('Sites_all', through = Sites_ftloc) ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
     date_firstfind = models.DateField()
     date_lastfind = models.DateField()
     name1 = models.CharField(max_length=120)
@@ -465,7 +465,7 @@ class Sites_all(models.Model):
 
 class Sites_ftloc(models.Model):
     samhsa_ftloc_id = models.ForeignKey(Sites_all, on_delete=models.CASCADE)
-    site_id = models.ForeignKey(Siterecs_samhsa_ftloc, on_delete=models.CASCADE)
+    oid = models.ForeignKey(Siterecs_samhsa_ftloc, on_delete=models.CASCADE)
     class Meta:
         managed = True
         db_table = 'sites_ftloc'
