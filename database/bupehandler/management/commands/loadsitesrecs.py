@@ -7,31 +7,51 @@ from bupehandler.models import Siterecs_samhsa_ftloc
 from pytz import UTC
 
 
-DATETIME_FORMAT = '%m/%d/%Y'
+DATETIME_FORMAT = '%Y-%m-%d'
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        for row in DictReader(open('./sites_all.csv')):
-            Sam_site = Siterecs_samhsa_ftloc_all()
+        for row in DictReader(open('./loc.csv')):
+            Sam_site = Siterecs_samhsa_ftloc()
+            print(row['rec_id'])
+
             Sam_site.oid = row['rec_id']
-            Sam_site.date_firstfind = row['date_firstfind']
-            Sam_site.lastfind = row['date_lastfind']
-            Sam_site.name1 = row['name1']
-            Sam_site.name2 = row['name2']
-            Sam_site.street1 = row['street1']
-            Sam_site.street2 = row['street2']
-            Sam_site.city = row['city']
-            Sam_site.state_usa = row['state_usa']
-            Sam_site.zip5 = row['zip5']
-            Sam_site.zip4 = row['zip4']
-            Sam_site.county = row['county']
-            Sam_site.phone = row['phone']
+            if row['date_firstfind'] != '':
+                fdate = row['date_firstfind']
+                Sam_site.date_firstfind = datetime.strptime(fdate,DATETIME_FORMAT)
+            if row['date_lastfind']  != '':
+                ldate = row['date_lastfind']
+                Sam_site.lastfind = datetime.strptime(ldate,DATETIME_FORMAT)
+            if row['name1']!= '':
+                Sam_site.name1 = row['name1']
+            if row['name2']!= '':
+                Sam_site.name2 = row['name2']
+            if row['street1'] !='':
+                Sam_site.street1 = row['street1']
+            if row['street2']!='':
+                Sam_site.street2 = row['street2']
+            if row['city']!= '':
+                Sam_site.city = row['city']
+            if row['state_usa']!= '':
+                Sam_site.state_usa = row['state_usa']
+            if row['zip5']!='':
+                Sam_site.zip5 = row['zip5']
+            if row['zip4']!='':
+                Sam_site.zip4 = row['zip4']
+            if row['county']!='':
+                Sam_site.county = row['county']
+            if row['phone']!='':
+                Sam_site.phone = row['phone']
             Sam_site.phone_intake1 = row['phone_intake1']
             Sam_site.phone_intake2 = row['phone_intake2']
-            Sam_site.website = row['website']
-            Sam_site.latitude = row['latitude']
-            Sam_site.longitude = row['longitude']
-            Sam_site.type_facility = row['type_facility']
+            if row['website']!='':
+                Sam_site.website = row['website']
+            if row['latitude']!='':
+                Sam_site.latitude = row['latitude']
+            if row['longitude']!= '':
+                Sam_site.longitude = row['longitude']
+            if row['type_facility']:
+                Sam_site.type_facility = row['type_facility']
             Sam_site.sa = row['sa']
             Sam_site.dt = row['dt']
             Sam_site.bu = row['bu']
@@ -253,3 +273,4 @@ class Command(BaseCommand):
             Sam_site.n23 = row['n23']
             Sam_site.n24 = row['n24']
             Sam_site.n40 = row['n40']
+            Sam_site.save()

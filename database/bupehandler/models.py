@@ -40,8 +40,8 @@ class Sitecodes_samhsa_ftloc(models.Model):
 class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, shouldn't we have blank=False, null=False (neither True)??
     oid = models.IntegerField(primary_key=True)
     ###site_id = models.ManyToManyField('Sites_all', through = Sites_ftloc) ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
-    date_firstfind = models.DateField()
-    date_lastfind = models.DateField()
+    date_firstfind = models.DateField(blank=True, null=True)
+    date_lastfind = models.DateField(blank=True, null=True)
     name1 = models.CharField(max_length=120)
     name2 = models.CharField(max_length=120)
     street1 = models.CharField(max_length=120)
