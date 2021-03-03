@@ -12,6 +12,10 @@ from django.utils import timezone
 #     new_provider_id = 'P' + str(new_provider_int).zfill(8)
 #     return new_provider_id
 
+
+
+
+
 class Sitecodes_samhsa_ftloc(models.Model):
     service_code = models.CharField(primary_key=True, max_length=10)
     category_code = models.CharField(max_length=6)
@@ -35,7 +39,7 @@ class Sitecodes_samhsa_ftloc(models.Model):
 
 class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, shouldn't we have blank=False, null=False (neither True)??
     oid = models.IntegerField(primary_key=True)
-    ## site_id = models.ForeignKey('Sites_all', models.DO_NOTHING) ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
+    site_id = models.ManyToManyField('Sites_all', through = Sites_ftloc) ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
     date_firstfind = models.DateField()
     date_lastfind = models.DateField()
     name1 = models.CharField(max_length=120)
@@ -44,27 +48,29 @@ class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, s
     street2 = models.CharField(max_length=120)
     city = models.CharField(max_length=30)
     state_usa = models.CharField(max_length=120) # TODO change to Enum??? ## Here and for other state_usa: Check whether downloaded data uses abbrev or full names
-    zip5 = models.CharField(max_length=5)
-    zip4 = models.CharField(max_length=9)
+    zip5 = models.CharField(max_length=5,blank=True, null=True)
+    zip4 = models.CharField(max_length=9,blank=True, null=True)
     county = models.CharField(max_length=120)
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
-    phone_intake1 = models.CharField(max_length=20)
-    phone_intake2 = models.CharField(max_length=20)
+    phone_intake1 = models.CharField(max_length=20,blank=True, null=True)
+    phone_intake2 = models.CharField(max_length=20,blank=True, null=True)
     website = models.URLField()
     latitude = models.FloatField()
     longitude = models.FloatField()
     type_facility = models.CharField(max_length=10) ## Data unlikely to exceed 4 characters; reduced 120 to 10
-    otpa = models.BooleanField(blank=True, null=True)
-    otp = models.BooleanField(blank=True, null=True)
+    sa = models.BooleanField(blank=True, null=True)
+    dt = models.BooleanField(blank=True, null=True)
     bu = models.BooleanField(blank=True, null=True)
-    ub = models.BooleanField(blank=True, null=True)
     bum = models.BooleanField(blank=True, null=True)
-    bmw = models.BooleanField(blank=True, null=True)
-    bsdm = models.BooleanField(blank=True, null=True)
+    ub = models.BooleanField(blank=True, null=True)
     bwn = models.BooleanField(blank=True, null=True)
     bwon = models.BooleanField(blank=True, null=True)
+    bmw = models.BooleanField(blank=True, null=True)
     beri = models.BooleanField(blank=True, null=True)
-    db_field = models.BooleanField(db_column='db_', blank=True, null=True)  ## Added _field to SAMHSA code to avoid ambiguity (SQL keyword)
+    bsdm = models.BooleanField(blank=True, null=True)
+    db_field = models.BooleanField(blank=True, null=True)
+    bmo = models.BooleanField(blank=True, null=True)
+    mo = models.BooleanField(blank=True, null=True)
     mu = models.BooleanField(blank=True, null=True)
     meth = models.BooleanField(blank=True, null=True)
     mm = models.BooleanField(blank=True, null=True)
@@ -72,17 +78,20 @@ class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, s
     dm = models.BooleanField(blank=True, null=True)
     nu = models.BooleanField(blank=True, null=True)
     un = models.BooleanField(blank=True, null=True)
-    nxn = models.BooleanField(blank=True, null=True)
     vtrl = models.BooleanField(blank=True, null=True)
+    nxn = models.BooleanField(blank=True, null=True)
     rpn = models.BooleanField(blank=True, null=True)
-    dt = models.BooleanField(blank=True, null=True)
-    any_mat = models.IntegerField(blank=True, null=True)
+    otp = models.BooleanField(blank=True, null=True)
+    omb = models.BooleanField(blank=True, null=True)
+    otpa = models.BooleanField(blank=True, null=True)
+    pain = models.BooleanField(blank=True, null=True)
+    ulc = models.BooleanField(blank=True, null=True)
     moa = models.BooleanField(blank=True, null=True)
+    odtx = models.BooleanField(blank=True, null=True)
+    ubn = models.BooleanField(blank=True, null=True)
+    hh = models.BooleanField(blank=True, null=True)
     noop = models.BooleanField(blank=True, null=True)
     nmoa = models.BooleanField(blank=True, null=True)
-    pain = models.BooleanField(blank=True, null=True)
-    hh = models.BooleanField(blank=True, null=True)
-    ubn = models.BooleanField(blank=True, null=True)
     cbt = models.BooleanField(blank=True, null=True)
     dbt = models.BooleanField(blank=True, null=True)
     saca = models.BooleanField(blank=True, null=True)
@@ -98,7 +107,6 @@ class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, s
     rl = models.BooleanField(blank=True, null=True)
     rd = models.BooleanField(blank=True, null=True)
     od = models.BooleanField(blank=True, null=True)
-    omb = models.BooleanField(blank=True, null=True)
     odt = models.BooleanField(blank=True, null=True)
     oit = models.BooleanField(blank=True, null=True)
     ort = models.BooleanField(blank=True, null=True)
@@ -127,7 +135,7 @@ class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, s
     md = models.BooleanField(blank=True, null=True)
     mc = models.BooleanField(blank=True, null=True)
     si = models.BooleanField(blank=True, null=True)
-    pi_field = models.BooleanField(db_column='pi_', blank=True, null=True)  ## Added _field to SAMHSA code to avoid ambiguity (SQL keyword)
+    pi_field = models.BooleanField(blank=True, null=True)
     mi = models.BooleanField(blank=True, null=True)
     atr = models.BooleanField(blank=True, null=True)
     fsa = models.BooleanField(blank=True, null=True)
@@ -156,7 +164,6 @@ class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, s
     bdtx = models.BooleanField(blank=True, null=True)
     cdtx = models.BooleanField(blank=True, null=True)
     mdtx = models.BooleanField(blank=True, null=True)
-    odtx = models.BooleanField(blank=True, null=True)
     tgd = models.BooleanField(blank=True, null=True)
     tid = models.BooleanField(blank=True, null=True)
     ico = models.BooleanField(blank=True, null=True)
@@ -177,14 +184,12 @@ class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, s
     adlt = models.BooleanField(blank=True, null=True)
     fem = models.BooleanField(blank=True, null=True)
     male = models.BooleanField(blank=True, null=True)
-    bmo = models.BooleanField(blank=True, null=True)
-    mo = models.BooleanField(blank=True, null=True)
     du = models.BooleanField(blank=True, null=True)
     duo = models.BooleanField(blank=True, null=True)
     acc = models.BooleanField(blank=True, null=True)
     acm = models.BooleanField(blank=True, null=True)
     acu = models.BooleanField(blank=True, null=True)
-    add_field = models.BooleanField(db_column='add_', blank=True, null=True)  ## Added _field to SAMHSA code to avoid ambiguity (SQL keyword)
+    add_field = models.BooleanField(blank=True, null=True)
     baba = models.BooleanField(blank=True, null=True)
     ccc = models.BooleanField(blank=True, null=True)
     cmha = models.BooleanField(blank=True, null=True)
@@ -235,7 +240,6 @@ class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, s
     auinpe = models.BooleanField(blank=True, null=True)
     aurpe = models.BooleanField(blank=True, null=True)
     aupc = models.BooleanField(blank=True, null=True)
-    ulc = models.BooleanField(blank=True, null=True)
     mhiv = models.BooleanField(blank=True, null=True)
     mhcv = models.BooleanField(blank=True, null=True)
     lfxd = models.BooleanField(blank=True, null=True)
@@ -274,7 +278,15 @@ class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, s
     n18 = models.BooleanField(blank=True, null=True)
     n23 = models.BooleanField(blank=True, null=True)
     n24 = models.BooleanField(blank=True, null=True)
-    n40 = models.BooleanField(blank=True, null=True)
+    n40  = models.BooleanField(blank=True, null=True)
+    mat_bupe = models.IntegerField(blank=True, null=True)
+    mat_ntrex = models.IntegerField(blank=True, null=True)
+    mat_mtd = models.IntegerField(blank=True, null=True)
+    mat_misc = models.IntegerField(blank=True, null=True)
+    mat_avail = models.IntegerField(blank=True, null=True)
+
+
+
     date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -295,7 +307,7 @@ class Siterecs_samhsa_otp(models.Model):
     zipcode = models.CharField(max_length=5)
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####) -- extended max_length to 20 to accommodate occasional extensions
     certification_status = models.CharField(max_length=120)
-    date_full_certification = models.DateField() 
+    date_full_certification = models.DateField()
     date_firstfind = models.DateField()
     date_lastfind = models.DateField()
     data_review = models.CharField(max_length=250) # TODO what is this again??? ## Notes from manual review, e.g. "ZIP typo: corrected 19007 to 19107..."
@@ -358,7 +370,7 @@ class Siterecs_hfp_fqhc(models.Model): ## TODO
     date_firstfind = models.DateField()
     date_lastfind = models.DateField()
     data_review = models.CharField(max_length=250)
-    
+
 class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous columns!! Note crucial links to other tables!!
     oid = models.IntegerField(primary_key=True)
     # site_id = models.ForeignKey('Sites_all', models.DO_NOTHING) DO WE NEED site_id for this? ## As in all the other Site Audit tables: nixed Jan 26th
@@ -397,13 +409,33 @@ class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous colu
     def __str__(self):
         return self.name1
 
+
+
+Multi_Choices_Enum3 = [
+('Yes','Yes'),
+('No','No'),
+('Unclear','Unclear'),
+]
+
+Multi_Choices_Enum5 = [
+('Site closed','Site closed'),
+('Data needs review','Data needs review'),
+('Not a practice site','Not a practice site'),
+('Record redundant' ,'Record redundant'),
+('Other','Other'),
+]
+
+
+
 class Sites_all(models.Model):
     oid = models.CharField(primary_key=True, max_length=120) # TODO integer or varchar? ## Probably serialized varchar?
-    samhsa_ftloc_id = models.ForeignKey('Siterecs_samhsa_ftloc', models.DO_NOTHING)
-    samhsa_otp_id = models.ForeignKey('Siterecs_samhsa_otp', models.DO_NOTHING)
-    dbhids_tad_id = models.ForeignKey('Siterecs_dbhids_tad', models.DO_NOTHING)
-    hfp_fqhc_id = models.ForeignKey('Siterecs_hfp_fqhc', models.DO_NOTHING) ## Added
-    other_srcs_id = models.ForeignKey('Siterecs_other_srcs', models.DO_NOTHING)
+    samhsa_ftloc_id = models.ManyToManyField('Siterecs_samhsa_ftloc', through = Sites_ftloc)
+
+    #samhsa_ftloc_id = models.ForeignKey('Siterecs_samhsa_ftloc', blank=True, null=True,on_delete=models.CASCADE)
+    samhsa_otp_id = models.ForeignKey('Siterecs_samhsa_otp', blank=True, null=True,on_delete=models.CASCADE)
+    dbhids_tad_id = models.ForeignKey('Siterecs_dbhids_tad', blank=True, null=True,on_delete=models.CASCADE)
+    hfp_fqhc_id = models.ForeignKey('Siterecs_hfp_fqhc', blank=True, null=True,on_delete=models.CASCADE) ## Added
+    other_srcs_id = models.ForeignKey('Siterecs_other_srcs', blank=True, null=True,on_delete=models.CASCADE)
     name_program = models.CharField(max_length=120)
     name_site = models.CharField(max_length=120)
     url_site = models.URLField() ## Important addition: functions with address fields as composite primary key
@@ -413,11 +445,11 @@ class Sites_all(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     ## TODO: Identify how to link relevant fields from Audit tables to Enum fields below!!
-    mat_avail = models.BooleanField(blank=True) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
-    mat_bupe = models.BooleanField(blank=True) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
-    mat_mtd = models.BooleanField(blank=True) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
-    mat_ntrex = models.BooleanField(blank=True) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
-    fqhc = models.BooleanField(blank=True) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
+    mat_avail = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
+    mat_bupe = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
+    mat_mtd = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
+    mat_ntrex = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
+    fqhc = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
     ## primary_care = models...  ## TODO: Add as Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
     archival_only = models.BooleanField(blank=True) ## Added to mark records not approved for Finder listings
     ## why_hidden = models... ## TODO: Add as Enum to identify reason(s) for non-approval (5 options to start: "Site closed", "Data needs review", "Not a practice site", "Record redundant", "Other")
@@ -431,7 +463,12 @@ class Sites_all(models.Model):
     def __str__(self):
         return self.name_site
 
-    
+class Sites_ftloc(models.Model):
+    samhsa_ftloc_id = models.ForeignKey(Sites_all, on_delete=models.CASCADE)
+    site_id = models.ForeignKey(Siterecs_samhsa_ftloc, on_delete=models.CASCADE)
+    class Meta:
+        managed = True
+        db_table = 'sites_ftloc'
 
 # class Address(models.Model):
 #     id = models.CharField(primary_key=True, max_length=30)
@@ -511,7 +548,7 @@ class Sites_all(models.Model):
 #     class Meta:
 #         managed = True
 #         db_table = 'npi'
-    
+
 #     def __str__(self):
 #         return self.npi
 
