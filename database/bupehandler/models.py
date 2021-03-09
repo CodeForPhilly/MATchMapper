@@ -349,7 +349,10 @@ class Siterecs_dbhids_tad(models.Model): ## TODO (jkd): Update fields to match a
         db_table = 'siterecs_dbhids_tad'
 
     def __str__(self):
-        return self.rec_id
+        #i change this to return oid instead of rec_id because rec_id doesn't exist
+        #please change the returned value to rec_id if applicable later on. 
+        return str(self.oid)
+        #return self.rec_id
 
 class Siterecs_hfp_fqhc(models.Model): ## TODO
     oid = models.IntegerField(primary_key=True)

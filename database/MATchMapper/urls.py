@@ -16,9 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
+from bupehandler import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url('api-auth/', include('rest_framework.urls')),
     url('api/', include('bupehandler.urls')),
+    url('sites_all_display/', views.sites_all_display, name="sites_all_display"),
+    url('siterecs_samhsa_otp/', views.siterecs_samhsa_otp_display, name="siterecs_samhsa_otp_display")
 ]
