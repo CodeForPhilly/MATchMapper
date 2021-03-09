@@ -39,7 +39,7 @@ class Sitecodes_samhsa_ftloc(models.Model):
 
 class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, shouldn't we have blank=False, null=False (neither True)??
     oid = models.IntegerField(primary_key=True)
-    ###site_id = models.ManyToManyField('Sites_all', through = Sites_ftloc) ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
+    #site_id = models.ManyToManyField('Sites_all', through = Sites_ftloc) ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
     date_firstfind = models.DateField(blank=True, null=True)
     date_lastfind = models.DateField(blank=True, null=True)
     name1 = models.CharField(max_length=120)
@@ -298,7 +298,7 @@ class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, s
 
 class Siterecs_samhsa_otp(models.Model):
     oid = models.IntegerField(primary_key=True)
-    ## site_id = models.ForeignKey('Sites_all', models.DO_NOTHING) ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
+    site_id = models.ManyToManyField('Sites_all', through = 'sites_site_recs_lookup') ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
     name_program = models.CharField(max_length=250)
     name_dba = models.CharField(max_length=120,blank=True, null=True)
     street_address = models.CharField(max_length=120)
@@ -308,8 +308,8 @@ class Siterecs_samhsa_otp(models.Model):
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####) -- extended max_length to 20 to accommodate occasional extensions
     certification_status = models.CharField(max_length=120)
     date_full_certification = models.DateField(blank=True, null=True)
-    date_firstfind = models.DateField()
-    date_lastfind = models.DateField()
+    date_firstfind = models.DateField(blank=True, null=True)
+    date_lastfind = models.DateField(blank=True, null=True)
     data_review = models.CharField(max_length=250,blank=True, null=True) # TODO what is this again??? ## Notes from manual review, e.g. "ZIP typo: corrected 19007 to 19107..."
     date_update = models.DateTimeField(default=timezone.now)
 
@@ -320,9 +320,12 @@ class Siterecs_samhsa_otp(models.Model):
     def __str__(self):
         return self.name_program
 
+
+
+
 class Siterecs_dbhids_tad(models.Model): ## TODO (jkd): Update fields to match actual data compilation!!
     oid = models.IntegerField(primary_key=True)
-    ## site_id = models.ForeignKey('Sites_all', models.DO_NOTHING)  ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
+    site_id = models.ManyToManyField('Sites_all', through = 'Siterecs_dbhids_sites_all_lookup')  ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
     name_listed = models.CharField(max_length=120)
     street_address = models.CharField(max_length=120)
     loc_suppl = models.CharField(max_length=50)
@@ -353,6 +356,7 @@ class Siterecs_dbhids_tad(models.Model): ## TODO (jkd): Update fields to match a
 
 class Siterecs_hfp_fqhc(models.Model): ## TODO
     oid = models.IntegerField(primary_key=True)
+    site_id = models.ManyToManyField('Sites_all', through = 'Siterecs_hfp_fqhc_sites_all_lookup')
     name_short = models.CharField(max_length=50)
     name_system = models.CharField(max_length=120)
     name_site = models.CharField(max_length=120)
@@ -373,7 +377,7 @@ class Siterecs_hfp_fqhc(models.Model): ## TODO
 
 class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous columns!! Note crucial links to other tables!!
     oid = models.IntegerField(primary_key=True)
-    # site_id = models.ForeignKey('Sites_all', models.DO_NOTHING) DO WE NEED site_id for this? ## As in all the other Site Audit tables: nixed Jan 26th
+    site_id = models.ManyToManyField('Sites_all', through = "sitesrecs_other_srcs_sitesall_lk")
     name1 = models.CharField(max_length=120)
     name2 = models.CharField(max_length=120)
     website1 = models.URLField()
@@ -432,10 +436,10 @@ class Sites_all(models.Model):
     samhsa_ftloc_id = models.ManyToManyField('Siterecs_samhsa_ftloc')
 
     #samhsa_ftloc_id = models.ForeignKey('Siterecs_samhsa_ftloc', blank=True, null=True,on_delete=models.CASCADE)
-    samhsa_otp_id = models.ManyToManyField('Siterecs_samhsa_otp', blank=True, null=True)
-    dbhids_tad_id = models.ForeignKey('Siterecs_dbhids_tad', blank=True, null=True,on_delete=models.CASCADE)
-    hfp_fqhc_id = models.ForeignKey('Siterecs_hfp_fqhc', blank=True, null=True,on_delete=models.CASCADE) ## Added
-    other_srcs_id = models.ForeignKey('Siterecs_other_srcs', blank=True, null=True,on_delete=models.CASCADE)
+    samhsa_otp_id = models.ManyToManyField('Siterecs_samhsa_otp')
+    dbhids_tad_id = models.ManyToManyField('Siterecs_dbhids_tad')
+    hfp_fqhc_id = models.ManyToManyField('Siterecs_hfp_fqhc') ## Added
+    other_srcs_id = models.ManyToManyField('Siterecs_other_srcs')
     name_program = models.CharField(max_length=120)
     name_site = models.CharField(max_length=120)
     url_site = models.URLField() ## Important addition: functions with address fields as composite primary key
@@ -463,6 +467,23 @@ class Sites_all(models.Model):
     def __str__(self):
         return self.name_site
 
+
+class sitesrecs_other_srcs_sitesall_lk(models.Model):
+    site_id_samhsa = models.ForeignKey(Siterecs_other_srcs, on_delete=models.CASCADE)
+    other_srcs_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
+
+class sites_site_recs_lookup(models.Model):
+    site_id_samhsa = models.ForeignKey(Siterecs_samhsa_otp, on_delete=models.CASCADE)
+    oid_sites_all = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
+
+class Siterecs_dbhids_sites_all_lookup(models.Model):
+    site_id_samhsa = models.ForeignKey(Siterecs_dbhids_tad, on_delete=models.CASCADE)
+    oid_sites_all = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
+
+
+class Siterecs_hfp_fqhc_sites_all_lookup(models.Model):
+    site_id_samhsa = models.ForeignKey(Siterecs_hfp_fqhc, on_delete=models.CASCADE)
+    oid_sites_all = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
 
 
 # class Address(models.Model):

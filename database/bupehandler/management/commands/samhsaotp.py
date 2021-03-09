@@ -15,6 +15,7 @@ class Command(BaseCommand):
             sites = Siterecs_samhsa_otp()
             print(row['rec_id'])
             sites.oid = row['rec_id']
+            sites.site_id = row['site_id']
             sites.name_program = row['name_program']
             if row['name_dba'] != '':
                 sites.name_dba = row['name_dba']
