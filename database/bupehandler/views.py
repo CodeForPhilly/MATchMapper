@@ -21,7 +21,16 @@ def sites_all_display(request):
     sites_all_objects = Sites_all.objects.all()
     print(sites_all_objects)
     sites_all_serializer = Sites_allSerializer(sites_all_objects, many=True)
-    return render(request,"bupehandler/sites_all.html", {"sites_all" : sites_all_serializer.data})
+    return render(request,"bupehandler/list_all.html", {"title": 'sites_all', "sites_all" : sites_all_serializer.data})
+
+@api_view(["GET", "POST", "DELETE"])
+@csrf_exempt
+@permission_classes([IsAuthenticated])
+def siterecs_samhsa_otp_display(request):
+    siterecs_samhsa_otp_objects = Siterecs_samhsa_otp.objects.all()
+    print(siterecs_samhsa_otp_objects)
+    siterecs_samhsa_otp_serializer = Siterecs_samhsa_otpSerializer(siterecs_samhsa_otp_objects, many=True)
+    return render(request,"bupehandler/list_all.html", {"title": 'siterecs_samhsa_otp_display', "objects" : siterecs_samhsa_otp_serializer.data})
 
 
 # @api_view(["GET", "POST", "DELETE"])
