@@ -3,7 +3,7 @@ from datetime import datetime
 
 from django.core.management import BaseCommand
 
-from bupehandler.models import Siterecs_samhsa_otp
+from bupehandler.models import Siterecs_samhsa_otp, Sites_all
 from pytz import UTC
 
 
@@ -11,11 +11,26 @@ DATETIME_FORMAT = '%Y-%m-%d'
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        sites_all = Sites_all()
+        if sites_all.oid == 'S00084':
+            print(sites_all.oid)
         for row in DictReader(open('./sitesrecotp.csv')):
             sites = Siterecs_samhsa_otp()
-            print(row['rec_id'])
+            sites_all = Sites_all()
+            #print(sites_all)
+            sitesallid = sites_all.oid
+            #print(sites_all.oid)
+        #    for sit in sites_all.oid:
+        #        print(sit)
+            #print(sites_all.oid)
+
+            #print(row['rec_id'])
             sites.oid = row['rec_id']
-            sites.site_id = row['site_id']
+            #for s in sitesallid:
+            #    print(s.oid)
+
+                #sites.site_id.samhsa_oid = sites_all.samhsa_otp_id
+
             sites.name_program = row['name_program']
             if row['name_dba'] != '':
                 sites.name_dba = row['name_dba']
@@ -37,4 +52,4 @@ class Command(BaseCommand):
             if row['date_lastfind'] != '':
                 ldate = row['date_lastfind']
                 sites.date_lastfind = datetime.strptime(ldate,DATETIME_FORMAT)
-            sites.save()
+            ##sites.save()

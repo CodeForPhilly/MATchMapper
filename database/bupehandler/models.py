@@ -39,7 +39,7 @@ class Sitecodes_samhsa_ftloc(models.Model):
 
 class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, shouldn't we have blank=False, null=False (neither True)??
     oid = models.IntegerField(primary_key=True)
-    #site_id = models.ManyToManyField('Sites_all', through = Sites_ftloc) ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
+    site_id = models.ManyToManyField('Sites_all', through = 'Sites_ftloc') ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
     date_firstfind = models.DateField(blank=True, null=True)
     date_lastfind = models.DateField(blank=True, null=True)
     name1 = models.CharField(max_length=120)
@@ -353,7 +353,7 @@ class Siterecs_dbhids_tad(models.Model): ## TODO (jkd): Update fields to match a
 
     def __str__(self):
         #i change this to return oid instead of rec_id because rec_id doesn't exist
-        #please change the returned value to rec_id if applicable later on. 
+        #please change the returned value to rec_id if applicable later on.
         return str(self.oid)
         #return self.rec_id
 
@@ -449,8 +449,8 @@ class Sites_all(models.Model):
     street_address = models.CharField(max_length=120)
     address_suppl = models.CharField(max_length=120)
     zip5 = models.CharField(max_length=120)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
     ## TODO: Identify how to link relevant fields from Audit tables to Enum fields below!!
     mat_avail = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
     mat_bupe = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
@@ -458,7 +458,7 @@ class Sites_all(models.Model):
     mat_ntrex = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
     fqhc = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
     ## primary_care = models...  ## TODO: Add as Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
-    archival_only = models.BooleanField(blank=True) ## Added to mark records not approved for Finder listings
+    archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records not approved for Finder listings
     ## why_hidden = models... ## TODO: Add as Enum to identify reason(s) for non-approval (5 options to start: "Site closed", "Data needs review", "Not a practice site", "Record redundant", "Other")
     ## TODO: Add other fields for key filters (age, insurance, services, etc.)!!
     date_update = models.DateTimeField(default=timezone.now)
@@ -472,22 +472,25 @@ class Sites_all(models.Model):
 
 
 class sitesrecs_other_srcs_sitesall_lk(models.Model):
-    site_id_samhsa = models.ForeignKey(Siterecs_other_srcs, on_delete=models.CASCADE)
-    other_srcs_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
+    samhsa_oid = models.ForeignKey(Siterecs_other_srcs, on_delete=models.CASCADE)
+    sites_all_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
 
 class sites_site_recs_lookup(models.Model):
-    site_id_samhsa = models.ForeignKey(Siterecs_samhsa_otp, on_delete=models.CASCADE)
-    oid_sites_all = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
+    samhsa_oid = models.ForeignKey(Siterecs_samhsa_otp, on_delete=models.CASCADE)
+    sites_all_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
 
 class Siterecs_dbhids_sites_all_lookup(models.Model):
-    site_id_samhsa = models.ForeignKey(Siterecs_dbhids_tad, on_delete=models.CASCADE)
-    oid_sites_all = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
+    samhsa_oid = models.ForeignKey(Siterecs_dbhids_tad, on_delete=models.CASCADE)
+    sites_all_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
 
 
 class Siterecs_hfp_fqhc_sites_all_lookup(models.Model):
-    site_id_samhsa = models.ForeignKey(Siterecs_hfp_fqhc, on_delete=models.CASCADE)
-    oid_sites_all = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
+    samhsa_oid = models.ForeignKey(Siterecs_hfp_fqhc, on_delete=models.CASCADE)
+    sites_all_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
 
+class Sites_ftloc(models.Model):
+    samhsa_oid = models.ForeignKey(Siterecs_samhsa_ftloc, on_delete=models.CASCADE)
+    sites_all_id= models.ForeignKey(Sites_all, on_delete=models.CASCADE)
 
 # class Address(models.Model):
 #     id = models.CharField(primary_key=True, max_length=30)
