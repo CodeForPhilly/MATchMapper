@@ -53,11 +53,14 @@ class Command(BaseCommand):
                     if r1['date_lastfind'] != '':
                         ldate = r1['date_lastfind']
                         siteotp.date_lastfind = datetime.strptime(ldate,DATETIME_FORMAT)
+                    print(siteotp)
+                    sites.samhsa_otp_id.sites_all_id = r1['site_id']
+                    sites.samhsa_otp_id.samhsa_oid = r1['rec_id']
                     siteotp.save()
-                    print(sitesotp)
-                    sites.samhsa_otp_id.sites_all_id = siteotp
+                    print(siteotp)
+                    #sites.samhsa_otp_id.sites_all_id = siteotp
 
-            sites.samhsa_ftloc_id.sites_all_id = row['site_id']
+            #sites.samhsa_ftloc_id.sites_all_id = row['site_id']
             #try:
                 #print(otpf)
             #    sites.samhsa_otp_id.sites_all_id = siteotp
@@ -99,5 +102,5 @@ class Command(BaseCommand):
                 sites.fqhc = 'Unknown'
             if row['archival_only'] != '':
                 sites.archival_only = row['archival_only']
-
+            #sites.samhsa_otp_id.samhsa_oid = sites
             sites.save()

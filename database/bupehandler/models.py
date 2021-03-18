@@ -12,7 +12,19 @@ from django.utils import timezone
 #     new_provider_id = 'P' + str(new_provider_int).zfill(8)
 #     return new_provider_id
 
+Multi_Choices_Enum3 = [
+('Yes','Yes'),
+('No','No'),
+('Unclear','Unclear'),
+]
 
+Multi_Choices_Enum5 = [
+('Site closed','Site closed'),
+('Data needs review','Data needs review'),
+('Not a practice site','Not a practice site'),
+('Record redundant' ,'Record redundant'),
+('Other','Other'),
+]
 
 
 
@@ -363,20 +375,25 @@ class Siterecs_hfp_fqhc(models.Model): ## TODO
     name_short = models.CharField(max_length=50)
     name_system = models.CharField(max_length=120)
     name_site = models.CharField(max_length=120)
-    admin_office = models.BooleanField(blank=False) ## blank=False preferred: ok?
+    admin_office = models.BooleanField(blank=True, null=True)
     street_address = models.CharField(max_length=120)
-    loc_suppl = models.CharField(max_length=50)
+    loc_suppl = models.CharField(max_length=50,blank=True, null=True)
     city = models.CharField(max_length=30)
     state_usa = models.CharField(max_length=30) ## Can replace with Enum to match above classes
     zip5 = models.CharField(max_length=5)
     website = models.URLField()
     phone1 = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
-    phone2 = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
-    ## why_hidden = models... ## TODO: Add as Enum (same 5 options as in Sites_all: "Site closed", "Data needs review", "Not a practice site", "Record redundant", "Other")
-    ## mat_avail = models... ## TODO: Add as Enum with 3 options: "Yes", "Unclear", "No"
+    phone2 = models.CharField(max_length=20,blank=True, null=True) # Format: ###-###-#### (with optional x####)
+    why_hidden = models.CharField(max_length = 20, choices = Multi_Choices_Enum5,blank=True, null=True) ## TODO: Add as Enum (same 5 options as in Sites_all: "Site closed", "Data needs review", "Not a practice site", "Record redundant", "Other")
     date_firstfind = models.DateField()
     date_lastfind = models.DateField()
     data_review = models.CharField(max_length=250)
+
+    def __str__(self):
+        #i change this to return oid instead of rec_id because rec_id doesn't exist
+        #please change the returned value to rec_id if applicable later on.
+        return str(self.name_short)
+        #return self.rec_id
 
 class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous columns!! Note crucial links to other tables!!
     oid = models.IntegerField(primary_key=True)
@@ -418,36 +435,24 @@ class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous colu
 
 
 
-Multi_Choices_Enum3 = [
-('Yes','Yes'),
-('No','No'),
-('Unclear','Unclear'),
-]
 
-Multi_Choices_Enum5 = [
-('Site closed','Site closed'),
-('Data needs review','Data needs review'),
-('Not a practice site','Not a practice site'),
-('Record redundant' ,'Record redundant'),
-('Other','Other'),
-]
 
 
 
 class Sites_all(models.Model):
     oid = models.CharField(primary_key=True, max_length=120) # TODO integer or varchar? ## Probably serialized varchar?
-    samhsa_ftloc_id = models.ManyToManyField('Siterecs_samhsa_ftloc')
+    samhsa_ftloc_id = models.ManyToManyField('Siterecs_samhsa_ftloc',blank=True, null=True)
 
     #samhsa_ftloc_id = models.ForeignKey('Siterecs_samhsa_ftloc', blank=True, null=True,on_delete=models.CASCADE)
-    samhsa_otp_id = models.ManyToManyField('Siterecs_samhsa_otp')
-    dbhids_tad_id = models.ManyToManyField('Siterecs_dbhids_tad')
-    hfp_fqhc_id = models.ManyToManyField('Siterecs_hfp_fqhc') ## Added
-    other_srcs_id = models.ManyToManyField('Siterecs_other_srcs')
+    samhsa_otp_id = models.ManyToManyField('Siterecs_samhsa_otp',blank=True, null=True)
+    dbhids_tad_id = models.ManyToManyField('Siterecs_dbhids_tad',blank=True, null=True)
+    hfp_fqhc_id = models.ManyToManyField('Siterecs_hfp_fqhc',blank=True, null=True) ## Added
+    other_srcs_id = models.ManyToManyField('Siterecs_other_srcs',blank=True, null=True)
     name_program = models.CharField(max_length=120)
     name_site = models.CharField(max_length=120)
     url_site = models.URLField() ## Important addition: functions with address fields as composite primary key
     street_address = models.CharField(max_length=120)
-    address_suppl = models.CharField(max_length=120)
+    address_suppl = models.CharField(max_length=120,blank=True, null=True)
     zip5 = models.CharField(max_length=120)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
