@@ -58,6 +58,7 @@ class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, s
     name2 = models.CharField(max_length=120)
     street1 = models.CharField(max_length=120)
     street2 = models.CharField(max_length=120)
+    tele = models.BooleanField(blank=True, null=True)
     city = models.CharField(max_length=30)
     state_usa = models.CharField(max_length=120) # TODO change to Enum??? ## Here and for other state_usa: Check whether downloaded data uses abbrev or full names
     zip5 = models.CharField(max_length=5,blank=True, null=True)
@@ -340,23 +341,18 @@ class Siterecs_dbhids_tad(models.Model): ## TODO (jkd): Update fields to match a
     site_id = models.ManyToManyField('Sites_all', through = 'Siterecs_dbhids_sites_all_lookup')  ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
     name_listed = models.CharField(max_length=120)
     street_address = models.CharField(max_length=120)
-    loc_suppl = models.CharField(max_length=50)
+    loc_suppl = models.CharField(max_length=50,blank=True, null=True)
     zip5 = models.CharField(max_length=5)
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
     mat_info = models.CharField(max_length=100) ## Current max = 50char, so 100 is just for flex
-    mat_bupe = models.BooleanField(blank=False) ## blank=False preferred: ok? (same for each BooleanField in this class)
-    mat_mtd = models.BooleanField(blank=False)
-    mat_ntrex = models.BooleanField(blank=False)
-    iop = models.BooleanField(blank=False)
-    op = models.BooleanField(blank=False)
-    mh_tx = models.BooleanField(blank=False)
-    wih_induction = models.BooleanField(blank=False)
-    # walk_in_hours ## TODO: Retain for reference or delete as unreliable?
-    coe = models.BooleanField(blank=False)
-    other_notes = models.CharField(max_length=150) ## Current max = 111char but second = just 52char
-    date_firstfind = models.DateField()
-    date_lastfind = models.DateField()
-    data_review = models.CharField(max_length=250) # TODO what is this again??? ## As above (notes from manual review)
+    iop = models.BooleanField(blank=True, null=True)
+    op = models.BooleanField(blank=True, null=True)
+    mh_tx = models.BooleanField(blank=True, null=True)
+    wih_induction = models.BooleanField(blank=True, null=True)
+    walk_in_hours = models.CharField(max_length=50,blank=True, null=True)## TODO: Retain for reference or delete as unreliable?
+    coe = models.BooleanField(blank=True, null=True)
+    other_notes = models.CharField(max_length=150,blank=True, null=True) ## Current max = 111char but second = just 52char
+
     date_update = models.DateTimeField(default=timezone.now) ## TODO why/is this necessary for this table? (source = PDF with data updated only 1x/yr or less)
 
     class Meta:
@@ -473,7 +469,7 @@ class Sites_all(models.Model):
         db_table = 'sites_all'
 
     def __str__(self):
-        return self.name_site
+        return ', '.join([self.oid, self.name_program, self.name_site])
 
 
 class sitesrecs_other_srcs_sitesall_lk(models.Model):
