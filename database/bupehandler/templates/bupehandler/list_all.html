@@ -4,16 +4,24 @@
     </head>
     <body> 
     <div> 
-    Sites all data: 
+      {{title}}: 
     </div>
-    {% for dict in objects %}
+    <table>
+      <tr>
+        {% for key, value in objects.0.items %}
+            <th>{{key}}</th>
+        {%endfor%}
+      </tr>
+      {% for dict in objects %}
+        <tr>
+        {% for key, value in dict.items %}
+          <td>{{ value }}</td>
+        {% endfor %}
+        </tr>
+      {%endfor%}
+
+    </table>
     <div> 
-    {% for key, value in dict.items %}
-    <div> 
-    {{ key }}: {{ value}}
     </div>
-    </div>
-    {%endfor%}
-    {%endfor%}
     </body>
 </html>

@@ -26,8 +26,16 @@ def sites_all_display(request):
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
 @permission_classes([IsAuthenticated])
-def siterecs_samhsa_otp_display(request):
+def siterecs_samhsa_otp_display(request, filter_params=None, order_by_params=None):
+    order_param = ['name_program']
+    filter_params={'name_program': 'Achievement Through Counseling and Treatment (ACT 1)'}
     siterecs_samhsa_otp_objects = Siterecs_samhsa_otp.objects.all()
+    if filter_params:
+        siterecs_samhsa_otp_objects = siterecs_samhsa_otp_objects.filter(**filter_params)
+    if order_by_params:
+        for order_param in order_by_params:
+            siterecs_samhsa_otp_objects = siterecs_samhsa_otp_objects.order_by(order_param)
+    # siterecs_samhsa_otp_objects = siterecs_samhsa_otp_objects.order_by('name_program')
     print(siterecs_samhsa_otp_objects)
     siterecs_samhsa_otp_serializer = Siterecs_samhsa_otpSerializer(siterecs_samhsa_otp_objects, many=True)
     return render(request,"bupehandler/list_all.html", {"title": 'siterecs_samhsa_otp_display', "objects" : siterecs_samhsa_otp_serializer.data})
