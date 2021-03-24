@@ -13,7 +13,17 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for row in DictReader(open('./sites_all.csv')):
             sites= Sites_all()
+            #otp = Siterecs_samhsa_otp()
+            #tad = Siterecs_dbhids_tad()
+
+            print(row['site_id'])
             sites.oid = row['site_id']
+            sites.samhsa_ftloc_id.sites_all_id = row['site_id']
+            sites.samhsa_otp_id.sites_all_id = row['site_id']
+            sites.dbhids_tad_id.sites_all_id = row['site_id']
+            sites.hfp_fqhc_id.sites_all_id = row['site_id']
+            sites.other_srcs_id.sites_all_id = row['site_id']
+
             if row['url_site'] != '':
                 sites.url_site = row['url_site']
             if row['street_address'] != '':

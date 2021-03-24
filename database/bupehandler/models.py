@@ -12,7 +12,19 @@ from django.utils import timezone
 #     new_provider_id = 'P' + str(new_provider_int).zfill(8)
 #     return new_provider_id
 
+Multi_Choices_Enum3 = [
+('Yes','Yes'),
+('No','No'),
+('Unclear','Unclear'),
+]
 
+Multi_Choices_Enum5 = [
+('Site closed','Site closed'),
+('Data needs review','Data needs review'),
+('Not a practice site','Not a practice site'),
+('Record redundant' ,'Record redundant'),
+('Other','Other'),
+]
 
 
 
@@ -39,13 +51,14 @@ class Sitecodes_samhsa_ftloc(models.Model):
 
 class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, shouldn't we have blank=False, null=False (neither True)??
     oid = models.IntegerField(primary_key=True)
-    ###site_id = models.ManyToManyField('Sites_all', through = Sites_ftloc) ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
+    site_id = models.ManyToManyField('Sites_all', through = 'Sites_ftloc') ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
     date_firstfind = models.DateField(blank=True, null=True)
     date_lastfind = models.DateField(blank=True, null=True)
     name1 = models.CharField(max_length=120)
     name2 = models.CharField(max_length=120)
     street1 = models.CharField(max_length=120)
     street2 = models.CharField(max_length=120)
+    tele = models.BooleanField(blank=True, null=True)
     city = models.CharField(max_length=30)
     state_usa = models.CharField(max_length=120) # TODO change to Enum??? ## Here and for other state_usa: Check whether downloaded data uses abbrev or full names
     zip5 = models.CharField(max_length=5,blank=True, null=True)
@@ -298,7 +311,7 @@ class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, s
 
 class Siterecs_samhsa_otp(models.Model):
     oid = models.IntegerField(primary_key=True)
-    ## site_id = models.ForeignKey('Sites_all', models.DO_NOTHING) ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
+    site_id = models.ManyToManyField('Sites_all', through = 'sites_site_recs_lookup') ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
     name_program = models.CharField(max_length=250)
     name_dba = models.CharField(max_length=120,blank=True, null=True)
     street_address = models.CharField(max_length=120)
@@ -308,8 +321,8 @@ class Siterecs_samhsa_otp(models.Model):
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####) -- extended max_length to 20 to accommodate occasional extensions
     certification_status = models.CharField(max_length=120)
     date_full_certification = models.DateField(blank=True, null=True)
-    date_firstfind = models.DateField()
-    date_lastfind = models.DateField()
+    date_firstfind = models.DateField(blank=True, null=True)
+    date_lastfind = models.DateField(blank=True, null=True)
     data_review = models.CharField(max_length=250,blank=True, null=True) # TODO what is this again??? ## Notes from manual review, e.g. "ZIP typo: corrected 19007 to 19107..."
     date_update = models.DateTimeField(default=timezone.now)
 
@@ -320,28 +333,26 @@ class Siterecs_samhsa_otp(models.Model):
     def __str__(self):
         return self.name_program
 
+
+
+
 class Siterecs_dbhids_tad(models.Model): ## TODO (jkd): Update fields to match actual data compilation!!
     oid = models.IntegerField(primary_key=True)
-    ## site_id = models.ForeignKey('Sites_all', models.DO_NOTHING)  ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
+    site_id = models.ManyToManyField('Sites_all', through = 'Siterecs_dbhids_sites_all_lookup')  ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
     name_listed = models.CharField(max_length=120)
     street_address = models.CharField(max_length=120)
-    loc_suppl = models.CharField(max_length=50)
+    loc_suppl = models.CharField(max_length=50,blank=True, null=True)
     zip5 = models.CharField(max_length=5)
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
     mat_info = models.CharField(max_length=100) ## Current max = 50char, so 100 is just for flex
-    mat_bupe = models.BooleanField(blank=False) ## blank=False preferred: ok? (same for each BooleanField in this class)
-    mat_mtd = models.BooleanField(blank=False)
-    mat_ntrex = models.BooleanField(blank=False)
-    iop = models.BooleanField(blank=False)
-    op = models.BooleanField(blank=False)
-    mh_tx = models.BooleanField(blank=False)
-    wih_induction = models.BooleanField(blank=False)
-    # walk_in_hours ## TODO: Retain for reference or delete as unreliable?
-    coe = models.BooleanField(blank=False)
-    other_notes = models.CharField(max_length=150) ## Current max = 111char but second = just 52char
-    date_firstfind = models.DateField()
-    date_lastfind = models.DateField()
-    data_review = models.CharField(max_length=250) # TODO what is this again??? ## As above (notes from manual review)
+    iop = models.BooleanField(blank=True, null=True)
+    op = models.BooleanField(blank=True, null=True)
+    mh_tx = models.BooleanField(blank=True, null=True)
+    wih_induction = models.BooleanField(blank=True, null=True)
+    walk_in_hours = models.CharField(max_length=50,blank=True, null=True)## TODO: Retain for reference or delete as unreliable?
+    coe = models.BooleanField(blank=True, null=True)
+    other_notes = models.CharField(max_length=150,blank=True, null=True) ## Current max = 111char but second = just 52char
+
     date_update = models.DateTimeField(default=timezone.now) ## TODO why/is this necessary for this table? (source = PDF with data updated only 1x/yr or less)
 
     class Meta:
@@ -350,33 +361,39 @@ class Siterecs_dbhids_tad(models.Model): ## TODO (jkd): Update fields to match a
 
     def __str__(self):
         #i change this to return oid instead of rec_id because rec_id doesn't exist
-        #please change the returned value to rec_id if applicable later on. 
+        #please change the returned value to rec_id if applicable later on.
         return str(self.oid)
         #return self.rec_id
 
 class Siterecs_hfp_fqhc(models.Model): ## TODO
     oid = models.IntegerField(primary_key=True)
+    site_id = models.ManyToManyField('Sites_all', through = 'Siterecs_hfp_fqhc_sites_all_lookup')
     name_short = models.CharField(max_length=50)
     name_system = models.CharField(max_length=120)
     name_site = models.CharField(max_length=120)
-    admin_office = models.BooleanField(blank=False) ## blank=False preferred: ok?
+    admin_office = models.BooleanField(blank=True, null=True)
     street_address = models.CharField(max_length=120)
-    loc_suppl = models.CharField(max_length=50)
+    loc_suppl = models.CharField(max_length=50,blank=True, null=True)
     city = models.CharField(max_length=30)
     state_usa = models.CharField(max_length=30) ## Can replace with Enum to match above classes
     zip5 = models.CharField(max_length=5)
     website = models.URLField()
     phone1 = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
-    phone2 = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
-    ## why_hidden = models... ## TODO: Add as Enum (same 5 options as in Sites_all: "Site closed", "Data needs review", "Not a practice site", "Record redundant", "Other")
-    ## mat_avail = models... ## TODO: Add as Enum with 3 options: "Yes", "Unclear", "No"
+    phone2 = models.CharField(max_length=20,blank=True, null=True) # Format: ###-###-#### (with optional x####)
+    why_hidden = models.CharField(max_length = 20, choices = Multi_Choices_Enum5,blank=True, null=True) ## TODO: Add as Enum (same 5 options as in Sites_all: "Site closed", "Data needs review", "Not a practice site", "Record redundant", "Other")
     date_firstfind = models.DateField()
     date_lastfind = models.DateField()
     data_review = models.CharField(max_length=250)
 
+    def __str__(self):
+        #i change this to return oid instead of rec_id because rec_id doesn't exist
+        #please change the returned value to rec_id if applicable later on.
+        return str(self.name_short)
+        #return self.rec_id
+
 class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous columns!! Note crucial links to other tables!!
     oid = models.IntegerField(primary_key=True)
-    # site_id = models.ForeignKey('Sites_all', models.DO_NOTHING) DO WE NEED site_id for this? ## As in all the other Site Audit tables: nixed Jan 26th
+    site_id = models.ManyToManyField('Sites_all', through = "sitesrecs_other_srcs_sitesall_lk")
     name1 = models.CharField(max_length=120)
     name2 = models.CharField(max_length=120)
     website1 = models.URLField()
@@ -414,39 +431,27 @@ class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous colu
 
 
 
-Multi_Choices_Enum3 = [
-('Yes','Yes'),
-('No','No'),
-('Unclear','Unclear'),
-]
 
-Multi_Choices_Enum5 = [
-('Site closed','Site closed'),
-('Data needs review','Data needs review'),
-('Not a practice site','Not a practice site'),
-('Record redundant' ,'Record redundant'),
-('Other','Other'),
-]
 
 
 
 class Sites_all(models.Model):
     oid = models.CharField(primary_key=True, max_length=120) # TODO integer or varchar? ## Probably serialized varchar?
-    samhsa_ftloc_id = models.ManyToManyField('Siterecs_samhsa_ftloc')
+    samhsa_ftloc_id = models.ManyToManyField('Siterecs_samhsa_ftloc',blank=True, null=True)
 
     #samhsa_ftloc_id = models.ForeignKey('Siterecs_samhsa_ftloc', blank=True, null=True,on_delete=models.CASCADE)
-    samhsa_otp_id = models.ManyToManyField('Siterecs_samhsa_otp', blank=True, null=True)
-    dbhids_tad_id = models.ForeignKey('Siterecs_dbhids_tad', blank=True, null=True,on_delete=models.CASCADE)
-    hfp_fqhc_id = models.ForeignKey('Siterecs_hfp_fqhc', blank=True, null=True,on_delete=models.CASCADE) ## Added
-    other_srcs_id = models.ForeignKey('Siterecs_other_srcs', blank=True, null=True,on_delete=models.CASCADE)
+    samhsa_otp_id = models.ManyToManyField('Siterecs_samhsa_otp',blank=True, null=True)
+    dbhids_tad_id = models.ManyToManyField('Siterecs_dbhids_tad',blank=True, null=True)
+    hfp_fqhc_id = models.ManyToManyField('Siterecs_hfp_fqhc',blank=True, null=True) ## Added
+    other_srcs_id = models.ManyToManyField('Siterecs_other_srcs',blank=True, null=True)
     name_program = models.CharField(max_length=120)
     name_site = models.CharField(max_length=120)
     url_site = models.URLField() ## Important addition: functions with address fields as composite primary key
     street_address = models.CharField(max_length=120)
-    address_suppl = models.CharField(max_length=120)
+    address_suppl = models.CharField(max_length=120,blank=True, null=True)
     zip5 = models.CharField(max_length=120)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
     ## TODO: Identify how to link relevant fields from Audit tables to Enum fields below!!
     mat_avail = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
     mat_bupe = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
@@ -454,7 +459,7 @@ class Sites_all(models.Model):
     mat_ntrex = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
     fqhc = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
     ## primary_care = models...  ## TODO: Add as Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
-    archival_only = models.BooleanField(blank=True) ## Added to mark records not approved for Finder listings
+    archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records not approved for Finder listings
     ## why_hidden = models... ## TODO: Add as Enum to identify reason(s) for non-approval (5 options to start: "Site closed", "Data needs review", "Not a practice site", "Record redundant", "Other")
     ## TODO: Add other fields for key filters (age, insurance, services, etc.)!!
     date_update = models.DateTimeField(default=timezone.now)
@@ -464,9 +469,29 @@ class Sites_all(models.Model):
         db_table = 'sites_all'
 
     def __str__(self):
-        return self.name_site
+        return ', '.join([self.oid, self.name_program, self.name_site])
 
 
+class sitesrecs_other_srcs_sitesall_lk(models.Model):
+    samhsa_oid = models.ForeignKey(Siterecs_other_srcs, on_delete=models.CASCADE)
+    sites_all_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
+
+class sites_site_recs_lookup(models.Model):
+    samhsa_oid = models.ForeignKey(Siterecs_samhsa_otp, on_delete=models.CASCADE)
+    sites_all_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
+
+class Siterecs_dbhids_sites_all_lookup(models.Model):
+    samhsa_oid = models.ForeignKey(Siterecs_dbhids_tad, on_delete=models.CASCADE)
+    sites_all_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
+
+
+class Siterecs_hfp_fqhc_sites_all_lookup(models.Model):
+    samhsa_oid = models.ForeignKey(Siterecs_hfp_fqhc, on_delete=models.CASCADE)
+    sites_all_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
+
+class Sites_ftloc(models.Model):
+    samhsa_oid = models.ForeignKey(Siterecs_samhsa_ftloc, on_delete=models.CASCADE)
+    sites_all_id= models.ForeignKey(Sites_all, on_delete=models.CASCADE)
 
 # class Address(models.Model):
 #     id = models.CharField(primary_key=True, max_length=30)

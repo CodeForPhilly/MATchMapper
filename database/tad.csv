@@ -1,0 +1,51 @@
+id,site_id,zip5,street_address,address_suppl,phone,name_listed,address,mat_info,iop,op,mh_tx,wih_induction,walk_in_hours,coe,other_notes
+1,S00137,19107,928 Market St,,215-923-4202,ADDICTION MEDICINE AND HEALTH ADVOCATES (AMHA),"928 MARKET ST, 19107",MMT induction,1,1,,,,0,Spanish; Child care on site
+2,S00064,19140,4301 Rising Sun Ave,,267-296-7200,ASOCIACION PUERTORRIQUENOS EN MARCHA (APM),"4301 RISING SUN AVE, PHILA, 19140",Buprenorphine induction,1,1,1,,,0,Spanish
+3,S00067,19133,213 West Allegheny Ave,,215-634-3259,CASA DE CONSEJERIA Y SALUD INTEGRAL,"213 W ALLEGHENY AVE, 19140",Buprenorphine induction,1,,,,,0,
+4,S00045,19123,1200 Callowhill St,Suite 102,215-825-8220,CHANCES- PHILA HEALTH MGMT CORP (PHMC),"1200 CALLOWHILL ST, SUITE 102, 19123",Buprenorphine induction,1,1,,,,0,
+5,S00072,19134,2055 East Allegheny Ave,,215-427-5800,COMHAR,"2055 E. ALLEGHENY AVE, 19134",Buprenorphine induction,,1,1,,,0,Spanish; Both locations registration: (267) 861-4382
+6,S00073,19133,2600 North American St,,215-739-2669,COMHAR,"2600 N AMERICAN ST, 19133",Buprenorphine induction,,1,1,,,0,Spanish; Both locations registration: (267) 861-4382
+7,S00118,19104,451 South University Ave,,215-596-8000,THE CONSORTIUM,"451 S. UNIVERSITY AVE, 19104",MMT induction | Vivitrol,1,1,1,,,0,Spanish; Child care on site
+8,S00074,19144,4700 Wissahickon Ave,,215-967-2130,DREXEL MEDICINE CARING TOGETHER CLINIC,"4700 WISSAHICKON AVE, 19144",Buprenorphine/Vivitrol maintenance,,1,,,,0,"Females only, Child care on site"
+9,S00089,19123,1306 Spring Garden St,,215-238-2150,GAUDENZIA OUTREACH I,"1306 SPRING GARDEN ST, 19123",Vivitrol,1,1,1,,,0,Spanish
+10,S00085,19129,3200 Henry Ave,,215-991-9700,GAUDENZIA-DRC,"3200 HENRY AVE, 19129",Vivitrol,1,1,,,,0,
+11,S00143,19120,4943 North 5th St,,215-456-1662,GREATER PHILA ASIAN SOCIAL SERVICES CENTER,"4943 N. 5TH ST, 19120",Vivitrol,1,1,,,,0,"Spanish, Korean, Vietnamese, Chinese, Cambodian"
+12,S00129,19119,333 West Upsal St,,215-849-4606,"INTERIM HOUSE, INC. - PHMC","333 W. UPSAL ST, 19139",Buprenorphine induction | Vivitrol,1,1,1,,,0,Spanish
+13,S00146,19141,5820 Old York Rd,,215-276-8400,JEVS HUMAN SERVICES - ACT I,"5820 OLD YORK ROAD, 19141",MMT induction,1,1,,,,0,
+14,S00145,19122,1745 North 4th St,,215-236-0100,JEVS HUMAN SERVICES - ACT II,"1745 N. 4TH ST, 19122",MMT induction,1,1,,,,0,Spanish
+15,S00070,19123,907 North Broad St,,215-235-5520,JOHN F. KENNEDY BEHAVIORAL HEALTH CENTER (JFK),"907 N. BROAD ST, 19123",MMT induction,,1,1,,,0,
+16,S00071,19102,112 North Broad St,,215-556-0860,JOHN F. KENNEDY BEHAVIORAL HEALTH CENTER (JFK),"112 N BROAD ST, 19102",Vivitrol,,1,1,,,0,
+17,S00130,19122,136 Diamond St,,215-426-8100,KENSINGTON HOSPITAL,"136 DIAMOND ST, 19122",MMT induction,,1,,,,0,
+18,S00097,19131,5000 Parkside Ave,,215-879-6116,MERAKEY BEHAVIORAL HEALTH,"5000 PARKSIDE AVE, 19131",Buprenorphine induction | MMT induction & Vivitrol,1,1,1,1,M-F 7a-5:30p; Sa 8a-1:30p; Su 8-11:30a,0,
+19,S00096,19144,5429 Germantown Ave,,215-754-0240,MERAKEY BEHAVIORAL HEALTH,"5429 GERMANTOWN AVE, 19144",Buprenorphine induction | MMT induction & Vivitrol,1,1,1,1,7a-5:30p,0,
+20,S00099,19125,100 East Lehigh Ave,,215-634-2520,MERAKEY BEHAVIORAL HEALTH,"100 E LEHIGH AVE, 19125",Buprenorphine induction | Vivitrol,1,1,1,1,M-F 8a-5p,0,
+21,S00098,19154,11082 Knights Rd,,215-632-9040,MERAKEY BEHAVIORAL HEALTH,"11082 KNIGHTS ROAD, 19154",Buprenorphine induction | Vivitrol,1,1,,1,M-F 8a-5p,0,
+22,S00107,19122,801 West Girard Ave,,215-787-2000,NORTH PHILA HEALTH SYSTEM - GOLDMAN CLINIC,"801 W. GIRARD AVE, 19122",MMT induction | Vivitrol,1,1,,,,0,Spanish
+23,S00102,19123,499 North 5th St,,215-451-7100,NET CENTERS,"499 N. 5TH ST, 19123",Buprenorphine induction | Vivitrol,1,1,1,,,0,
+24,S00100,19137,2205 Bridge St,,215-743-6150,NET CENTERS,"2205 BRIDGE ST, 19137",Buprenorphine induction | MMT induction & Vivitrol,1,1,1,1,"M-W 7a-5p, Th 7-11a; F 7a-12p",0,
+25,S00101,19136,7520 State Rd,,267-348-3550,NET CENTERS,"7520 STATE ROAD, 19136",Buprenorphine induction | MMT induction & Vivitrol,1,1,1,1,[unspecified],0,Child care on site
+26,S00103,19124,4625 Frankford Ave,2nd Floor,267-597-3920,NET CENTERS,"4625 FRANKFORD AVE, 2ND FL, 19124",Buprenorphine induction,,1,1,1,M-F 9a-4p,0,Spanish; 1st FL [for MH Tx]
+27,S00053,19141,5201 Old York Rd,Suite 108,215-390-1500,PATHWAYS TO HOUSING*,"5201 OLD YORK ROAD, SUITE 108, 19141",Buprenorphine induction | Vivitrol,,,,,,1,Spanish | Housing Assitance
+28,S00048,19134,2301 East Allegheny Ave,,215-731-2402,PATHWAYS TO RECOVERY (PHMC),"2301 EAST ALLEGHENY AVE, 19134",Vivitrol & Buprenorphine | MMT clinic coordination,,,1,,,0,Partial Hospital Program | Spanish
+29,S00109,19103,3400 Spruce St,1 West Gates,267-593-2969,PENN MEDICINE MOTHERS MATTER PROGRAM*,"3400 SPRUCE ST, 1 WEST GATES, 19103",Buprenorphine induction,,,,,,1,Pregnant Women
+30,S00124,19152,8220 Castor Ave,,215-728-4600,PENN OUTPATIENT (TOTAL RECOVERY),"8220 CASTOR AVE, 19152",Vivitrol & Suboxone | Buprenorphine induction,1,1,,,M-F: 8:30a - 4:30p,0,Spanish | 2nd Floor
+31,S00045,19123,1200 Callowhill St,1st Floor,267-398-0247,PEOPLE ACTING TO HELP (PATH),"1200 CALLOWHILL ST, 1st Floor, 19123",Buprenorphine induction | Vivitrol,,1,,,,0,
+32,S00045,19123,1200 Callowhill St,1st Floor,267-398-0247,PHMC CARE CLINIC MAT PROGRAM*,"1200 CALLOWHILL ST, 1st Floor, 19123",Buprenorphine induction | Vivitrol,,,,,,1,Health Care Center | Spanish; PCP
+33,S00113,19134,2913-2915 Kensington Ave,,215-634-5272,PREVENTION POINT*,"2913-2915 KENSINGTON AVE, 19134",Buprenorphine induction | Vivitrol,,,,,,1,Harm Reduction Svcs | Spanish
+34,S00054,19121,2144 Cecil B. Moore Ave,,215-320-6187 x5756,PROJECT HOME (STEPHEN KLEIN WELLNESS CENTER)*,"2144 CECIL B. MOORE AVE, 19121",Buprenorphine induction | Vivitrol induction,,,,,,1,
+35,S00125,19114,9150 Marshall St,Suite 2,215-464-4450,SOAR CORP,"9150 MARSHALL ST, SUITE 2, 19114",MMT induction,1,1,,,,0,
+36,S00093,19107,1233 Locust St,Suite 201,215-955-8577,THOMAS JEFFERSON UNIVERSITY FAMILY CENTER*,"1233 LOCUST ST, SUITE 201, 19107",MMT induction | Bupe maintenance,1,1,1,,,1,"*MATER | Females only, pregnancy, child care on site"
+37,S00091,19146,1021 South 21st St,,215-735-5979,THOMAS JEFFERSON UNIVERSITY (NARP)*,"1021 S 21ST ST, 19146",MMT induction | Bupe maintenance,1,1,1,,,1,Spanish
+38,S00133,19140,3401 North Broad St,,215-707-3008,TEMPLE TWO PROGRAM*,"3401 N BROAD ST, 19140",Buprenorphine induction,,,,,,1,Partners with the Wedge MC | OB-GYN Svcs
+39,S00159,19140,3609 North Broad St,,215-276-3922,WEDGE MEDICAL CENTER*,"3609 N. BROAD ST, 19140",Buprenorphine induction | Vivitrol,1,1,1,1,M-W 2-3:30p,1,Partners with Temple TWO; Spanish
+40,S00160,19148,2009 South Broad St,,215-276-3922,WEDGE MEDICAL CENTER*,"2009 S. BROAD ST, 19148",Buprenorphine induction | Vivitrol,1,1,1,1,M 2-3:30p,1,Partners with Temple TWO
+41,S00158,19124,4243 Frankford Ave,,215-276-3922,WEDGE MEDICAL CENTER*,"4243 FRANKFORD AVE, 19124",Buprenorphine induction | Vivitrol,1,1,1,1,T 2-3:30p,1,Partners with Temple TWO
+42,S00102,19123,499 North 5th St,Suite B,844-533-8200,NET Access Point,"499 North 5th Street, Suite B, Philadelphia, PA 19123",Buprenorphine & Vivitrol Induction,,,,,,,[Assessment directory] | Open 24 hours/day and 7 days/week | phone2: 215-408-4987 | website: www.netcenters.org
+43,S00127,19124,4641 Roosevelt Blvd,,215-831-2600,Friends Hospital,4641 Roosevelt Blvd.,,,,,,,,[Assessment directory]
+44,S00081,19141,5501 Old York Rd,,215-951-8300,Einstein Medical Center,5501 Old York Rd.,,,,,,,,[Assessment directory]
+45,S00108,19106,245 South 8th St,,215-829-5433,Pennsylvania Hospital (Hall Mercer),245 S. 8th St.,,,,,,,,[Assessment directory]
+46,S00155,19125,100 East Lehigh Ave,,215-707-2577,Temple/Episcopal Hospital,100 E. Lehigh Ave.,,,,,,,,[Assessment directory]
+47,S00150,19129,3300 Henry Ave,"Falls Two Building, 3rd Floor",215-878-2600,Philadelphia Children’s Crisis Response Center,"3300 Henry Ave. Falls Two Building, 3rd Floor",,,,,,,,[Assessment directory]
+48,S00048,19134,2301 East Allegheny Ave,,215-731-2404,Pathways to Recovery (PHMC) Partial Hospitalization,"2301 East Allegheny Avenue, Philadelphia, PA 19134",Buprenorphine & Vivitrol Induction,,,,,,,[Assessment directory] | English/Spanish
+49,S00089,19123,1306 Spring Garden St,,267-315-6907,Gaudenzia,"1306 Spring Garden, Philadelphia, PA 19123",Buprenorphine Maintenance,,,,,,,[Assessment directory] | Withdrawal Management
+50,S00157,19143,501 South 54th St,,215-831-2600,Mercy Hospital,501 S. 54th St.,,,,,,,,[Assessment directory] | listing removed in April/May 2020
