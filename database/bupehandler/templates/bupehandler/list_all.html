@@ -1,12 +1,12 @@
 <html> 
     <head> 
-        <title> Sites all data</title>
+        <title>{{title}}</title>
     </head>
     <body> 
     <div> 
     Sites all data: 
     </div>
-    {% for dict in sites_all %}
+    {% for dict in objects %}
     <div> 
     {% for key, value in dict.items %}
     <div> 

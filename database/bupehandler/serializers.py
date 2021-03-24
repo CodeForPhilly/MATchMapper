@@ -259,7 +259,7 @@ class Siterecs_samhsa_otpSerializer(serializers.ModelSerializer):
     class Meta:
         model = Siterecs_samhsa_otp
         fields = ['oid',
-            'site_id','name_program','name_dba','street_address','city','state_usa','zipcode',
+            'name_program','name_dba','street_address','city','state_usa','zipcode',
             'phone','certification_status','date_full_certification','date_firstfind','date_lastfind',
             'data_review','date_update']
 
