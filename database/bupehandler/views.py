@@ -48,10 +48,6 @@ def table(request, table_name, param_values):
     for pair in query_pairs: 
         list_pair = pair.split("=")
         filter_params[list_pair[0]] = list_pair[1]
-    #list_param_values = param_values.split("&") 
-    #list_param_types = param_types.split("&")
-    #for i in range(len(list_param_values)): 
-    #    filter_params[list_param_types[i]] = list_param_values[i]
     table_dict = { 
         "sitecodes_samhsa_ftloc": Sitecodes_samhsa_ftloc, 
         "siterecs_samhsa_ftloc": Siterecs_samhsa_ftloc, 
