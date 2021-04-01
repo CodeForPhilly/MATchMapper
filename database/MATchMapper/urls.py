@@ -22,6 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url('api-auth/', include('rest_framework.urls')),
     url('api/', include('bupehandler.urls')),
-    url('sites_all_display/', views.sites_all_display, name="sites_all_display"),
-    url('siterecs_samhsa_otp/', views.siterecs_samhsa_otp_display, name="siterecs_samhsa_otp_display")
+    url(r'^table/(?P<table_name>.+)/(?P<param_types>.+)/(?P<param_values>.+)/$', views.table, name="table")
 ]

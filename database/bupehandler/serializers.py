@@ -53,7 +53,6 @@ class Siterecs_samhsa_ftlocSerializer(serializers.ModelSerializer):
     'vtrl',
     'rpn',
     'dt',
-    'any_mat',
     'moa',
     'noop',
     'nmoa',
