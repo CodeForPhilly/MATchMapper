@@ -43,6 +43,7 @@ def siterecs_samhsa_otp_display(request, filter_params=None, order_by_params=Non
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
 def table(request, table_name, param_values): 
+    #example url: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/state_usa=PA&bu=True/, this url retrieves row form siterecs_samhsa_ftloc that has state_usa= PA and bu = True. Add as many paramters as you want
     query_pairs = param_values.split("&")
     filter_params = {}
     for pair in query_pairs: 
