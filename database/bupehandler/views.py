@@ -42,15 +42,16 @@ def siterecs_samhsa_otp_display(request, filter_params=None, order_by_params=Non
 
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
-def filtered_table(request, table_name, param_values): 
+def filtered_table(request, table_name, param_values=None): 
     #example url: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/state_usa=PA&bu=True/, this url retrieves row form siterecs_samhsa_ftloc that has state_usa= PA and bu = True. Add as many paramters as you want
-    query_pairs = param_values.split("&")
-    filter_params = {}
-    for pair in query_pairs: 
-        list_pair = pair.split("=")
-        if list_pair[1] == "None":
-            list_pair[1] = None 
-        filter_params[list_pair[0]] = list_pair[1]
+    if param_values:
+        query_pairs = param_values.split("&")
+        filter_params = {}
+        for pair in query_pairs: 
+            list_pair = pair.split("=")
+            if list_pair[1] == "None":
+                list_pair[1] = None 
+            filter_params[list_pair[0]] = list_pair[1]
     table_dict = { 
         "sitecodes_samhsa_ftloc": Sitecodes_samhsa_ftloc, 
         "siterecs_samhsa_ftloc": Siterecs_samhsa_ftloc, 
@@ -68,33 +69,36 @@ def filtered_table(request, table_name, param_values):
         "sites_all" : Sites_allSerializer,
     }
     table_objects = table_dict[table_name].objects.all()
-    if filter_params:
+    if param_values:
         table_objects = table_objects.filter(**filter_params)
+    if request.GET.getlist('order'):
+        order_by_list = request.GET.getlist('order')
+        table_objects = table_objects.order_by(*order_by_list)
     table_serializer = serializer_dict[table_name](table_objects, many=True)
     return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : table_serializer.data})
 
-@api_view(["GET", "POST", "DELETE"])
-@csrf_exempt
-def table(request, table_name): 
-    table_dict = { 
-        "sitecodes_samhsa_ftloc": Sitecodes_samhsa_ftloc, 
-        "siterecs_samhsa_ftloc": Siterecs_samhsa_ftloc, 
-        "siterecs_samhsa_otp": Siterecs_samhsa_otp ,
-        "siterecs_dbhids_tad": Siterecs_dbhids_tad, 
-        "siterecs_other_srcs" : Siterecs_other_srcs , 
-        "sites_all" : Sites_all,
-    }
-    serializer_dict = { 
-        "sitecodes_samhsa_ftloc" : Sitecodes_samhsa_ftlocSerializer,
-        "siterecs_samhsa_ftloc" : Siterecs_samhsa_ftlocSerializer, 
-        "siterecs_samhsa_otp": Siterecs_samhsa_otpSerializer, 
-        "siterecs_dbhids_tad": Siterecs_dbhids_tadSerializer, 
-        "siterecs_other_srcs" : Siterecs_other_srcsSerializer, 
-        "sites_all" : Sites_allSerializer,
-    }
-    table_objects = table_dict[table_name].objects.all()
-    table_serializer = serializer_dict[table_name](table_objects, many=True)
-    return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : table_serializer.data})
+# @api_view(["GET", "POST", "DELETE"])
+# @csrf_exempt
+# def table(request, table_name): 
+#     table_dict = { 
+#         "sitecodes_samhsa_ftloc": Sitecodes_samhsa_ftloc, 
+#         "siterecs_samhsa_ftloc": Siterecs_samhsa_ftloc, 
+#         "siterecs_samhsa_otp": Siterecs_samhsa_otp ,
+#         "siterecs_dbhids_tad": Siterecs_dbhids_tad, 
+#         "siterecs_other_srcs" : Siterecs_other_srcs , 
+#         "sites_all" : Sites_all,
+#     }
+#     serializer_dict = { 
+#         "sitecodes_samhsa_ftloc" : Sitecodes_samhsa_ftlocSerializer,
+#         "siterecs_samhsa_ftloc" : Siterecs_samhsa_ftlocSerializer, 
+#         "siterecs_samhsa_otp": Siterecs_samhsa_otpSerializer, 
+#         "siterecs_dbhids_tad": Siterecs_dbhids_tadSerializer, 
+#         "siterecs_other_srcs" : Siterecs_other_srcsSerializer, 
+#         "sites_all" : Sites_allSerializer,
+#     }
+#     table_objects = table_dict[table_name].objects.all()
+#     table_serializer = serializer_dict[table_name](table_objects, many=True)
+#     return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : table_serializer.data})
 # @api_view(["GET", "POST", "DELETE"])
 # @csrf_exempt
 # @permission_classes([IsAuthenticated])
