@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
-
+import dj_database_url  
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
@@ -26,8 +26,7 @@ SECRET_KEY = '&zyg&xjv8mm&lv(d#3^biq7hs@!j&o!ye8sx^7#hzftk0_0n8b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1','matchmapper-philly.herokuapp.com']
 
 # Application definition
 
@@ -42,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'django_extensions',
+    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
@@ -53,7 +53,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'MATchMapper.urls'
 
@@ -84,18 +87,21 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': 'd49281le07ngi',
+        'NAME': os.environ["DBNAME"],
 
-        'USER': 'sbbhrqlcpqnqcm',
+        'USER': os.environ["DBUSER"],
 
-        'PASSWORD': 'c25262579ec5f0cc6150e817ec9025129448b22047cc49c3436f63cea0219fbd',
+        'PASSWORD': os.environ["DBPASSWORD"],
 
-        'HOST': 'ec2-54-87-34-201.compute-1.amazonaws.com',
+        'HOST': os.environ["DBHOST"],
 
-        'PORT': '5432',
+        'PORT': os.environ["DBPORT"],
 
     }
 }
+
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 
 
 # Password validation
