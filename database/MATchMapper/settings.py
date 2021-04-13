@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -83,15 +84,15 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': os.environ["DBNAME"],
+        'NAME': 'd49281le07ngi',
 
-        'USER': os.environ["DBUSER"],
+        'USER': 'sbbhrqlcpqnqcm',
 
-        'PASSWORD': os.environ["DBPASSWORD"],
+        'PASSWORD': 'c25262579ec5f0cc6150e817ec9025129448b22047cc49c3436f63cea0219fbd',
 
-        'HOST': os.environ["DBHOST"],
+        'HOST': 'ec2-54-87-34-201.compute-1.amazonaws.com',
 
-        'PORT': os.environ["DBPORT"],
+        'PORT': '5432',
 
     }
 }

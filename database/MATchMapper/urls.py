@@ -16,9 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
+from bupehandler import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url('api-auth/', include('rest_framework.urls')),
     url('api/', include('bupehandler.urls')),
+    url(r'^table/(?P<table_name>.+)/(?P<param_values>.+)/$', views.filtered_table, name="filtered_table"),
+    url(r'^table/(?P<table_name>.+)/$',views.table, name = "table")
 ]

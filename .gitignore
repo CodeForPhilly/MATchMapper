@@ -10,3 +10,10 @@ MATchMapperEnv/
 .env
 Pipfile
 database/MATchMapper/__pycache__/
+venv
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3

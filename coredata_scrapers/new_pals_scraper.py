@@ -8,10 +8,10 @@ import recordlinkage
 from datetime import date
 
 path = os.getcwd()
-data_path = os.path.join(path, 'data', 'NPI_info_2020-08-03_526to528names_samtan_withALLaddresses.xlsx')
+data_path = os.path.join(path, 'data', 'NPI_info_2021-01-20_577.csv')
 ##TODO: Change input filename above to match whichever installment you're checking
 
-df = pd.read_excel(data_path, index_col=False)
+df = pd.read_csv(data_path, index_col=False)
 
 # function for toggling common name format discrepancies
 def name_fixer(name):
