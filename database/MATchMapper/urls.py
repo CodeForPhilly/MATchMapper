@@ -23,5 +23,5 @@ urlpatterns = [
     url('api-auth/', include('rest_framework.urls')),
     url('api/', include('bupehandler.urls')),
     url(r'^table/(?P<table_name>.+)/(?P<param_values>.+)/$', views.filtered_table, name="filtered_table"),
-    url(r'^table/(?P<table_name>.+)/$',views.table, name = "table")
+    url(r'^table/(?P<table_name>.+)/$',views.filtered_table, name = "filtered_table")
 ]
