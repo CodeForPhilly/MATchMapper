@@ -1,1 +1,1 @@
-web: gunicorn database.MATchMapper.wsgi --log-file -
+web: gunicorn --pythonpath database MATchMapper.wsgi --log-file -
