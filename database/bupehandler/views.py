@@ -45,7 +45,6 @@ def siterecs_samhsa_otp_display(request, filter_params=None, order_by_params=Non
 def filtered_table(request, table_name, param_values=None): 
     #example default param url: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/state_usa=PA&bu=True/, this url retrieves row form siterecs_samhsa_ftloc that has state_usa= PA and bu = True. Add as many paramters as you want
     #if you want to autofill all of your parameter values, then put autofill=True at the final part of the URL. Example: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/name1=Casa&autofill=True. This would match all rows that have name1 values contain Casa. 
-    #
     autofill = False
     if param_values:
         query_pairs = param_values.split("&")
