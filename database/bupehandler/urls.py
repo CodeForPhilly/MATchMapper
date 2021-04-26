@@ -5,5 +5,7 @@ from . import api
 
 urlpatterns = [
   path('<object_type>', api.object_list),
-  path('<object_type>/<int:oid>', api.single_object)
+  path('<object_type>/<int:oid>', api.single_object),
+  path('<table_name>/<param_values>/', api.filtered_geodata),
+  path('<table_name>/', api.geodata)
 ]
