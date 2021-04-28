@@ -12,6 +12,7 @@ import json
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseNotFound
 import json
+import random
 object_type_dict = {
     'sitecodes_samhsa_ftloc': (Sitecodes_samhsa_ftloc, Sitecodes_samhsa_ftlocSerializer),
     'siterecs_samhsa_ftloc': (Siterecs_samhsa_ftloc, Siterecs_samhsa_ftlocSerializer),
@@ -187,7 +188,14 @@ def geodata(request, table_name):
     table_objects = table_dict[table_name].objects.all()
     table_serializer = serializer_dict[table_name](table_objects, many=True)
     table_serializer_data = serializer_dict[table_name](table_objects, many=True, fields = ('name1','latitude','longtitude')).data
-    return JsonResponse({"Features": list(table_objects.values("name1", "latitude","longitude"))},json_dumps_params = {"indent": 4})
+    # TODO not all objects have name1 in their values. I am removing it from the Features in the JsonResponse for now but you might need to find a way to modify the key name or something
+    # TODO I am also returning mock values and have commented out the actual code
+    # return JsonResponse({"Features": list(table_objects.values("name1", "latitude","longitude"))},json_dumps_params = {"indent": 4})
+    mock_markers = []
+    for i in range(15):
+        mock_markers.append({"loc":[random.uniform(-75.208924, -75.108924), random.uniform(39.9229223, 39.9929223)]})
+    return JsonResponse({"map_markers": mock_markers},json_dumps_params = {"indent": 4})
+
 # @api_view(["GET", "POST", "DELETE"])
 # @csrf_exempt
 # @permission_classes([IsAuthenticated])

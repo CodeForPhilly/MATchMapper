@@ -130,6 +130,12 @@ def table(request, table_name):
     table_objects = table_dict[table_name].objects.all()
     table_serializer = serializer_dict[table_name](table_objects, many=True)
     return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : table_serializer.data})
+
+@api_view(["GET", "POST", "DELETE"])
+@csrf_exempt
+def default_map(request):
+    mapbox_access_token = 'pk.my_mapbox_access_token'
+    return render(request, 'bupehandler/map.html', { 'mapbox_access_token': mapbox_access_token })
 # @api_view(["GET", "POST", "DELETE"])
 # @csrf_exempt
 # @permission_classes([IsAuthenticated])
