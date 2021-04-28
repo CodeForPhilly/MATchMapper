@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Interactive maps for Django web apps</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+  </head>
+  <body>
+   <h1>Map time!</h1>
+   <div id='map' style='width: 800px; height: 600px;'></div>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                  type : "GET",
+                  url : window.location.origin + "/api/geodata/sites_all/",
+                  contentType: 'application/json;charset=UTF-8',
+                  success: function(data) {
+                        // Need to hide the access token 
+                        mapboxgl.accessToken = 'pk.eyJ1IjoibWF0Y2htYXBwZXIiLCJhIjoiY2tvMWJmZW9wMGtjdzMxb2k0NWhpeW0xMSJ9.ChZtypQ-p77nXwERIAt3Iw';
+                        var map = new mapboxgl.Map({
+                            container: 'map',
+                            style: 'mapbox://styles/mapbox/streets-v11',
+                            center: [-75.158924, 39.9629223],
+                            zoom: 11
+                        });
+                        for (i = 0; i < data['map_markers'].length; i++) {
+                            console.log(data['map_markers'][i])
+                            var marker = new mapboxgl.Marker()
+                                .setLngLat([data['map_markers'][i]["loc"][0], data['map_markers'][i]["loc"][1]])
+                                .setPopup(new mapboxgl.Popup().setHTML("Information will go here"))
+                                .addTo(map);
+                        }
+                    }
+              });
+        });
+    </script>
+
+  </body>
+</html>
