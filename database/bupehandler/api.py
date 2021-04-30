@@ -157,7 +157,7 @@ def filtered_geodata(request, table_name, param_values=None):
         "sites_all" : Sites_allSerializer,
     }
     naming_dict = { 
-        "sitecodes_samhsa_ftloc" : "service",
+        "sitecodes_samhsa_ftloc" : "category_name",
         "siterecs_samhsa_ftloc" : "name1",
         "siterecs_samhsa_otp": "name_program",
         "siterecs_dbhids_tad": "name_listed", 

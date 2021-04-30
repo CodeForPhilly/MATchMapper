@@ -24,5 +24,8 @@ urlpatterns = [
     url('api/', include('bupehandler.urls')),
     url(r'^table/(?P<table_name>.+)/(?P<param_values>.+)/$', views.filtered_table, name="filtered_table"),
     url(r'^table/(?P<table_name>.+)/$',views.filtered_table, name = "filtered_table"),
-    url('map/', views.default_map, name="default"),
+    url(r'^map/$', views.default_map, name="default"),
+    url(r'^map/(?P<table_name>.+)/(?P<param_values>.+)/$', views.filtered_map, name="filtered_map"),
+    url(r'^map/(?P<table_name>.+)/$', views.filtered_map, name="filtered_map")
 ]
+
