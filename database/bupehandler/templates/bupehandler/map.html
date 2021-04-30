@@ -13,7 +13,7 @@
         $(document).ready(function() {
             $.ajax({
                   type : "GET",
-                  url : window.location.origin + "/api/geodata/sites_all/",
+                  url : window.location.origin + "/api/geodata/siterecs_samhsa_ftloc/",
                   contentType: 'application/json;charset=UTF-8',
                   success: function(data) {
                         // Need to hide the access token 
@@ -24,11 +24,11 @@
                             center: [-75.158924, 39.9629223],
                             zoom: 11
                         });
-                        for (i = 0; i < data['map_markers'].length; i++) {
-                            console.log(data['map_markers'][i])
+                        for (i = 0; i < data['loc'].length; i++) {
+                            console.log([data['loc'][i]['latitude'], data['loc'][i]['longitude']])
                             var marker = new mapboxgl.Marker()
-                                .setLngLat([data['map_markers'][i]["loc"][0], data['map_markers'][i]["loc"][1]])
-                                .setPopup(new mapboxgl.Popup().setHTML("Information will go here"))
+                                .setLngLat([data['loc'][i]['longitude'], data['loc'][i]['latitude']])
+                                .setPopup(new mapboxgl.Popup().setHTML(data['loc'][i]['name1']))
                                 .addTo(map);
                         }
                     }

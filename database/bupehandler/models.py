@@ -438,7 +438,6 @@ class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous colu
 class Sites_all(models.Model):
     oid = models.CharField(primary_key=True, max_length=120) # TODO integer or varchar? ## Probably serialized varchar?
     samhsa_ftloc_id = models.ManyToManyField('Siterecs_samhsa_ftloc',blank=True, null=True)
-
     #samhsa_ftloc_id = models.ForeignKey('Siterecs_samhsa_ftloc', blank=True, null=True,on_delete=models.CASCADE)
     samhsa_otp_id = models.ManyToManyField('Siterecs_samhsa_otp',blank=True, null=True)
     dbhids_tad_id = models.ManyToManyField('Siterecs_dbhids_tad',blank=True, null=True)

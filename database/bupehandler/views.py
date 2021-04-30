@@ -107,30 +107,7 @@ def filtered_table(request, table_name, param_values=None):
         table_objects = table_objects.order_by(*order_by_list)
     table_serializer = serializer_dict[table_name](table_objects, many=True)
     return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : table_serializer.data})
-
-@api_view(["GET", "POST", "DELETE"])
-@csrf_exempt
-def table(request, table_name): 
-    table_dict = { 
-         "sitecodes_samhsa_ftloc": Sitecodes_samhsa_ftloc, 
-        "siterecs_samhsa_ftloc": Siterecs_samhsa_ftloc, 
-         "siterecs_samhsa_otp": Siterecs_samhsa_otp ,
-         "siterecs_dbhids_tad": Siterecs_dbhids_tad, 
-        "siterecs_other_srcs" : Siterecs_other_srcs , 
-        "sites_all" : Sites_all,
-     }
-    serializer_dict = { 
-         "sitecodes_samhsa_ftloc" : Sitecodes_samhsa_ftlocSerializer,
-        "siterecs_samhsa_ftloc" : Siterecs_samhsa_ftlocSerializer, 
-        "siterecs_samhsa_otp": Siterecs_samhsa_otpSerializer, 
-        "siterecs_dbhids_tad": Siterecs_dbhids_tadSerializer, 
-         "siterecs_other_srcs" : Siterecs_other_srcsSerializer, 
-         "sites_all" : Sites_allSerializer,
-     }
-    table_objects = table_dict[table_name].objects.all()
-    table_serializer = serializer_dict[table_name](table_objects, many=True)
-    return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : table_serializer.data})
-
+    
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
 def default_map(request):

@@ -101,7 +101,7 @@ def single_object(request, object_type, oid):
 @api_view(["GET", "PUT", "DELETE"])
 @csrf_exempt
 def filtered_geodata(request, table_name, param_values=None): 
-    #example default param url: http://127.0.0.1:8000/api/siterecs_samhsa_ftloc/state_usa=PA&bu=True/, this url retrieves locations from siterecs_samhsa_ftloc that has state_usa= PA and bu = True. Add as many paramters as you want
+    #example default param url: http://127.0.0.1:8000/api/geodata/siterecs_samhsa_ftloc/state_usa=PA&bu=True/, this url retrieves locations from siterecs_samhsa_ftloc that has state_usa= PA and bu = True. Add as many paramters as you want
     #if you want to autofill all of your parameter values, then put autofill=True as a param_values pair in your url. Example: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/name1=Casa&autofill=True. This would match all rows that have name1 values contain Casa. 
     #if you want to autocorrect all of your parameter values, then put autocorrect=True as a param_values pair in your url. Example: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/city=philadelphi&autocorrect=True. This would correct philadelphi to Philadelphia. 
     #You can use both autocorrect and autofill. This will correct the param and THEN, autofill. Example: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/name2=behavor&autocorrect=True&autofill=True. This will correct behavor to behaviour and then autofill behavior to display "Behavioral Healthcare Center" and "Behavioral Health Services"
@@ -156,45 +156,21 @@ def filtered_geodata(request, table_name, param_values=None):
         "siterecs_other_srcs" : Siterecs_other_srcsSerializer, 
         "sites_all" : Sites_allSerializer,
     }
+    naming_dict = { 
+        "sitecodes_samhsa_ftloc" : "service",
+        "siterecs_samhsa_ftloc" : "name1",
+        "siterecs_samhsa_otp": "name_program",
+        "siterecs_dbhids_tad": "name_listed", 
+        "siterecs_other_srcs" : "name1", 
+        "sites_all" : "name_program",
+    }
     table_objects = table_dict[table_name].objects.all()
     if param_values:
         table_objects = table_objects.filter(**filter_params)
     if request.GET.getlist('order'):
         order_by_list = request.GET.getlist('order')
         table_objects = table_objects.order_by(*order_by_list)
-    table_serializer_data = serializer_dict[table_name](table_objects, many=True, fields = ('name1','latitude','longtitude')).data
-    return JsonResponse({"Features": list(table_objects.values("name1", "latitude","longitude"))},json_dumps_params = {"indent": 4})
-
-@api_view(["GET", "PUT", "DELETE"])
-@csrf_exempt
-def geodata(request, table_name): 
-    #general table
-    table_dict = { 
-         "sitecodes_samhsa_ftloc": Sitecodes_samhsa_ftloc, 
-        "siterecs_samhsa_ftloc": Siterecs_samhsa_ftloc, 
-         "siterecs_samhsa_otp": Siterecs_samhsa_otp ,
-         "siterecs_dbhids_tad": Siterecs_dbhids_tad, 
-        "siterecs_other_srcs" : Siterecs_other_srcs , 
-        "sites_all" : Sites_all,
-     }
-    serializer_dict = { 
-         "sitecodes_samhsa_ftloc" : Sitecodes_samhsa_ftlocSerializer,
-        "siterecs_samhsa_ftloc" : Siterecs_samhsa_ftlocSerializer, 
-        "siterecs_samhsa_otp": Siterecs_samhsa_otpSerializer, 
-        "siterecs_dbhids_tad": Siterecs_dbhids_tadSerializer, 
-         "siterecs_other_srcs" : Siterecs_other_srcsSerializer, 
-         "sites_all" : Sites_allSerializer,
-     }
-    table_objects = table_dict[table_name].objects.all()
-    table_serializer = serializer_dict[table_name](table_objects, many=True)
-    table_serializer_data = serializer_dict[table_name](table_objects, many=True, fields = ('name1','latitude','longtitude')).data
-    # TODO not all objects have name1 in their values. I am removing it from the Features in the JsonResponse for now but you might need to find a way to modify the key name or something
-    # TODO I am also returning mock values and have commented out the actual code
-    # return JsonResponse({"Features": list(table_objects.values("name1", "latitude","longitude"))},json_dumps_params = {"indent": 4})
-    mock_markers = []
-    for i in range(15):
-        mock_markers.append({"loc":[random.uniform(-75.208924, -75.108924), random.uniform(39.9229223, 39.9929223)]})
-    return JsonResponse({"map_markers": mock_markers},json_dumps_params = {"indent": 4})
+    return JsonResponse({"loc": list(table_objects.values(naming_dict[table_name], "latitude","longitude"))},json_dumps_params = {"indent": 4})
 
 # @api_view(["GET", "POST", "DELETE"])
 # @csrf_exempt
