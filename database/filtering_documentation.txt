@@ -22,12 +22,12 @@ NOTE: If you do both autocorrect and autofill, autocorrect is always done before
 
 We can break down some example URLs here: 
 
-Example1: http://127.0.0.1:8000/table/sites_all/ 
+Example1: https://matchmapper-philly.herokuapp.com/table/sites_all/ 
 Explanation: We see table as the second part of the URL, which means we want our data to be in tabular format. 
 Next, we set the table_name to sites_all, so our results will be the rows in this table. 
 Because we did not specify any further filtering, the result displayed is all rows in sites_all. 
 
-Example 2: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/state_usa=PA&bu=True/
+Example 2: https://matchmapper-philly.herokuapp.com/table/siterecs_samhsa_ftloc/state_usa=PA&bu=True/
 Explanation: We see table as the second part of the URL, which means we want our data to be in tabular format. 
 Next, we set the table_name to siterecs_samhsa_ftloc, so our results will be the rows in this table. 
 Next, we set the param_values to state_usa=PA&bu=True, which means: 
@@ -35,7 +35,7 @@ Next, we set the param_values to state_usa=PA&bu=True, which means:
 - bu=True, which means we only want the rows with bu being True. 
 Now, this means that we will pick all the rows in siterecs_samhsa_Ftloc that has its state as PA and its bu as True. 
 
-Example 3: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/name1=behavor&autocorrect=True&autofill=True/ 
+Example 3: https://matchmapper-philly.herokuapp.com/table/siterecs_samhsa_ftloc/name1=behavor&autocorrect=True&autofill=True/ 
 Explanation: We see table as the second part of the URL, which means we want our data to be in tabular format. 
 Next, we set the table_name to siterecs_samhsa_ftloc, so our results will be the rows in this table. 
 Next, we set the param_values to name1 = behavor and we allow autocorrect and autofill, which means: 
