@@ -12,7 +12,7 @@ The "<param_names>" is, however, optional, meaning you can leave it as empty if 
 In case you want to do further filtering on a given table, the structure of the <param_names> is as follows: 
 
 col1=value1&col2=value2&col3=value3 <etc, add as many column-value pair as you need> 
-You will replace the key by the column you want to filter by. And the value is simply the value of the specified column that you want your rows to have.
+You will replace <col> by the column name you want to filter by. And the <value> is simply the value of the specified column that you want your rows to have.
 One thing to keep in mind is, you can add as many column-value pairs as you want. There is no limit to that as long as the columns actually exist in the table.  
 If you want to use autocorrect and/or autofill, then just add those at the end of the URL: 
 (a) Only autocorrect: col1=value1&col2=value2&col3=value3&autocorrect=True
