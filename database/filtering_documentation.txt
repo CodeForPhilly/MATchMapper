@@ -1,0 +1,54 @@
+
+A quick guide on how to filter in the map and table interface by Tung: 
+
+I. TABLE FILTERING
+For the table interface, which is filtering the results and displaying them in the format of a table, we use the following URL structure: 
+
+.../table/<table_name>/<param_names> 
+
+The "<table_name>" should be replaced by the table which you want to display. This is a required part of the URL. 
+
+The "<param_names>" is, however, optional, meaning you can leave it as empty if you want to see the entire table without any additional filter. 
+In case you want to do further filtering on a given table, the structure of the <param_names> is as follows: 
+
+col1=value1&col2=value2&col3=value3 <etc, add as many column-value pair as you need> 
+You will replace the key by the column you want to filter by. And the value is simply the value of the specified column that you want your rows to have.
+One thing to keep in mind is, you can add as many column-value pairs as you want. There is no limit to that as long as the columns actually exist in the table.  
+If you want to use autocorrect and/or autofill, then just add those at the end of the URL: 
+(a) Only autocorrect: col1=value1&col2=value2&col3=value3&autocorrect=True
+(b) Only autofill: col1=value1&col2=value2&col3=value3&autofill=True 
+(c) Both autocorrect and autofill: col1=value1&col2=value2&col3=value3&autofill=True&autocorrect=True 
+NOTE: If you do both autocorrect and autofill, autocorrect is always done before autofill. That is, the values will be corrected first, and then we autofill the corrected values to look for the appropriate rows. 
+
+We can break down some example URLs here: 
+
+Example1: http://127.0.0.1:8000/table/sites_all/ 
+Explanation: We see table as the second part of the URL, which means we want our data to be in tabular format. 
+Next, we set the table_name to sites_all, so our results will be the rows in this table. 
+Because we did not specify any further filtering, the result displayed is all rows in sites_all. 
+
+Example 2: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/state_usa=PA&bu=True/
+Explanation: We see table as the second part of the URL, which means we want our data to be in tabular format. 
+Next, we set the table_name to siterecs_samhsa_ftloc, so our results will be the rows in this table. 
+Next, we set the param_values to state_usa=PA&bu=True, which means: 
+- state_usa=PA, which means that we only want the rows with state_USA being Pennsylvania (PA). 
+- bu=True, which means we only want the rows with bu being True. 
+Now, this means that we will pick all the rows in siterecs_samhsa_Ftloc that has its state as PA and its bu as True. 
+
+Example 3: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/name1=behavor&autocorrect=True&autofill=True/ 
+Explanation: We see table as the second part of the URL, which means we want our data to be in tabular format. 
+Next, we set the table_name to siterecs_samhsa_ftloc, so our results will be the rows in this table. 
+Next, we set the param_values to name1 = behavor and we allow autocorrect and autofill, which means: 
+We will autocorrect "behavor" to "behavior" (most likely), and then we look for any rows with its name1 value CONTAINS the word "behavior" (this is what autofill does!).
+
+------------------------------------------
+II. MAP FILTERING 
+For the map interface, which is filtering the results and displaying them in the format of a map, we use the following URL structure: 
+
+.../map/<table_name>/<param_names> 
+
+The way table_name and param_names work are exactly the same as for table filtering, so I will just refer to the section above.
+Map filtering is only a different way of illustration of data, but the way the data are processed is the exact same.
+
+
+
