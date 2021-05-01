@@ -110,32 +110,26 @@ def filtered_table(request, table_name, param_values=None):
 
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
-def table(request, table_name): 
-    table_dict = { 
-         "sitecodes_samhsa_ftloc": Sitecodes_samhsa_ftloc, 
-        "siterecs_samhsa_ftloc": Siterecs_samhsa_ftloc, 
-         "siterecs_samhsa_otp": Siterecs_samhsa_otp ,
-         "siterecs_dbhids_tad": Siterecs_dbhids_tad, 
-        "siterecs_other_srcs" : Siterecs_other_srcs , 
-        "sites_all" : Sites_all,
-     }
-    serializer_dict = { 
-         "sitecodes_samhsa_ftloc" : Sitecodes_samhsa_ftlocSerializer,
-        "siterecs_samhsa_ftloc" : Siterecs_samhsa_ftlocSerializer, 
-        "siterecs_samhsa_otp": Siterecs_samhsa_otpSerializer, 
-        "siterecs_dbhids_tad": Siterecs_dbhids_tadSerializer, 
-         "siterecs_other_srcs" : Siterecs_other_srcsSerializer, 
-         "sites_all" : Sites_allSerializer,
-     }
-    table_objects = table_dict[table_name].objects.all()
-    table_serializer = serializer_dict[table_name](table_objects, many=True)
-    return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : table_serializer.data})
-
-@api_view(["GET", "POST", "DELETE"])
-@csrf_exempt
 def default_map(request):
     mapbox_access_token = 'pk.my_mapbox_access_token'
     return render(request, 'bupehandler/map.html', { 'mapbox_access_token': mapbox_access_token })
+
+@api_view(["GET", "POST", "DELETE"])
+@csrf_exempt
+def filtered_map(request, table_name, param_values=None):
+    naming_dict = { 
+        "sitecodes_samhsa_ftloc" : "category_name",
+        "siterecs_samhsa_ftloc" : "name1",
+        "siterecs_samhsa_otp": "name_program",
+        "siterecs_dbhids_tad": "name_listed", 
+        "siterecs_other_srcs" : "name1", 
+        "sites_all" : "name_program",
+    }
+    mapbox_access_token = 'pk.my_mapbox_access_token'
+    if param_values: 
+        return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "param_values": param_values, "destination_name": naming_dict[table_name]})
+    else: 
+        return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "destination_name": naming_dict[table_name]})
 # @api_view(["GET", "POST", "DELETE"])
 # @csrf_exempt
 # @permission_classes([IsAuthenticated])

@@ -1,19 +1,25 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Default Map</title>
+    <title>Filtered map</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet'/>
   </head>
   <body>
    <h1>Map time!</h1>
    <div id='map' style='width: 800px; height: 600px;'></div>
     <script>
+        // if stuck, try this url : window.location.origin + "/api/geodata/siterecs_samhsa_ftloc/name1=Al-Assist
+        // TODO: change url to get the filter values. 
+        // TODO: maybe change the center to the average of all the latitude and longitude, aka center of every location we have found. 
         $(document).ready(function() {
+            var table_name = "{{table_name}}"; 
+            var param_values = "{{param_values}}";
+            var destination_name = "{{destination_name}}";
             $.ajax({
                   type : "GET",
-                  url : window.location.origin + "/api/geodata/siterecs_samhsa_ftloc/",
+                  url : window.location.origin + "/api/geodata/", // need to adjust the params to dynamically filter our map
                   contentType: 'application/json;charset=UTF-8',
                   success: function(data) {
                         // Need to hide the access token 
@@ -28,7 +34,7 @@
                             console.log([data['loc'][i]['latitude'], data['loc'][i]['longitude']])
                             var marker = new mapboxgl.Marker()
                                 .setLngLat([data['loc'][i]['longitude'], data['loc'][i]['latitude']])
-                                .setPopup(new mapboxgl.Popup().setHTML(data['loc'][i]['name1']))
+                                .setPopup(new mapboxgl.Popup().setHTML(data['loc'][i][destination_name]))
                                 .addTo(map);
                         }
                     }
@@ -38,3 +44,4 @@
 
   </body>
 </html>
+
