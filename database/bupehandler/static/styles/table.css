@@ -1,0 +1,63 @@
+/* dark-ben-franklin-blue: #0f4d90
+ben-franklin-blue: #2176d2
+light-ben-franklin: #96c9ff
+light-blue: #daedfe
+ghost-gray: #f0f0f0
+sidewalk: #cfcfcf
+medium-gray: #a1a1a1
+dark-gray: #444444
+black: #000000
+[near white] [not in Philadelphia specs]: #fefefe
+white: #ffffff */
+
+* {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+}
+
+table {
+  text-align: left;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th {
+  background-color: #0f4d90;
+  text-transform: uppercase;
+  color: white;
+  padding: 5px;
+  font-weight: 700;
+  vertical-align: center;
+  white-space: nowrap;
+  height: 40px;
+}
+
+tr:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+tr:nth-child(odd) {
+  background-color: white;
+}
+
+td {
+  margin: 0px;
+  border-width: 0px;
+  vertical-align: top;
+}
+
+td, th {
+  padding: 5px;
+}
+
+td.nowrap {
+  white-space: nowrap;
+}
+
+.cellText {
+  margin: 3px 0px;
+}
+
+.bold {
+  font-weight: 700;
+}
