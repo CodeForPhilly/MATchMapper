@@ -56,6 +56,11 @@ body {
   max-height: 100vh;
 }
 
+/* #extraContainer {
+  border: 2px solid #f0f0f0;
+  overflow: hidden;
+} */
+
 table {
   text-align: left;
   border-collapse: separate;
@@ -81,7 +86,7 @@ th {
   vertical-align: center;
   white-space: nowrap;
   height: 40px;
-  top: -1px;
+  top: 0px;
   z-index: 1;
   border-width: 0px;
   border-bottom-width: 2px;
@@ -93,7 +98,7 @@ th {
 
 .facilityName {
   position: sticky;
-  left: -1px;
+  left: 1px;
   border-width: 0px;
   border-right-width: 2px;
   border-style: solid;
