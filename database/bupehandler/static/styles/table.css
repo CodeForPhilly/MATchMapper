@@ -24,6 +24,10 @@ body {
   margin: 15px 0px;
 }
 
+#DataTables_Table_0_filter {
+  display: none;
+}
+
 #lastUpdatedNotice {
   font-weight: 400;
   margin: 8px 0px;
@@ -31,7 +35,6 @@ body {
 
 #flexContainer {
   display: flex;
-  /* height: 100%; */
   width: 100%;
 }
 
@@ -44,8 +47,16 @@ body {
 }
 
 #table {
-  margin: 0px 10px;
-  flex-shrink: 2;
+  width: 0px;
+  flex: 1 1 auto;
+  margin: 10px;
+  /* border: 5px solid black; */
+
+  /* -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.4);
+  box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.4); */
+}
+
+#tableGrid {
 }
 
 table {
@@ -100,24 +111,11 @@ th.facilityName {
   border-color: #a1a1a1;
 }
 
-tr:nth-child(odd) .facilityName {
-    background-color: white;
+tr.odd {
+  background-color: #f0f0f0 !important;
 }
 
-tr:nth-child(even) .facilityName {
-    background-color: #f0f0f0;
-}
-
-tr:nth-child(1) .facilityName {
-    background-color: #0f4d90;
-    z-index: 2;
-}
-
-tr:nth-child(even) {
-  background-color: #f0f0f0;
-}
-
-tr:nth-child(odd) {
+tr.even {
   background-color: white;
 }
 
@@ -130,6 +128,16 @@ td {
 
 td, th {
   padding: 5px;
+  border-bottom-width: 0px !important;
+}
+
+#mobile-table {
+  display: none;
+}
+
+td:nth-child(1){
+  max-width: 300px;
+  word-wrap: break-word;
 }
 
 td.nowrap {
@@ -161,7 +169,9 @@ a:hover {
   background-color: #0f4d90;
   color: white;
   font-size: 14px;
-  flex-shrink: 0;
+  flex: 0 0 200px;
+  /* -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.4);
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.4); */
 }
 
 #filterOptions {

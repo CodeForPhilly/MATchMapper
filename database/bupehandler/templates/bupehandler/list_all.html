@@ -1,10 +1,18 @@
 {% load table_formatters %}
 <html>
   <head>
-    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/table.css"/>
+    <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/ju-1.12.1/dt-1.10.24/fc-3.3.2/fh-3.1.8/r-2.2.7/datatables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/ju-1.12.1/dt-1.10.24/fc-3.3.2/fh-3.1.8/r-2.2.7/datatables.min.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.24/fc-3.3.2/fh-3.1.8/r-2.2.7/datatables.min.css"/>
+
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.24/fc-3.3.2/fh-3.1.8/r-2.2.7/datatables.min.js"></script>
+
+
+    <script src="/static/js/tableGenerator.js"></script>
   </head>
   <body>
     <header id="header">
@@ -100,141 +108,280 @@
         </div>
       </div>
       <div id="table">
-        <table>
-          <!-- TODO: Where do I get total from? -->
-          <!-- TODO: Where do I get the other stuff? -->
-          <h5 id="resultDescription">
-            <span class="bold">{{ objects|length }}</span> of <span class="bold">87</span> records for <span class="bold">Substance Use Facilities</span> in <span class="bold">Philadelphia</span></h5>
-          <tr>
-            <th class="facilityName">Facility</th>
-            <th>Telehealth</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th>Zip Code</th>
-            <th>Buprenorphine</th>
-            <th>Methadone</th>
-            <th>Naltrexone</th>
-          </tr>
-          {% for site in objects %}
-            <tr>
-              <td class="facilityName">
-                <p class="cellText bold">{{site.name1}}</p>
-                <p class="cellText semibold">{{site.name2}}</p>
-                <p class="cellText"><a target="_blank" href="{{site.website|legal_url}}">{{site.website}}</a></p>
-              </td>
-              <td class="nowrap">
-                <p class="cellText">
-                  {% if site.tele %}
-                    Yes
-                  {% else %}
-                    No
-                  {% endif %}
-                </p>
-              </td>
-              <td class="nowrap">
-                <p class="cellText bold">
-                  {{site.phone|format_phone}}
-                </p>
-                {% if site.phone_intake1 %}
-                <p class="cellText">
-                  Intake 1: <span class="bold">{{site.phone_intake1|format_phone}}</span>
-                </p>
-                {% endif %}
-                {% if site.phone_intake2 %}
-                <p class="cellText">
-                  Intake 2: <span class="bold">{{site.phone_intake2|format_phone}}</span>
-                </p>
-                {% endif %}
-              </td>
-              <td class="nowrap">
-                <p class="cellText bold">
-                  {{site.street1}}
-                </p>
-                {% if site.street2 %}
-                  <p class="cellText">
-                    {{site.street2}}
-                  </p>
-                {% endif %}
-                <p class="cellText">
-                  {{site.city}}, {{site.state_usa}}
-                </p>
-              </td>
-              <td>
-                <p class="cellText bold">{{site.zip5}}</p>
-              </td>
-              <td class="nowrap">
-                {% if site.bu %}
-                  <p class="cellText">
-                    Prescribed: <br/>
-                    <span class="bold">{% bu_options %}</span>
-                  </p>
-                  <p>
-                    Maintenance:
-                    <span class="bold">
-                      {% if site.bum %} Yes {% else %} No {% endif %}
-                    </span>
-                    <br/>
-                    Maintenance for predetermined time:
-                    <span class="bold">
-                      {% if site.bmw %} Yes {% else %} No {% endif %}
-                    </span>
-                    <br/>
-                    Detoxification:
-                    <span class="bold">
-                      {% if site.db_field %} Yes {% else %} No {% endif %}
-                    </span>
-                  </p>
-                {% else %}
-                  <p class="cellText">Not available at this facility</p>
-                {% endif %}
+        <!-- TODO: Where do I get total from? -->
+        <!-- TODO: Where do I get the other stuff? -->
+        <h5 id="resultDescription">
+          <span class="bold">{{ objects|length }}</span> of <span class="bold">87</span> records for <span class="bold">Substance Use Facilities</span> in <span class="bold">Philadelphia</span>
+        </h5>
+        <div id="tableGrid">
+          <table id="main-table">
+            <thead>
+              <tr>
+                <th class="facilityName">Facility</th>
+                <th>Telehealth</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Zip Code</th>
+                <th>Buprenorphine</th>
+                <th>Methadone</th>
+                <th>Naltrexone</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for site in objects %}
+                <tr>
+                  <td class="facilityName is-pinned">
+                    <p class="cellText bold">{{site.name1}}</p>
+                    <p class="cellText semibold">{{site.name2}}</p>
+                    <p class="cellText"><a target="_blank" href="{{site.website|legal_url}}">{{site.website}}</a></p>
+                  </td>
+                  <td class="">
+                    <p class="cellText">
+                      {% if site.tele %}
+                        Yes
+                      {% else %}
+                        No
+                      {% endif %}
+                    </p>
+                  </td>
+                  <td class="nowrap">
+                    <p class="cellText bold">
+                      {{site.phone|format_phone}}
+                    </p>
+                    {% if site.phone_intake1 %}
+                    <p class="cellText">
+                      Intake 1: <span class="bold">{{site.phone_intake1|format_phone}}</span>
+                    </p>
+                    {% endif %}
+                    {% if site.phone_intake2 %}
+                    <p class="cellText">
+                      Intake 2: <span class="bold">{{site.phone_intake2|format_phone}}</span>
+                    </p>
+                    {% endif %}
+                  </td>
+                  <td class="nowrap">
+                    <p class="cellText bold">
+                      {{site.street1}}
+                    </p>
+                    {% if site.street2 %}
+                      <p class="cellText">
+                        {{site.street2}}
+                      </p>
+                    {% endif %}
+                    <p class="cellText">
+                      {{site.city}}, {{site.state_usa}}
+                    </p>
+                  </td>
+                  <td>
+                    <p class="cellText bold">{{site.zip5}}</p>
+                  </td>
+                  <td class="nowrap">
+                    {% if site.bu %}
+                      <p class="cellText">
+                        Prescribed: <br/>
+                        <span class="bold">{% bu_options %}</span>
+                      </p>
+                      <p>
+                        Maintenance:
+                        <span class="bold">
+                          {% if site.bum %} Yes {% else %} No {% endif %}
+                        </span>
+                        <br/>
+                        Maintenance for predetermined time:
+                        <span class="bold">
+                          {% if site.bmw %} Yes {% else %} No {% endif %}
+                        </span>
+                        <br/>
+                        Detoxification:
+                        <span class="bold">
+                          {% if site.db_field %} Yes {% else %} No {% endif %}
+                        </span>
+                      </p>
+                    {% else %}
+                      <p class="cellText">Not available at this facility</p>
+                    {% endif %}
 
-              </td>
-              <td class="nowrap">
-                {% if site.mu %}
-                <p class="cellText">
-                  Prescribed:
-                  <span class="bold">{{site.meth}}</span>
-                  <br/>
-                  Maintenance:
-                  <span class="bold">
-                    {% if site.mm %} Yes {% else %} No {% endif %}
-                  </span>
-                  <br/>
-                  Maintenance for predetermined time:
-                  <span class="bold">
-                    {% if site.mmw %} Yes {% else %} No {% endif %}
-                  </span>
-                  <br/>
-                  Detoxification:
-                  <span class="bold">
-                    {% if site.dm %} Yes {% else %} No {% endif %}
-                  </span>
-                </p>
-                {% else %}
-                <p class="cellText">Not available at this facility</p>
-                {% endif %}
-              </td>
-              <td class="nowrap">
-                {% if site.nu %}
-                <p class="cellText">
-                  Prescribed:
-                  <span class="bold">{% nu_options %}</span>
-                  <br/>
-                  Used for relapse prevention:
-                  <span class="bold">
-                    {% if site.rpn %} Yes {% else %} No {% endif %}
-                  </span>
-                </p>
-                {% else %}
-                <p class="cellText">Not available at this facility</p>
-                {% endif %}
-              </td>
-            </tr>
-          {%endfor%}
-        </table>
+                  </td>
+                  <td class="nowrap">
+                    {% if site.mu %}
+                    <p class="cellText">
+                      Prescribed:
+                      <span class="bold">{{site.meth}}</span>
+                      <br/>
+                      Maintenance:
+                      <span class="bold">
+                        {% if site.mm %} Yes {% else %} No {% endif %}
+                      </span>
+                      <br/>
+                      Maintenance for predetermined time:
+                      <span class="bold">
+                        {% if site.mmw %} Yes {% else %} No {% endif %}
+                      </span>
+                      <br/>
+                      Detoxification:
+                      <span class="bold">
+                        {% if site.dm %} Yes {% else %} No {% endif %}
+                      </span>
+                    </p>
+                    {% else %}
+                    <p class="cellText">Not available at this facility</p>
+                    {% endif %}
+                  </td>
+                  <td class="nowrap">
+                    {% if site.nu %}
+                    <p class="cellText">
+                      Prescribed:
+                      <span class="bold">{% nu_options %}</span>
+                      <br/>
+                      Used for relapse prevention:
+                      <span class="bold">
+                        {% if site.rpn %} Yes {% else %} No {% endif %}
+                      </span>
+                    </p>
+                    {% else %}
+                    <p class="cellText">Not available at this facility</p>
+                    {% endif %}
+                  </td>
+                </tr>
+              {%endfor%}
+            </tbody>
+          </table>
+          <table id="mobile-table">
+            <thead>
+              <tr>
+                <th class="facilityName">Facility</th>
+                <th>Telehealth</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Zip Code</th>
+                <th>Buprenorphine</th>
+                <th>Methadone</th>
+                <th>Naltrexone</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for site in objects %}
+                <tr>
+                  <td class="facilityName is-pinned">
+                    <p class="cellText bold">{{site.name1}}</p>
+                    <p class="cellText semibold">{{site.name2}}</p>
+                    <p class="cellText"><a target="_blank" href="{{site.website|legal_url}}">{{site.website}}</a></p>
+                  </td>
+                  <td class="">
+                    <p class="cellText">
+                      {% if site.tele %}
+                        Yes
+                      {% else %}
+                        No
+                      {% endif %}
+                    </p>
+                  </td>
+                  <td class="nowrap">
+                    <p class="cellText bold">
+                      {{site.phone|format_phone}}
+                    </p>
+                    {% if site.phone_intake1 %}
+                    <p class="cellText">
+                      Intake 1: <span class="bold">{{site.phone_intake1|format_phone}}</span>
+                    </p>
+                    {% endif %}
+                    {% if site.phone_intake2 %}
+                    <p class="cellText">
+                      Intake 2: <span class="bold">{{site.phone_intake2|format_phone}}</span>
+                    </p>
+                    {% endif %}
+                  </td>
+                  <td class="nowrap">
+                    <p class="cellText bold">
+                      {{site.street1}}
+                    </p>
+                    {% if site.street2 %}
+                      <p class="cellText">
+                        {{site.street2}}
+                      </p>
+                    {% endif %}
+                    <p class="cellText">
+                      {{site.city}}, {{site.state_usa}}
+                    </p>
+                  </td>
+                  <td>
+                    <p class="cellText bold">{{site.zip5}}</p>
+                  </td>
+                  <td class="nowrap">
+                    {% if site.bu %}
+                      <p class="cellText">
+                        Prescribed: <br/>
+                        <span class="bold">{% bu_options %}</span>
+                      </p>
+                      <p>
+                        Maintenance:
+                        <span class="bold">
+                          {% if site.bum %} Yes {% else %} No {% endif %}
+                        </span>
+                        <br/>
+                        Maintenance for predetermined time:
+                        <span class="bold">
+                          {% if site.bmw %} Yes {% else %} No {% endif %}
+                        </span>
+                        <br/>
+                        Detoxification:
+                        <span class="bold">
+                          {% if site.db_field %} Yes {% else %} No {% endif %}
+                        </span>
+                      </p>
+                    {% else %}
+                      <p class="cellText">Not available at this facility</p>
+                    {% endif %}
+
+                  </td>
+                  <td class="nowrap">
+                    {% if site.mu %}
+                    <p class="cellText">
+                      Prescribed:
+                      <span class="bold">{{site.meth}}</span>
+                      <br/>
+                      Maintenance:
+                      <span class="bold">
+                        {% if site.mm %} Yes {% else %} No {% endif %}
+                      </span>
+                      <br/>
+                      Maintenance for predetermined time:
+                      <span class="bold">
+                        {% if site.mmw %} Yes {% else %} No {% endif %}
+                      </span>
+                      <br/>
+                      Detoxification:
+                      <span class="bold">
+                        {% if site.dm %} Yes {% else %} No {% endif %}
+                      </span>
+                    </p>
+                    {% else %}
+                    <p class="cellText">Not available at this facility</p>
+                    {% endif %}
+                  </td>
+                  <td class="nowrap">
+                    {% if site.nu %}
+                    <p class="cellText">
+                      Prescribed:
+                      <span class="bold">{% nu_options %}</span>
+                      <br/>
+                      Used for relapse prevention:
+                      <span class="bold">
+                        {% if site.rpn %} Yes {% else %} No {% endif %}
+                      </span>
+                    </p>
+                    {% else %}
+                    <p class="cellText">Not available at this facility</p>
+                    {% endif %}
+                  </td>
+                </tr>
+              {%endfor%}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-    <script src="/static/js/stickyObserver.js"></script>
+    <!-- <script src="/static/js/stickyObserver.js"></script> -->
     <script src="/static/js/filter.js"></script>
   </body>
 </html>
