@@ -33,6 +33,7 @@ body {
   display: flex;
   /* height: 100%; */
   width: 100%;
+  overflow: hidden;
 }
 
 #logo {
@@ -47,6 +48,9 @@ body {
   margin: 0px 10px;
   /* flex-shrink: 2; */
   flex: 1 1 auto;
+  overflow: scroll;
+  height: 100vh;
+  max-height: 100vh;
 }
 
 table {
@@ -61,6 +65,8 @@ table {
 #resultDescription {
   font-weight: 400;
   margin: 10px 0px;
+  position: sticky;
+  left: 0px;
 }
 
 th {
@@ -72,7 +78,6 @@ th {
   vertical-align: center;
   white-space: nowrap;
   height: 40px;
-  position: sticky;
   top: -1px;
   z-index: 1;
   border-width: 0px;
@@ -80,6 +85,7 @@ th {
   border-style: solid;
   border-color: rgba(0,0,0,0);
   transition: 0.1s;
+  position: sticky;
 }
 
 .facilityName {

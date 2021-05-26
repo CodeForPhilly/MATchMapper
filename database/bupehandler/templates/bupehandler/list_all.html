@@ -100,22 +100,23 @@
         </div>
       </div>
       <div id="table">
+        <!-- TODO: Where do I get total from? -->
+        <!-- TODO: Where do I get the other stuff? -->
+        <h5 id="resultDescription">
+          <span class="bold">{{ objects|length }}</span> of <span class="bold">87</span> records for <span class="bold">Substance Use Facilities</span> in <span class="bold">Philadelphia</span>
+        </h5>
         <table>
-          <!-- TODO: Where do I get total from? -->
-          <!-- TODO: Where do I get the other stuff? -->
-          <h5 id="resultDescription">
-            <span class="bold">{{ objects|length }}</span> of <span class="bold">87</span> records for <span class="bold">Substance Use Facilities</span> in <span class="bold">Philadelphia</span></h5>
-          <tr>
-            <th class="facilityName">Facility</th>
-            <th>Telehealth</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th>Zip Code</th>
-            <th>Buprenorphine</th>
-            <th>Methadone</th>
-            <th>Naltrexone</th>
-          </tr>
-          {% for site in objects %}
+            <tr>
+              <th class="facilityName">Facility</th>
+              <th>Telehealth</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Zip Code</th>
+              <th>Buprenorphine</th>
+              <th>Methadone</th>
+              <th>Naltrexone</th>
+            </tr>
+            {% for site in objects %}
             <tr>
               <td class="facilityName">
                 <p class="cellText bold">{{site.name1}}</p>
