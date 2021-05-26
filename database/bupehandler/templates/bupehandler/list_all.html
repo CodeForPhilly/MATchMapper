@@ -18,7 +18,7 @@
         <!-- TODO: get svg version of logo -->
         <div id="logo"></div>
         <div id="filterOptions">
-          <button id="applyFilters">Apply Filters</button>
+          <!-- <button id="applyFilters">Apply Filters</button> -->
           <label>Filter your search with the following criteria:</label>
           <div class="filterCriteria">
             <label>Offers telehealth</label>
@@ -76,6 +76,25 @@
             <div class="filterCriteria">
               <label>Offers methadone detoxification</label>
               <input type="checkbox" name="offersMethadoneDetox" value="dm=true"/>
+            </div>
+          </div>
+          <div class="filterCriteria">
+            <label>Prescribes naltrexone</label>
+            <input type="checkbox" name="prescribesNaltrexone" value="nu=true"/>
+          </div>
+          <div id="nalFilters" class="subfilter" predicate="nu=true">
+            <label>Naltrexone Options:</label>
+            <div class="filterCriteria">
+              <label>Offers Vivitrol (injectable)</label>
+              <input type="checkbox" name="offersVivitrol" value="vtrl=true"/>
+            </div>
+            <div class="filterCriteria">
+              <label>Offers oral naltrexone</label>
+              <input type="checkbox" name="offersOralNaltrexone" value="nxn=true"/>
+            </div>
+            <div class="filterCriteria">
+              <label>Offers naltrexone for relapse prevention</label>
+              <input type="checkbox" name="offersNaltrexoneRelapsePrevention" value="rpn=true"/>
             </div>
           </div>
         </div>

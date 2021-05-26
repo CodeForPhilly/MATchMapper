@@ -108,6 +108,7 @@ function toggleFilter(filter){
     enableFilter(filter)
     expandSubfilters()
   }
+  setFilters()
 }
 
 function setFilters(){
