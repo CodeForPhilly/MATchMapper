@@ -45,7 +45,8 @@ body {
 
 #table {
   margin: 0px 10px;
-  flex-shrink: 2;
+  /* flex-shrink: 2; */
+  flex: 1 1 auto;
 }
 
 table {
@@ -161,7 +162,7 @@ a:hover {
   background-color: #0f4d90;
   color: white;
   font-size: 14px;
-  flex-shrink: 0;
+  flex: 0 0 200px;
 }
 
 #filterOptions {
