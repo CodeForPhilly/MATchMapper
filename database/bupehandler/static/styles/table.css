@@ -102,19 +102,20 @@ th {
 }
 
 th.facilityName {
-  border-right-width: 2px;
+  border-right-width: 0px;
   border-bottom-width: 2px;
+  z-index: 5;
 }
 
-.is-pinned {
+.stuck {
   border-color: #a1a1a1;
 }
 
-tr.odd {
+tr.odd, tr:nth-child(odd), tr:nth-child(odd) td {
   background-color: #f0f0f0 !important;
 }
 
-tr.even {
+tr.even, tr:nth-child(even), tr:nth-child(even) td {
   background-color: white;
 }
 
@@ -127,7 +128,6 @@ td {
 
 td, th {
   padding: 5px;
-  border-bottom-width: 0px !important;
 }
 
 #mobile-table {
@@ -136,6 +136,10 @@ td, th {
 
 td:nth-child(1){
   max-width: 300px;
+  word-wrap: break-word;
+}
+
+td.wrap {
   word-wrap: break-word;
 }
 
@@ -169,11 +173,6 @@ a:hover {
   color: white;
   font-size: 14px;
   flex: 0 0 200px;
-<<<<<<< HEAD
-  /* -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.4);
-  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.4); */
-=======
->>>>>>> old_table
 }
 
 #filterOptions {

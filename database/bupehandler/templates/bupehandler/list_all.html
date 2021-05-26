@@ -5,14 +5,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/table.css"/>
-    <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/ju-1.12.1/dt-1.10.24/fc-3.3.2/fh-3.1.8/r-2.2.7/datatables.min.css"/>
-    <script type="text/javascript" src="https://cdn.datatables.net/v/ju-1.12.1/dt-1.10.24/fc-3.3.2/fh-3.1.8/r-2.2.7/datatables.min.js"></script> -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.24/fc-3.3.2/fh-3.1.8/r-2.2.7/datatables.min.css"/>
-
 <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.24/fc-3.3.2/fh-3.1.8/r-2.2.7/datatables.min.js"></script>
-
-
     <script src="/static/js/tableGenerator.js"></script>
+    <script src="/static/js/stickyObserver.js"></script>
   </head>
   <body>
     <header id="header">
@@ -107,7 +103,7 @@
           </div>
         </div>
       </div>
-      <div id="table">
+      <div id="table" onscroll="handleScroll(this.scrollTop, this.scrollLeft)">
         <!-- TODO: Where do I get total from? -->
         <!-- TODO: Where do I get the other stuff? -->
         <h5 id="resultDescription">
@@ -126,7 +122,7 @@
             </tr>
             {% for site in objects %}
             <tr>
-              <td class="facilityName">
+              <td class="facilityName wrap">
                 <p class="cellText bold">{{site.name1}}</p>
                 <p class="cellText semibold">{{site.name2}}</p>
                 <p class="cellText"><a target="_blank" href="{{site.website|legal_url}}">{{site.website}}</a></p>
@@ -377,7 +373,6 @@
         </div>
       </div>
     </div>
-    <!-- <script src="/static/js/stickyObserver.js"></script> -->
     <script src="/static/js/filter.js"></script>
   </body>
 </html>
