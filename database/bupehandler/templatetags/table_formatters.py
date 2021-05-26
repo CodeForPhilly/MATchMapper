@@ -1,8 +1,18 @@
 from django import template
 from django.utils.safestring import mark_safe
 import phonenumbers
+from datetime import datetime
 
 register = template.Library()
+
+
+@register.simple_tag(name="date_last_updated", takes_context=True)
+def bu_options(context):
+    date_time_str = context["objects"][0]["date_update"]
+    date_time_obj = datetime.strptime(date_time_str, '%Y-%m-%dT%H:%M:%S.%fZ')
+    formattedDate = date_time_obj.strftime("%B %-d, %Y")
+
+    return mark_safe(formattedDate)
 
 @register.filter("legal_url", is_safe=True)
 def phone_number(illegal):

@@ -10,15 +10,55 @@ black: #000000
 [near white] [not in Philadelphia specs]: #fefefe
 white: #ffffff */
 
-* {
+body {
   font-family: "Montserrat", sans-serif;
   font-weight: 500;
+  margin: 10px;
+}
+
+#header {
+  color: #0f4d90;
+}
+
+#dataSource {
+  margin: 15px 0px;
+}
+
+#lastUpdatedNotice {
+  font-weight: 400;
+  margin: 8px 0px;
+}
+
+#flexContainer {
+  display: flex;
+  max-width: 100%;
+}
+
+#logo {
+  width: 150px;
+  height: 82px;
+  background: url("/static/images/MM_infinity-logo_ghost-gray.png");
+  background-size: contain;
+  margin: 10px auto;
+}
+
+#table {
+  margin: 0px 10px;
+  flex-grow: 4;
 }
 
 table {
   text-align: left;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0px;
   font-size: 14px;
+  position: relative;
+  width: 100%;
+}
+
+#resultDescription {
+  font-weight: 400;
+  margin: 10px 0px;
 }
 
 th {
@@ -30,6 +70,46 @@ th {
   vertical-align: center;
   white-space: nowrap;
   height: 40px;
+  position: sticky;
+  top: -1px;
+  z-index: 1;
+  border-width: 0px;
+  border-bottom-width: 2px;
+  border-style: solid;
+  border-color: rgba(0,0,0,0);
+  transition: 0.1s;
+}
+
+.facilityName {
+  position: sticky;
+  left: -1px;
+  border-width: 0px;
+  border-right-width: 2px;
+  border-style: solid;
+  border-color: rgba(0,0,0,0);
+  transition: 0.1s;
+}
+
+th.facilityName {
+  border-right-width: 2px;
+  border-bottom-width: 2px;
+}
+
+.is-pinned {
+  border-color: #a1a1a1;
+}
+
+tr:nth-child(odd) .facilityName {
+    background-color: white;
+}
+
+tr:nth-child(even) .facilityName {
+    background-color: #f0f0f0;
+}
+
+tr:nth-child(1) .facilityName {
+    background-color: #0f4d90;
+    z-index: 2;
 }
 
 tr:nth-child(even) {
@@ -44,6 +124,7 @@ td {
   margin: 0px;
   border-width: 0px;
   vertical-align: top;
+  z-index: 0;
 }
 
 td, th {
@@ -58,6 +139,87 @@ td.nowrap {
   margin: 3px 0px;
 }
 
+.semibold {
+  font-weight: 600;
+}
+
 .bold {
   font-weight: 700;
+}
+
+a {
+  color: #2176d2;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+#sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  background-color: #0f4d90;
+  color: white;
+  font-size: 14px;
+  flex-grow: 1;
+}
+
+#filterOptions {
+  padding: 10px;
+}
+
+#applyFilters {
+  padding: 5px;
+  margin: 10px 0px;
+  font-weight: 400;
+  text-align: center;
+  color: white;
+  border-style: none;
+  background-color: #2176d2;
+  cursor: pointer;
+  width:75%;
+  height: 40px;
+  font-size: 14px;
+  display: block;
+  margin: 10px auto;
+
+}
+
+.filterCriteria {
+  border: 1px solid white;
+  padding: 5px;
+  margin: 10px 0px;
+  font-weight: 400;
+}
+
+.filterCriteria, .filterCriteria label {
+  cursor: pointer;
+}
+
+.filterCriteria:hover, .filterCriteria.selected {
+  /* background-color: rgba(255,255,255,0.3); */
+  background-color: white;
+  color: #0f4d90;
+}
+
+.subfilter {
+  /* max-height: 0px; */
+  /* opacity: 1; */
+  /* overflow: hidden; */
+  display: none;
+  /* transition: max-height 0.5s; */
+}
+
+.subfilter.visible {
+  /* max-height: 500px;
+  opacity: 1; */
+  display: block;
+}
+
+.subfilter .filterCriteria {
+  margin-left: 10px;
+}
+
+.filterCriteria input {
+  display: none;
 }
