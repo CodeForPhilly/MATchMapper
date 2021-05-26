@@ -36,6 +36,7 @@ body {
 #flexContainer {
   display: flex;
   width: 100%;
+  overflow: hidden;
 }
 
 #logo {
@@ -47,16 +48,12 @@ body {
 }
 
 #table {
-  width: 0px;
+  margin: 0px 10px;
+  /* flex-shrink: 2; */
   flex: 1 1 auto;
-  margin: 10px;
-  /* border: 5px solid black; */
-
-  /* -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.4);
-  box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.4); */
-}
-
-#tableGrid {
+  overflow: scroll;
+  height: 100vh;
+  max-height: 100vh;
 }
 
 table {
@@ -71,6 +68,8 @@ table {
 #resultDescription {
   font-weight: 400;
   margin: 10px 0px;
+  position: sticky;
+  left: 0px;
 }
 
 th {
@@ -82,7 +81,6 @@ th {
   vertical-align: center;
   white-space: nowrap;
   height: 40px;
-  position: sticky;
   top: -1px;
   z-index: 1;
   border-width: 0px;
@@ -90,6 +88,7 @@ th {
   border-style: solid;
   border-color: rgba(0,0,0,0);
   transition: 0.1s;
+  position: sticky;
 }
 
 .facilityName {
@@ -170,8 +169,11 @@ a:hover {
   color: white;
   font-size: 14px;
   flex: 0 0 200px;
+<<<<<<< HEAD
   /* -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.4);
   box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.4); */
+=======
+>>>>>>> old_table
 }
 
 #filterOptions {
