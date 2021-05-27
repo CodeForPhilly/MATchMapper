@@ -1,27 +1,381 @@
-<html> 
-    <head> 
-        <title>{{title}}</title>
-    </head>
-    <body> 
-    <div> 
-      {{title}}: 
-    </div>
-    <table>
-      <tr>
-        {% for key, value in objects.0.items %}
-            <th>{{key}}</th>
-        {%endfor%}
-      </tr>
-      {% for dict in objects %}
-        <tr>
-        {% for key, value in dict.items %}
-          <td>{{ value }}</td>
-        {% endfor %}
-        </tr>
-      {%endfor%}
+{% load table_formatters %}
+<html>
+  <head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles/table.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.24/fc-3.3.2/fh-3.1.8/r-2.2.7/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.24/fc-3.3.2/fh-3.1.8/r-2.2.7/datatables.min.js"></script>
+    <script src="/static/js/tableGenerator.js"></script>
+    <script src="/static/js/stickyObserver.js"></script>
+  </head>
+  <body>
+    <header id="header">
+      <!-- TODO: Maybe change source?? Not sure if this is the same for all tables. -->
+      <h3 id="dataSource" class="bold">SOURCE: <a href="https://findtreatment.samhsa.gov/locator">Find Treatment Locator</a> (SAMHSA)</h3>
+      <!-- TODO: Am I getting the date from the right place? -->
+      <h5 id="lastUpdatedNotice">Most recent download: <span class="bold">{% date_last_updated %}</span></h5>
+    </header>
+    <div id="flexContainer">
+      <div id="sidebar">
+        <!-- TODO: get svg version of logo -->
+        <div id="logo"></div>
+        <div id="filterOptions">
+          <!-- <button id="applyFilters">Apply Filters</button> -->
+          <label>Filter your search with the following criteria:</label>
+          <div class="filterCriteria">
+            <label>Offers telehealth</label>
+            <input type="checkbox" name="telehealth" value="tele=true"/>
+          </div>
+          <div class="filterCriteria">
+            <label>Prescribes buprenorphine</label>
+            <input type="checkbox" name="prescribesBuprenorphine" value="bu=true"/>
+          </div>
+          <div id="bupFilters" class="subfilter" predicate="bu=true">
+            <label>Buprenorphine Options:</label>
+            <div class="filterCriteria">
+              <label>Prescribes buprenorphine with naloxone</label>
+              <input type="checkbox" name="prescribesBuprenorphineWithNaloxone" value="bwn=true"/>
+            </div>
+            <div class="filterCriteria">
+              <label>Prescribes buprenorphine without naloxone</label>
+              <input type="checkbox" name="prescribesBuprenorphineWithoutNaloxone" value="bwon=true"/>
+            </div>
+            <div class="filterCriteria">
+              <label>Prescribes buprenorphine as injectable extended-release</label>
+              <input type="checkbox" name="prescribesBuprenorphineInjectable" value="beri=true"/>
+            </div>
+            <div class="filterCriteria">
+              <label>Prescribes buprenorphine as subdermal implant</label>
+              <input type="checkbox" name="prescribesBuprenorphineImplant" value="bsdm=true"/>
+            </div>
+            <div class="filterCriteria">
+              <label>Offers buprenorphine maintenance therapy</label>
+              <input type="checkbox" name="offersBuprenorphineMaintenance" value="bum=true"/>
+            </div>
+            <div class="filterCriteria">
+              <label>Offers buprenorphine maintenance therapy for predetermined time</label>
+              <input type="checkbox" name="offersBuprenorphineMaintenancePredetermined" value="bmw=true"/>
+            </div>
+            <div class="filterCriteria">
+              <label>Offers buprenorphine detoxification</label>
+              <input type="checkbox" name="offersBuprenorphineDetox" value="db_field=true"/>
+            </div>
+          </div>
+          <div class="filterCriteria">
+            <label>Prescribes methadone</label>
+            <input type="checkbox" name="prescribesMethadone" value="mu=true"/>
+          </div>
+          <div id="methFilters" class="subfilter" predicate="mu=true">
+            <label>Methadone Options:</label>
+            <div class="filterCriteria">
+              <label>Offers methadone maintenance therapy</label>
+              <input type="checkbox" name="offersMethadoneMaintenance" value="mm=true"/>
+            </div>
+            <div class="filterCriteria">
+              <label>Offers methadone maintenance therapy for predetermined time</label>
+              <input type="checkbox" name="offersMethadoneMaintenancePredetermined" value="mmw=true"/>
+            </div>
+            <div class="filterCriteria">
+              <label>Offers methadone detoxification</label>
+              <input type="checkbox" name="offersMethadoneDetox" value="dm=true"/>
+            </div>
+          </div>
+          <div class="filterCriteria">
+            <label>Prescribes naltrexone</label>
+            <input type="checkbox" name="prescribesNaltrexone" value="nu=true"/>
+          </div>
+          <div id="nalFilters" class="subfilter" predicate="nu=true">
+            <label>Naltrexone Options:</label>
+            <div class="filterCriteria">
+              <label>Offers Vivitrol (injectable)</label>
+              <input type="checkbox" name="offersVivitrol" value="vtrl=true"/>
+            </div>
+            <div class="filterCriteria">
+              <label>Offers oral naltrexone</label>
+              <input type="checkbox" name="offersOralNaltrexone" value="nxn=true"/>
+            </div>
+            <div class="filterCriteria">
+              <label>Offers naltrexone for relapse prevention</label>
+              <input type="checkbox" name="offersNaltrexoneRelapsePrevention" value="rpn=true"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="table" onscroll="handleScroll(this.scrollTop, this.scrollLeft)">
+        <!-- TODO: Where do I get total from? -->
+        <!-- TODO: Where do I get the other stuff? -->
+        <h5 id="resultDescription">
+          <span class="bold">{{ objects|length }}</span> of <span class="bold">87</span> records for <span class="bold">Substance Use Facilities</span> in <span class="bold">Philadelphia</span>
+        </h5>
+        <div id="extraContainer">
+          <table>
+              <tr>
+                <th class="facilityName">Facility</th>
+                <th>Telehealth</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Zip Code</th>
+                <th>Buprenorphine</th>
+                <th>Methadone</th>
+                <th>Naltrexone</th>
+              </tr>
+              {% for site in objects %}
+              <tr>
+                <td class="facilityName wrap">
+                  <p class="cellText bold">{{site.name1}}</p>
+                  <p class="cellText semibold">{{site.name2}}</p>
+                  <p class="cellText"><a target="_blank" href="{{site.website|legal_url}}">{{site.website}}</a></p>
+                </td>
+                <td class="nowrap">
+                  <p class="cellText">
+                    {% if site.tele %}
+                      Yes
+                    {% else %}
+                      No
+                    {% endif %}
+                  </p>
+                </td>
+                <td class="nowrap">
+                  <p class="cellText bold">
+                    {{site.phone|format_phone}}
+                  </p>
+                  {% if site.phone_intake1 %}
+                  <p class="cellText">
+                    Intake 1: <span class="bold">{{site.phone_intake1|format_phone}}</span>
+                  </p>
+                  {% endif %}
+                  {% if site.phone_intake2 %}
+                  <p class="cellText">
+                    Intake 2: <span class="bold">{{site.phone_intake2|format_phone}}</span>
+                  </p>
+                  {% endif %}
+                </td>
+                <td class="nowrap">
+                  <p class="cellText bold">
+                    {{site.street1}}
+                  </p>
+                  {% if site.street2 %}
+                    <p class="cellText">
+                      {{site.street2}}
+                    </p>
+                  {% endif %}
+                  <p class="cellText">
+                    {{site.city}}, {{site.state_usa}}
+                  </p>
+                </td>
+                <td>
+                  <p class="cellText bold">{{site.zip5}}</p>
+                </td>
+                <td class="nowrap">
+                  {% if site.bu %}
+                    <p class="cellText">
+                      Prescribed: <br/>
+                      <span class="bold">{% bu_options %}</span>
+                    </p>
+                    <p>
+                      Maintenance:
+                      <span class="bold">
+                        {% if site.bum %} Yes {% else %} No {% endif %}
+                      </span>
+                      <br/>
+                      Maintenance for predetermined time:
+                      <span class="bold">
+                        {% if site.bmw %} Yes {% else %} No {% endif %}
+                      </span>
+                      <br/>
+                      Detoxification:
+                      <span class="bold">
+                        {% if site.db_field %} Yes {% else %} No {% endif %}
+                      </span>
+                    </p>
+                  {% else %}
+                    <p class="cellText">Not available at this facility</p>
+                  {% endif %}
 
-    </table>
-    <div> 
+                    </td>
+                    <td class="nowrap">
+                      {% if site.mu %}
+                      <p class="cellText">
+                        Prescribed:
+                        <span class="bold">{{site.meth}}</span>
+                        <br/>
+                        Maintenance:
+                        <span class="bold">
+                          {% if site.mm %} Yes {% else %} No {% endif %}
+                        </span>
+                        <br/>
+                        Maintenance for predetermined time:
+                        <span class="bold">
+                          {% if site.mmw %} Yes {% else %} No {% endif %}
+                        </span>
+                        <br/>
+                        Detoxification:
+                        <span class="bold">
+                          {% if site.dm %} Yes {% else %} No {% endif %}
+                        </span>
+                      </p>
+                      {% else %}
+                      <p class="cellText">Not available at this facility</p>
+                      {% endif %}
+                    </td>
+                    <td class="nowrap">
+                      {% if site.nu %}
+                      <p class="cellText">
+                        Prescribed:
+                        <span class="bold">{% nu_options %}</span>
+                        <br/>
+                        Used for relapse prevention:
+                        <span class="bold">
+                          {% if site.rpn %} Yes {% else %} No {% endif %}
+                        </span>
+                      </p>
+                      {% else %}
+                      <p class="cellText">Not available at this facility</p>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {%endfor%}
+              </tbody>
+            </table>
+            <table id="mobile-table">
+              <thead>
+                <tr>
+                  <th class="facilityName">Facility</th>
+                  <th>Telehealth</th>
+                  <th>Phone</th>
+                  <th>Address</th>
+                  <th>Zip Code</th>
+                  <th>Buprenorphine</th>
+                  <th>Methadone</th>
+                  <th>Naltrexone</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for site in objects %}
+                  <tr>
+                    <td class="facilityName is-pinned">
+                      <p class="cellText bold">{{site.name1}}</p>
+                      <p class="cellText semibold">{{site.name2}}</p>
+                      <p class="cellText"><a target="_blank" href="{{site.website|legal_url}}">{{site.website}}</a></p>
+                    </td>
+                    <td class="">
+                      <p class="cellText">
+                        {% if site.tele %}
+                          Yes
+                        {% else %}
+                          No
+                        {% endif %}
+                      </p>
+                    </td>
+                    <td class="nowrap">
+                      <p class="cellText bold">
+                        {{site.phone|format_phone}}
+                      </p>
+                      {% if site.phone_intake1 %}
+                      <p class="cellText">
+                        Intake 1: <span class="bold">{{site.phone_intake1|format_phone}}</span>
+                      </p>
+                      {% endif %}
+                      {% if site.phone_intake2 %}
+                      <p class="cellText">
+                        Intake 2: <span class="bold">{{site.phone_intake2|format_phone}}</span>
+                      </p>
+                      {% endif %}
+                    </td>
+                    <td class="nowrap">
+                      <p class="cellText bold">
+                        {{site.street1}}
+                      </p>
+                      {% if site.street2 %}
+                        <p class="cellText">
+                          {{site.street2}}
+                        </p>
+                      {% endif %}
+                      <p class="cellText">
+                        {{site.city}}, {{site.state_usa}}
+                      </p>
+                    </td>
+                    <td>
+                      <p class="cellText bold">{{site.zip5}}</p>
+                    </td>
+                    <td class="nowrap">
+                      {% if site.bu %}
+                        <p class="cellText">
+                          Prescribed: <br/>
+                          <span class="bold">{% bu_options %}</span>
+                        </p>
+                        <p>
+                          Maintenance:
+                          <span class="bold">
+                            {% if site.bum %} Yes {% else %} No {% endif %}
+                          </span>
+                          <br/>
+                          Maintenance for predetermined time:
+                          <span class="bold">
+                            {% if site.bmw %} Yes {% else %} No {% endif %}
+                          </span>
+                          <br/>
+                          Detoxification:
+                          <span class="bold">
+                            {% if site.db_field %} Yes {% else %} No {% endif %}
+                          </span>
+                        </p>
+                      {% else %}
+                        <p class="cellText">Not available at this facility</p>
+                      {% endif %}
+
+                    </td>
+                    <td class="nowrap">
+                      {% if site.mu %}
+                      <p class="cellText">
+                        Prescribed:
+                        <span class="bold">{{site.meth}}</span>
+                        <br/>
+                        Maintenance:
+                        <span class="bold">
+                          {% if site.mm %} Yes {% else %} No {% endif %}
+                        </span>
+                        <br/>
+                        Maintenance for predetermined time:
+                        <span class="bold">
+                          {% if site.mmw %} Yes {% else %} No {% endif %}
+                        </span>
+                        <br/>
+                        Detoxification:
+                        <span class="bold">
+                          {% if site.dm %} Yes {% else %} No {% endif %}
+                        </span>
+                      </p>
+                      {% else %}
+                      <p class="cellText">Not available at this facility</p>
+                      {% endif %}
+                    </td>
+                    <td class="nowrap">
+                      {% if site.nu %}
+                      <p class="cellText">
+                        Prescribed:
+                        <span class="bold">{% nu_options %}</span>
+                        <br/>
+                        Used for relapse prevention:
+                        <span class="bold">
+                          {% if site.rpn %} Yes {% else %} No {% endif %}
+                        </span>
+                      </p>
+                      {% else %}
+                      <p class="cellText">Not available at this facility</p>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {%endfor%}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
     </div>
-    </body>
+    <script src="/static/js/filter.js"></script>
+  </body>
 </html>

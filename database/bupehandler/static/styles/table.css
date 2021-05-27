@@ -1,0 +1,241 @@
+/* dark-ben-franklin-blue: #0f4d90
+ben-franklin-blue: #2176d2
+light-ben-franklin: #96c9ff
+light-blue: #daedfe
+ghost-gray: #f0f0f0
+sidewalk: #cfcfcf
+medium-gray: #a1a1a1
+dark-gray: #444444
+black: #000000
+[near white] [not in Philadelphia specs]: #fefefe
+white: #ffffff */
+
+body {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  margin: 10px;
+}
+
+#header {
+  color: #0f4d90;
+}
+
+#dataSource {
+  margin: 15px 0px;
+}
+
+#DataTables_Table_0_filter {
+  display: none;
+}
+
+#lastUpdatedNotice {
+  font-weight: 400;
+  margin: 8px 0px;
+}
+
+#flexContainer {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+}
+
+#logo {
+  width: 150px;
+  height: 82px;
+  background: url("/static/images/MM_infinity-logo_ghost-gray.png");
+  background-size: contain;
+  margin: 10px auto;
+}
+
+#table {
+  margin: 0px 10px;
+  /* flex-shrink: 2; */
+  flex: 1 1 auto;
+  overflow: scroll;
+  height: 100vh;
+  max-height: 100vh;
+}
+
+/* #extraContainer {
+  border: 2px solid #f0f0f0;
+  overflow: hidden;
+} */
+
+table {
+  text-align: left;
+  border-collapse: separate;
+  border-spacing: 0px;
+  font-size: 14px;
+  position: relative;
+  width: 100%;
+}
+
+#resultDescription {
+  font-weight: 400;
+  margin: 10px 0px;
+  position: sticky;
+  left: 0px;
+}
+
+th {
+  background-color: #0f4d90;
+  text-transform: uppercase;
+  color: white;
+  padding: 5px;
+  font-weight: 700;
+  vertical-align: center;
+  white-space: nowrap;
+  height: 40px;
+  top: 0px;
+  z-index: 1;
+  border-width: 0px;
+  border-bottom-width: 2px;
+  border-style: solid;
+  border-color: rgba(0,0,0,0);
+  transition: 0.1s;
+  position: sticky;
+}
+
+.facilityName {
+  position: sticky;
+  left: 1px;
+  border-width: 0px;
+  border-right-width: 2px;
+  border-style: solid;
+  border-color: rgba(0,0,0,0);
+  transition: 0.1s;
+}
+
+th.facilityName {
+  border-right-width: 0px;
+  border-bottom-width: 2px;
+  z-index: 5;
+}
+
+.stuck {
+  border-color: #a1a1a1;
+}
+
+tr.odd, tr:nth-child(odd), tr:nth-child(odd) td {
+  background-color: #f0f0f0 !important;
+}
+
+tr.even, tr:nth-child(even), tr:nth-child(even) td {
+  background-color: white;
+}
+
+td {
+  margin: 0px;
+  border-width: 0px;
+  vertical-align: top;
+  z-index: 0;
+}
+
+td, th {
+  padding: 5px;
+}
+
+#mobile-table {
+  display: none;
+}
+
+td:nth-child(1){
+  max-width: 300px;
+  word-wrap: break-word;
+}
+
+td.wrap {
+  word-wrap: break-word;
+}
+
+td.nowrap {
+  white-space: nowrap;
+}
+
+.cellText {
+  margin: 3px 0px;
+}
+
+.semibold {
+  font-weight: 600;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+a {
+  color: #2176d2;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+#sidebar {
+  width: 200px;
+  background-color: #0f4d90;
+  color: white;
+  font-size: 14px;
+  flex: 0 0 200px;
+}
+
+#filterOptions {
+  padding: 10px;
+}
+
+#applyFilters {
+  padding: 5px;
+  margin: 10px 0px;
+  font-weight: 400;
+  text-align: center;
+  color: white;
+  border-style: none;
+  background-color: #2176d2;
+  cursor: pointer;
+  width:75%;
+  height: 40px;
+  font-size: 14px;
+  display: block;
+  margin: 10px auto;
+
+}
+
+.filterCriteria {
+  border: 1px solid white;
+  padding: 5px;
+  margin: 10px 0px;
+  font-weight: 400;
+}
+
+.filterCriteria, .filterCriteria label {
+  cursor: pointer;
+}
+
+.filterCriteria:hover, .filterCriteria.selected {
+  /* background-color: rgba(255,255,255,0.3); */
+  background-color: white;
+  color: #0f4d90;
+}
+
+.subfilter {
+  /* max-height: 0px; */
+  /* opacity: 1; */
+  /* overflow: hidden; */
+  display: none;
+  /* transition: max-height 0.5s; */
+}
+
+.subfilter.visible {
+  /* max-height: 500px;
+  opacity: 1; */
+  display: block;
+}
+
+.subfilter .filterCriteria {
+  margin-left: 10px;
+}
+
+.filterCriteria input {
+  display: none;
+}
