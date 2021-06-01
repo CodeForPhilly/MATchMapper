@@ -106,7 +106,12 @@ def filtered_table(request, table_name, param_values=None):
         order_by_list = request.GET.getlist('order')
         table_objects = table_objects.order_by(*order_by_list)
     table_serializer = serializer_dict[table_name](table_objects, many=True)
-    return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : table_serializer.data})
+    # TODO temporarily use old template for other tables except for siterecs_samhsa_ftloc
+    if table_name == "siterecs_samhsa_ftloc":
+        return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : table_serializer.data})
+    else:
+        return render(request,"bupehandler/list_all-old.html", {"title": table_name, "objects" : table_serializer.data})
+
 
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
