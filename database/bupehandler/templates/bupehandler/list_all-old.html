@@ -11,7 +11,9 @@
       <!-- TODO: Maybe change source?? Not sure if this is the same for all tables. -->
       <h3 id="dataSource" class="bold">SOURCE: <a href="https://findtreatment.samhsa.gov/locator">Find Treatment Locator</a> (SAMHSA)</h3>
       <!-- TODO: Am I getting the date from the right place? -->
+      {% if date_last_updated %}
       <h5 id="lastUpdatedNotice">Most recent download: <span class="bold">{% date_last_updated %}</span></h5>
+      {% endif %}
     </header>
     <div id="flexContainer">
       <div id="sidebar">
@@ -132,9 +134,11 @@
                 </p>
               </td>
               <td class="nowrap">
+                {% if site.phone %}
                 <p class="cellText bold">
                   {{site.phone|format_phone}}
                 </p>
+                {% endif %}
                 {% if site.phone_intake1 %}
                 <p class="cellText">
                   Intake 1: <span class="bold">{{site.phone_intake1|format_phone}}</span>
