@@ -4,14 +4,14 @@ A quick guide on how to filter in the map and table interface by Tung:
 I. TABLE FILTERING
 For the table interface, which is filtering the results and displaying them in the format of a table, we use the following URL structure: 
 
-.../table/<table_name>/<param_names> 
+.../table/<table_name>/<param_names>/<excluded_values>
 
 The "<table_name>" should be replaced by the table which you want to display. This is a required part of the URL. 
 
 The "<param_names>" is, however, optional, meaning you can leave it as empty if you want to see the entire table without any additional filter. 
 In case you want to do further filtering on a given table, the structure of the <param_names> is as follows: 
-
 col1=value1&col2=value2&col3=value3 <etc, add as many column-value pair as you need> 
+
 You will replace <col> by the column name you want to filter by. And the <value> is simply the value of the specified column that you want your rows to have.
 One thing to keep in mind is, you can add as many column-value pairs as you want. There is no limit to that as long as the columns actually exist in the table.  
 If you want to use autocorrect and/or autofill, then just add those at the end of the URL: 
@@ -19,6 +19,11 @@ If you want to use autocorrect and/or autofill, then just add those at the end o
 (b) Only autofill: col1=value1&col2=value2&col3=value3&autofill=True 
 (c) Both autocorrect and autofill: col1=value1&col2=value2&col3=value3&autofill=True&autocorrect=True 
 NOTE: If you do both autocorrect and autofill, autocorrect is always done before autofill. That is, the values will be corrected first, and then we autofill the corrected values to look for the appropriate rows. 
+
+The "<excluded_values>" is the NOT filter, and is optional. If you want to use NOT filter without using normal filter: you can specify param_names to None,
+In other words, you should create your URL of this format: http://127.0.0.1:8000/table/<table_name>/None/tele=True, which will get all the rows with tele is not True.
+If you want to combine NOT filter with the normal filter, try URL of this format: 
+http://127.0.0.1:8000/table/<table_name>/col1=value1&col2=value2&col3=value3/col4=value4&col5=value5, which will return all the rows with col1=value1, col2=value2,col3=value3, col4 NOT = value 4, col5 NOT value 5.
 
 We can break down some example URLs here: 
 
@@ -41,6 +46,11 @@ Next, we set the table_name to siterecs_samhsa_ftloc, so our results will be the
 Next, we set the param_values to name1 = behavor and we allow autocorrect and autofill, which means: 
 We will autocorrect "behavor" to "behavior" (most likely), and then we look for any rows with its name1 value CONTAINS the word "behavior" (this is what autofill does!).
 
+Example 4: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/state_usa%3DPA&bu%3DTrue/tele=True : 
+
+Based on param_values, we choose all sites in PA, bu = True
+Based on excluded values, we further choose those with tele not equal to True.
+
 ------------------------------------------
 II. MAP FILTERING 
 For the map interface, which is filtering the results and displaying them in the format of a map, we use the following URL structure: 
@@ -50,5 +60,5 @@ For the map interface, which is filtering the results and displaying them in the
 The way table_name and param_names work are exactly the same as for table filtering, so I will just refer to the section above.
 Map filtering is only a different way of illustration of data, but the way the data are processed is the exact same.
 
-
+NOTE: NOT has not been implemented on map filtering yet! 
 
