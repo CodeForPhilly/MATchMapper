@@ -52,13 +52,14 @@ Based on param_values, we choose all sites in PA, bu = True
 Based on excluded values, we further choose those with tele not equal to True.
 
 ------------------------------------------
-II. MAP FILTERING 
-For the map interface, which is filtering the results and displaying them in the format of a map, we use the following URL structure: 
+II. MAP/GEODATA API FILTERING 
+For the map/geodata interface, which is filtering the results and displaying them in the format of a map/ raw locations (lat/long), we use the following URL structure: 
 
-.../map/<table_name>/<param_names> 
+.../map/<table_name>/<param_names>/<excluded_values>  (for map interface)
 
-The way table_name and param_names work are exactly the same as for table filtering, so I will just refer to the section above.
-Map filtering is only a different way of illustration of data, but the way the data are processed is the exact same.
+.../api/geodata/<table_name>/<param_names>/<excluded_values> (for geodata API)
 
-NOTE: NOT has not been implemented on map filtering yet! 
+The way table_name, param_names, and excluded values work are exactly the same as for table filtering, so I will refer to the section above.
+Map filtering/geodata filtering is only a different way of illustration of data, but the way the data are processed is the exact same.
+
 

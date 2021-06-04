@@ -52,7 +52,6 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None)
     #The NOT filter is put after the normal filter:
     #Example of using the NOT filter: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/None/tele=True : all sites with tele not True
     #Another one using the NOT filter: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/state_usa%3DPA&bu%3DTrue/tele=True : all sites in PA, bu = True, with tele not True.
-    print(excluded_values)
     autofill = False
     autocorrect=False
     filter_params = {}
@@ -70,7 +69,6 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None)
                     autocorrect = True  
                 else:
                     filter_params['%s__iexact' % list_pair[0]] = list_pair[1]
-    print(filter_params)
     if excluded_values:
         query_pairs = excluded_values.split("&")
         for pair in query_pairs:
@@ -114,7 +112,6 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None)
         "siterecs_other_srcs" : Siterecs_other_srcsSerializer,
         "sites_all" : Sites_allSerializer,
     }
-    print(excluded_params)
     table_objects = table_dict[table_name].objects.all().filter(**filter_params)
     for excluded_param in excluded_params:
         current_excluded_param = {}
@@ -135,7 +132,7 @@ def default_map(request):
 
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
-def filtered_map(request, table_name, param_values=None):
+def filtered_map(request, table_name, param_values=None, excluded_values=None):
     naming_dict = { 
         "sitecodes_samhsa_ftloc" : "category_name",
         "siterecs_samhsa_ftloc" : "name1",
@@ -146,7 +143,7 @@ def filtered_map(request, table_name, param_values=None):
     }
     mapbox_access_token = 'pk.my_mapbox_access_token'
     if param_values: 
-        return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "param_values": param_values, "destination_name": naming_dict[table_name]})
+        return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "param_values": param_values, "excluded_values": excluded_values, "destination_name": naming_dict[table_name]})
     else: 
         return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "destination_name": naming_dict[table_name]})
 # @api_view(["GET", "POST", "DELETE"])
