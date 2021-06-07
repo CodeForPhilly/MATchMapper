@@ -348,6 +348,8 @@ class Siterecs_dbhids_tad(models.Model): ## TODO (jkd): Update fields to match a
     name1 = models.CharField(max_length=120)
     street1 = models.CharField(max_length=120)
     street2 = models.CharField(max_length=50,blank=True, null=True)
+    city = models.CharField(max_length=30)
+    state_usa = models.CharField(max_length=30) ## Can replace with Enum to match above classes
     zipcode = models.CharField(max_length=5)
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
     mat_info = models.CharField(max_length=100) ## Current max = 50char, so 100 is just for flex
@@ -420,6 +422,8 @@ class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous colu
     website2 = models.URLField()
     street1 = models.CharField(max_length=120)
     street2 = models.CharField(max_length=120)
+    city = models.CharField(max_length=30)
+    state_usa = models.CharField(max_length=30) ## Can replace with Enum to match above classes   
     zipcode = models.CharField(max_length=5)
     fqhc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     mat_avail = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
@@ -466,8 +470,11 @@ class Sites_all(models.Model):
     name1 = models.CharField(max_length=120)
     name2 = models.CharField(max_length=120)
     website = models.URLField() ## Important addition: functions with address fields as composite primary key
+    phone = models.CharField(max_length=30) ## Format: ###-###-#### with optional x####
     street1 = models.CharField(max_length=120)
     street2 = models.CharField(max_length=120,blank=True, null=True)
+    city = models.CharField(max_length=30)
+    state_usa = models.CharField(max_length=30) ## Can replace with Enum to match above classes
     zipcode = models.CharField(max_length=120)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
@@ -480,7 +487,7 @@ class Sites_all(models.Model):
     ## primary_care = models...  ## TODO: Add as Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
     archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records not approved for Finder listings
     why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_Enum5, blank=True, null=True) # Require only if archival_only = True
-    ## TODO: Add other fields for key filters (age, insurance, services, etc.)!!
+    ## TODO: Add other fields for key filters (insurance, services, etc.)!!
     date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
