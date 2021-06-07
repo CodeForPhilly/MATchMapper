@@ -49,24 +49,26 @@ class Sitecodes_samhsa_ftloc(models.Model):
 
 # Gave all Siterecs_ classes an oid (object id for ease of abstraction for backend) ## = Audit tables
 
-class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, shouldn't we have blank=False, null=False (neither True)??
+class Siterecs_samhsa_ftloc(models.Model):
     oid = models.IntegerField(primary_key=True)
     site_id = models.ManyToManyField('Sites_all', through = 'Sites_ftloc') ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
     date_firstfind = models.DateField(blank=True, null=True)
     date_lastfind = models.DateField(blank=True, null=True)
+    archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records admin (Editor) deletes from Finder
+    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_Enum5, blank=True, null=True) # Require only if archival_only = True
     name1 = models.CharField(max_length=120)
     name2 = models.CharField(max_length=120)
     street1 = models.CharField(max_length=120)
     street2 = models.CharField(max_length=120)
     tele = models.BooleanField(blank=True, null=True)
     city = models.CharField(max_length=30)
-    state_usa = models.CharField(max_length=120) # TODO change to Enum??? ## Here and for other state_usa: Check whether downloaded data uses abbrev or full names
-    zip5 = models.CharField(max_length=5,blank=True, null=True)
+    state_usa = models.CharField(max_length=120) # TODO change to Enum??? ## Downloaded data uses abbrev (not full names)
+    zipcode = models.CharField(max_length=5,blank=True, null=True) # Cannot use zip (=SAMHSA source label) due to Python keyword conflict
     zip4 = models.CharField(max_length=9,blank=True, null=True)
     county = models.CharField(max_length=120)
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
-    phone_intake1 = models.CharField(max_length=20,blank=True, null=True)
-    phone_intake2 = models.CharField(max_length=20,blank=True, null=True)
+    intake1 = models.CharField(max_length=20,blank=True, null=True) # Frontend TODO: Access phone2 instead of phone_intake1
+    intake2 = models.CharField(max_length=20,blank=True, null=True) # Frontend TODO: Access phone3 instead of phone_intake2
     website = models.URLField()
     latitude = models.FloatField()
     longitude = models.FloatField()
@@ -312,11 +314,13 @@ class Siterecs_samhsa_ftloc(models.Model): ## TODO: In all the Boolean fields, s
 class Siterecs_samhsa_otp(models.Model):
     oid = models.IntegerField(primary_key=True)
     site_id = models.ManyToManyField('Sites_all', through = 'sites_site_recs_lookup') ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
-    name_program = models.CharField(max_length=250)
-    name_dba = models.CharField(max_length=120,blank=True, null=True)
-    street_address = models.CharField(max_length=120)
+    archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records admin (Editor) deletes from Finder
+    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_Enum5, blank=True, null=True) # Require only if archival_only = True
+    program_name = models.CharField(max_length=250)
+    dba = models.CharField(max_length=120,blank=True, null=True)
+    street = models.CharField(max_length=120)
     city = models.CharField(max_length=30)
-    state_usa = models.CharField(max_length=120) # TODO change to Enum??? ## Match above class
+    state_usa = models.CharField(max_length=120) # TODO change to Enum??? ## Match above class; downloaded data again uses abbrev (not full names)
     zipcode = models.CharField(max_length=10)
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####) -- extended max_length to 20 to accommodate occasional extensions
     certification_status = models.CharField(max_length=120)
@@ -339,12 +343,25 @@ class Siterecs_samhsa_otp(models.Model):
 class Siterecs_dbhids_tad(models.Model): ## TODO (jkd): Update fields to match actual data compilation!!
     oid = models.IntegerField(primary_key=True)
     site_id = models.ManyToManyField('Sites_all', through = 'Siterecs_dbhids_sites_all_lookup')  ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
-    name_listed = models.CharField(max_length=120)
-    street_address = models.CharField(max_length=120)
-    loc_suppl = models.CharField(max_length=50,blank=True, null=True)
-    zip5 = models.CharField(max_length=5)
+    archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records admin (Editor) deletes from Finder
+    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_Enum5, blank=True, null=True) # Require only if archival_only = True
+    name1 = models.CharField(max_length=120)
+    street1 = models.CharField(max_length=120)
+    street2 = models.CharField(max_length=50,blank=True, null=True)
+    zipcode = models.CharField(max_length=5)
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
     mat_info = models.CharField(max_length=100) ## Current max = 50char, so 100 is just for flex
+    ## TODO: Make sure data specifies 0 for False and 1 for True in all Boolean fields for this class
+    bu = models.BooleanField(blank=True, null=True)
+    bui = models.BooleanField(blank=True, null=True)
+    bum = models.BooleanField(blank=True, null=True)
+    buu = models.BooleanField(blank=True, null=True)
+    mu = models.BooleanField(blank=True, null=True)
+    mm = models.BooleanField(blank=True, null=True)
+    nu = models.BooleanField(blank=True, null=True)
+    vti = models.BooleanField(blank=True, null=True)
+    vtm = models.BooleanField(blank=True, null=True)
+    vu = models.BooleanField(blank=True, null=True)
     iop = models.BooleanField(blank=True, null=True)
     op = models.BooleanField(blank=True, null=True)
     mh_tx = models.BooleanField(blank=True, null=True)
@@ -353,7 +370,7 @@ class Siterecs_dbhids_tad(models.Model): ## TODO (jkd): Update fields to match a
     coe = models.BooleanField(blank=True, null=True)
     other_notes = models.CharField(max_length=150,blank=True, null=True) ## Current max = 111char but second = just 52char
 
-    date_update = models.DateTimeField(default=timezone.now) ## TODO why/is this necessary for this table? (source = PDF with data updated only 1x/yr or less)
+    ## TODO: Construct table that holds per-table metadata (recency, facility type, etc.)
 
     class Meta:
         managed = True
@@ -368,19 +385,20 @@ class Siterecs_dbhids_tad(models.Model): ## TODO (jkd): Update fields to match a
 class Siterecs_hfp_fqhc(models.Model): ## TODO
     oid = models.IntegerField(primary_key=True)
     site_id = models.ManyToManyField('Sites_all', through = 'Siterecs_hfp_fqhc_sites_all_lookup')
+    archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records admin (Editor) deletes from Finder
+    why_hidden = models.CharField(max_length=150, default="Data needs review", choices=Multi_Choices_Enum5, blank=True, null=True) # Require only if archival_only = True
     name_short = models.CharField(max_length=50)
     name_system = models.CharField(max_length=120)
     name_site = models.CharField(max_length=120)
     admin_office = models.BooleanField(blank=True, null=True)
-    street_address = models.CharField(max_length=120)
-    loc_suppl = models.CharField(max_length=50,blank=True, null=True)
+    street1 = models.CharField(max_length=120)
+    street2 = models.CharField(max_length=50,blank=True, null=True)
     city = models.CharField(max_length=30)
     state_usa = models.CharField(max_length=30) ## Can replace with Enum to match above classes
-    zip5 = models.CharField(max_length=5)
+    zipcode = models.CharField(max_length=5)
     website = models.URLField()
     phone1 = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
     phone2 = models.CharField(max_length=20,blank=True, null=True) # Format: ###-###-#### (with optional x####)
-    why_hidden = models.CharField(max_length = 20, choices = Multi_Choices_Enum5,blank=True, null=True) ## TODO: Add as Enum (same 5 options as in Sites_all: "Site closed", "Data needs review", "Not a practice site", "Record redundant", "Other")
     date_firstfind = models.DateField()
     date_lastfind = models.DateField()
     data_review = models.CharField(max_length=250)
@@ -394,23 +412,25 @@ class Siterecs_hfp_fqhc(models.Model): ## TODO
 class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous columns!! Note crucial links to other tables!!
     oid = models.IntegerField(primary_key=True)
     site_id = models.ManyToManyField('Sites_all', through = "sitesrecs_other_srcs_sitesall_lk")
+    archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records admin (Editor) deletes from Finder
+    why_hidden = models.CharField(max_length=150, choices = Multi_Choices_Enum5, blank=True, null=True) # Blank if archival_only = False (most recs), else default = "Data needs review"?
     name1 = models.CharField(max_length=120)
     name2 = models.CharField(max_length=120)
     website1 = models.URLField()
     website2 = models.URLField()
-    street_address = models.CharField(max_length=120)
-    address_suppl = models.CharField(max_length=120)
-    zip5 = models.CharField(max_length=5)
-    fqhc = models.BooleanField(blank=True) ## Change all BooleanFields for this table to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No) -- blank="Unclear"!!
-    mat_avail = models.BooleanField(blank=True)
-    mat_bupe = models.BooleanField(blank=True)
-    mat_mtd = models.BooleanField(blank=True)
-    mat_ntrex = models.BooleanField(blank=True)
+    street1 = models.CharField(max_length=120)
+    street2 = models.CharField(max_length=120)
+    zipcode = models.CharField(max_length=5)
+    fqhc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    mat_avail = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    bu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # was mat_bupe
+    mu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # was mat_mtd
+    nu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # was mat_ntrex
     bupe_type = models.CharField(max_length=120, blank=True)
-    telehealth_avail = models.CharField(max_length=120, blank=True) # TODO should this be boolean too?
+    telehealth_avail = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     telehealth_notes = models.CharField(max_length=120, blank=True)
     insurance_notes = models.CharField(max_length=120, blank=True)
-    pregnant_women_treated = models.CharField(max_length=120, blank=True) # TODO should this be boolean too?
+    pregnant_women_treated = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     pregnant_women_notes = models.CharField(max_length=120, blank=True)
     # TODO not sure what to do about key listings
     insurance = models.CharField(blank=True, max_length=120)
@@ -443,23 +463,23 @@ class Sites_all(models.Model):
     dbhids_tad_id = models.ManyToManyField('Siterecs_dbhids_tad',blank=True, null=True)
     hfp_fqhc_id = models.ManyToManyField('Siterecs_hfp_fqhc',blank=True, null=True) ## Added
     other_srcs_id = models.ManyToManyField('Siterecs_other_srcs',blank=True, null=True)
-    name_program = models.CharField(max_length=120)
-    name_site = models.CharField(max_length=120)
-    url_site = models.URLField() ## Important addition: functions with address fields as composite primary key
-    street_address = models.CharField(max_length=120)
-    address_suppl = models.CharField(max_length=120,blank=True, null=True)
-    zip5 = models.CharField(max_length=120)
+    name1 = models.CharField(max_length=120)
+    name2 = models.CharField(max_length=120)
+    website = models.URLField() ## Important addition: functions with address fields as composite primary key
+    street1 = models.CharField(max_length=120)
+    street2 = models.CharField(max_length=120,blank=True, null=True)
+    zipcode = models.CharField(max_length=120)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
-    ## TODO: Identify how to link relevant fields from Audit tables to Enum fields below!!
-    mat_avail = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
-    mat_bupe = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
-    mat_mtd = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
-    mat_ntrex = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
-    fqhc = models.CharField(max_length = 20, default = 'Unclear', choices = Multi_Choices_Enum3) ## TODO: Change to Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
+    ## TODO: Identify how to link relevant fields from Audit tables to Enum fields below!! June 2021: Revising to consistent fieldnames helps
+    mat_avail = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    bu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    mu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    nu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    fqhc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     ## primary_care = models...  ## TODO: Add as Enum with 3 options: TRUE, Unclear, FALSE (or Yes, Unclear, No)
     archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records not approved for Finder listings
-    ## why_hidden = models... ## TODO: Add as Enum to identify reason(s) for non-approval (5 options to start: "Site closed", "Data needs review", "Not a practice site", "Record redundant", "Other")
+    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_Enum5, blank=True, null=True) # Require only if archival_only = True
     ## TODO: Add other fields for key filters (age, insurance, services, etc.)!!
     date_update = models.DateTimeField(default=timezone.now)
 
@@ -482,7 +502,6 @@ class sites_site_recs_lookup(models.Model):
 class Siterecs_dbhids_sites_all_lookup(models.Model):
     samhsa_oid = models.ForeignKey(Siterecs_dbhids_tad, on_delete=models.CASCADE)
     sites_all_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
-
 
 class Siterecs_hfp_fqhc_sites_all_lookup(models.Model):
     samhsa_oid = models.ForeignKey(Siterecs_hfp_fqhc, on_delete=models.CASCADE)
@@ -640,7 +659,7 @@ class Sites_ftloc(models.Model):
 #     bwn = models.BooleanField(blank=True, null=True)
 #     bwon = models.BooleanField(blank=True, null=True)
 #     beri = models.BooleanField(blank=True, null=True)
-#     db_field = models.BooleanField(db_column='db_', blank=True, null=True)  # Field renamed because it ended with '_'.
+#     db_field = models.BooleanField(db_column='db_', blank=True, null=True)  # Changed source field label to avoid SQL keyword conflict
 #     mu = models.BooleanField(blank=True, null=True)
 #     meth = models.BooleanField(blank=True, null=True)
 #     mm = models.BooleanField(blank=True, null=True)
@@ -703,7 +722,7 @@ class Sites_ftloc(models.Model):
 #     md = models.BooleanField(blank=True, null=True)
 #     mc = models.BooleanField(blank=True, null=True)
 #     si = models.BooleanField(blank=True, null=True)
-#     pi_field = models.BooleanField(db_column='pi_', blank=True, null=True)  # Field renamed because it ended with '_'.
+#     pi_field = models.BooleanField(db_column='pi_', blank=True, null=True)  # Changed source field label to avoid SQL keyword conflict
 #     mi = models.BooleanField(blank=True, null=True)
 #     atr = models.BooleanField(blank=True, null=True)
 #     fsa = models.BooleanField(blank=True, null=True)
@@ -760,7 +779,7 @@ class Sites_ftloc(models.Model):
 #     acc = models.BooleanField(blank=True, null=True)
 #     acm = models.BooleanField(blank=True, null=True)
 #     acu = models.BooleanField(blank=True, null=True)
-#     add_field = models.BooleanField(db_column='add_', blank=True, null=True)  # Field renamed because it ended with '_'.
+#     add_field = models.BooleanField(db_column='add_', blank=True, null=True)  # Changed source field label to avoid SQL keyword conflict
 #     baba = models.BooleanField(blank=True, null=True)
 #     ccc = models.BooleanField(blank=True, null=True)
 #     cmha = models.BooleanField(blank=True, null=True)
