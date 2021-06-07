@@ -299,9 +299,6 @@ class Siterecs_samhsa_ftloc(models.Model):
     ## mat_mtd = models.IntegerField(blank=True, null=True) # Removed as redundant with mu
     mat_misc = models.IntegerField(blank=True, null=True) # Retained in case of usefulness (TBD by stakeholders/core users)
     mat_avail = models.IntegerField(blank=True, null=True) # Retained in case of usefulness (TBD by stakeholders/core users)
-
-
-
     date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -309,7 +306,7 @@ class Siterecs_samhsa_ftloc(models.Model):
         db_table = 'siterecs_samhsa_ftloc'
 
     def __str__(self):
-        return ', '.join([self.street1, self.street2, self.city, self.state_usa, self.zip5])
+        return ', '.join([self.street1, self.street2, self.city, self.state_usa, self.zipcode]) ## All zip5 now zipcode
 
 class Siterecs_samhsa_otp(models.Model):
     oid = models.IntegerField(primary_key=True)
@@ -335,8 +332,7 @@ class Siterecs_samhsa_otp(models.Model):
         db_table = 'siterecs_samhsa_otp'
 
     def __str__(self):
-        return self.name_program
-
+        return self.program_name ## Renamed to match source more closely
 
 
 
@@ -354,7 +350,7 @@ class Siterecs_dbhids_tad(models.Model):
     ref_address = models.CharField(max_length=100) # Current max LEN in data is 53
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
     mat_info = models.CharField(max_length=100) ## Current max = 50char, so 100 is just for flex
-    ## TODO: Make sure data specifies 0 for False and 1 for True in all Boolean fields for this class ... [done, though I no longer recall why this was ?necessary]
+    ## Make sure data specifies 0 for False and 1 for True in all Boolean fields for this class ... [was 0/1 necessary or did this mean simply to encode data consistently? current consistency has TRUE/blank cell for all]
     bu = models.BooleanField(blank=True, null=True)
     bui = models.BooleanField(blank=True, null=True)
     bum = models.BooleanField(blank=True, null=True)
@@ -366,7 +362,7 @@ class Siterecs_dbhids_tad(models.Model):
     nu = models.BooleanField(blank=True, null=True)
     vti = models.BooleanField(blank=True, null=True)
     vtm = models.BooleanField(blank=True, null=True)
-    vu = models.BooleanField(blank=True, null=True)
+    vtrl = models.BooleanField(blank=True, null=True) # Renamed to match SAMHSA sitecodes
     iop = models.BooleanField(blank=True, null=True)
     op = models.BooleanField(blank=True, null=True)
     mh_tx = models.BooleanField(blank=True, null=True)
@@ -462,8 +458,6 @@ class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous colu
 
 
 
-
-
 class Sites_all(models.Model):
     oid = models.CharField(primary_key=True, max_length=120) # TODO integer or varchar? ## Probably serialized varchar?
     id_samhsa_ftloc = models.ManyToManyField('Siterecs_samhsa_ftloc',blank=True, null=True) ## Renamed to make all inner-MATchMapper links start with id_
@@ -472,8 +466,8 @@ class Sites_all(models.Model):
     id_dbhids_tad = models.ManyToManyField('Siterecs_dbhids_tad',blank=True, null=True) ## Renamed to make all inner-MATchMapper links start with id_
     id_hfp_fqhc = models.ManyToManyField('Siterecs_hfp_fqhc',blank=True, null=True) ## Renamed to make all inner-MATchMapper links start with id_
     ## id_other_srcs = models.ManyToManyField('Siterecs_other_srcs',blank=True, null=True)  ## TODO: reincorporate after IDs are checked
-    name1 = models.CharField(max_length=120)
-    name2 = models.CharField(max_length=120)
+    name1 = models.CharField(max_length=120) ## WAS name_program
+    name2 = models.CharField(max_length=120) ## WAS name_site
     website1 = models.URLField() ## Important addition: functions with address fields as composite primary key
     website2 = models.URLField() # Added just in case (to match siterecs_other_srcs)
     phone1 = models.CharField(max_length=30) ## Format: ###-###-#### with optional x####
@@ -504,7 +498,7 @@ class Sites_all(models.Model):
         db_table = 'sites_all'
 
     def __str__(self):
-        return ', '.join([self.oid, self.name_program, self.name_site])
+        return ', '.join([self.oid, self.name1, self.name2]) ## Updated to match renaming consistency
 
 
 class sitesrecs_other_srcs_sitesall_lk(models.Model):
