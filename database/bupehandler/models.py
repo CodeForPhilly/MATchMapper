@@ -344,10 +344,10 @@ class Siterecs_dbhids_tad(models.Model):
     name1 = models.CharField(max_length=120)
     street1 = models.CharField(max_length=120)
     street2 = models.CharField(max_length=50,blank=True, null=True)
-    city = models.CharField(max_length=30)
-    state_usa = models.CharField(max_length=30) ## Can replace with Enum to match above classes
+    city = models.CharField(max_length=30, default='Philadelphia') # Added Philadelphia as default city BY SAM
+    state_usa = models.CharField(max_length=30, default='PA') ## Can replace with Enum to match above classes BY SAM
     zipcode = models.CharField(max_length=5)
-    ref_address = models.CharField(max_length=100) # Current max LEN in data is 53
+    ref_address = models.CharField(max_length=100, null=True) # Current max LEN in data is 53
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
     mat_info = models.CharField(max_length=100) ## Current max = 50char, so 100 is just for flex
     ## Make sure data specifies 0 for False and 1 for True in all Boolean fields for this class ... [was 0/1 necessary or did this mean simply to encode data consistently? current consistency has TRUE/blank cell for all]
@@ -370,7 +370,7 @@ class Siterecs_dbhids_tad(models.Model):
     walk_in_hours = models.CharField(max_length=50,blank=True, null=True)## TODO: Retain for reference or delete as unreliable?
     coe = models.BooleanField(blank=True, null=True)
     other_notes = models.CharField(max_length=150,blank=True, null=True) ## Current max = 111char but second = just 52char
-    data_review = models.CharField(max_length=250)
+    data_review = models.CharField(max_length=250, null=True, blank=True) # Added null=True for now BY SAM
 
     ## TODO: Construct table that holds per-table metadata (recency, facility type, etc.)
 
@@ -421,10 +421,10 @@ class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous colu
     name3 = models.CharField(max_length=120)
     website1 = models.URLField()
     website2 = models.URLField()
-    street1 = models.CharField(max_length=120)
-    street2 = models.CharField(max_length=120)
-    city = models.CharField(max_length=30)
-    state_usa = models.CharField(max_length=30) ## Can replace with Enum to match above classes   
+    street1 = models.CharField(max_length=120, null=True)
+    street2 = models.CharField(max_length=120,null=True)
+    city = models.CharField(max_length=30, default='Philadelphia')
+    state_usa = models.CharField(max_length=30, default='PA') ## Can replace with Enum to match above classes   
     zipcode = models.CharField(max_length=5)
     fqhc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     mat_avail = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
@@ -469,13 +469,13 @@ class Sites_all(models.Model):
     name1 = models.CharField(max_length=120) ## WAS name_program
     name2 = models.CharField(max_length=120) ## WAS name_site
     website1 = models.URLField() ## Important addition: functions with address fields as composite primary key
-    website2 = models.URLField() # Added just in case (to match siterecs_other_srcs)
-    phone1 = models.CharField(max_length=30) ## Format: ###-###-#### with optional x####
-    phone2 = models.CharField(max_length=30) ## Format: ###-###-#### with optional x####
-    street1 = models.CharField(max_length=120)
+    website2 = models.URLField(null=True) # Added just in case (to match siterecs_other_srcs)
+    phone1 = models.CharField(max_length=30, null=True, blank=True)  ## Format: ###-###-#### with optional x####
+    phone2 = models.CharField(max_length=30, null=True, blank=True)  ## Format: ###-###-#### with optional x####
+    street1 = models.CharField(max_length=120, null=True, blank=True) 
     street2 = models.CharField(max_length=120,blank=True, null=True)
-    city = models.CharField(max_length=30)
-    state_usa = models.CharField(max_length=30) ## Can replace with Enum to match above classes
+    city = models.CharField(max_length=30, default='Philadelphia')
+    state_usa = models.CharField(max_length=30, default='PA') ## Can replace with Enum to match above classes
     zipcode = models.CharField(max_length=120)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
@@ -489,7 +489,7 @@ class Sites_all(models.Model):
     telehealth = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # June 6: empty for now
     archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records not approved for Finder listings
     why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_Enum5, blank=True) # Require only if archival_only = True
-    data_review = models.CharField(max_length=250) # Added per TODO in data-load sheet
+    data_review = models.CharField(max_length=250, null=True, blank=True) # Added per TODO in data-load sheet
     ## TODO: Add other fields for key filters (insurance, services, etc.)!!
     date_update = models.DateTimeField(default=timezone.now)
 
