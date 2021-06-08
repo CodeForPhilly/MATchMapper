@@ -1,0 +1,9 @@
+Filenames matcher for:
+June 2021 updated loads (Josephine, Sam, Tung) | March 2021 initial loads (Joey)
+-- 0607_siterecs_hfp_fqhc.csv | hfp.csv
+-- 0607_siterecs_samhsa_ftloc.csv | loc2.csv (and older version, loc.csv)
+-- 0607_sites_all.csv [*] | sites_all.csv
+-- 0607_siterecs_samhsa_otp.csv | sitesrecotp.csv
+-- 0607_siterecs_dbhids_tad.csv | tad.csv
+
+[*]Incorporates April 2021 geocodes from David's sites_all_geocoded.csv
