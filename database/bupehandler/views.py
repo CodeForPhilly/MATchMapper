@@ -126,7 +126,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None)
         general_display_list.append(sites_general_display(table_name, model_to_dict(table_object)).output)
     #table_serializer = serializer_dict[table_name](table_objects, many=True)
     print(len(general_display_list))
-    return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : json.dumps(general_display_list)})
+    return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : general_display_list})
 
 
 @api_view(["GET", "POST", "DELETE"])
