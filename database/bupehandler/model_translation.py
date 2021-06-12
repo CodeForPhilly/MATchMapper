@@ -1,4 +1,4 @@
-class sites_general_display(): 
+class Sites_general_display: 
     def __init__(self, table_name, source_object): 
         self.table_name = table_name
         self.output = {"name1": None, "name2": None, "name3": None, "website1": None, 
@@ -16,11 +16,29 @@ class sites_general_display():
             "intake1" : "phone2", 
             "intake2" : "phone3", 
             }
-            for key in source_object: 
-                if key in self.output: 
-                    self.output[key] = source_object[key] 
-                elif key in mapping: 
-                    self.output[mapping[key]] = source_object[key] 
+        elif self.table_name == "sites_all": 
+            mapping = dict()
+        elif self.table_name == "siterecs_samhsa_otp": 
+            mapping = {"program_name": "name1", 
+            "dba": "name2", 
+            "phone": "phone1", 
+            "street" : "street1" 
+            }
+        elif self.table_name == "siterecs_dbhids_tad": 
+            mapping = {"phone": "phone1"}
+        elif self.table_name == "siterecs_hfp_fqhc": 
+            mapping = {"name_system": "name1",
+            "name_site": "name2",
+            "name_short": "name3",
+            "website": "website1"
+            }
+        elif self.table_name == "siterecs_other_srcs": 
+            mapping = dict()
+        for key in source_object: 
+            if key in self.output: 
+                self.output[key] = source_object[key] 
+            elif key in mapping: 
+                self.output[mapping[key]] = source_object[key] 
 
 
 
