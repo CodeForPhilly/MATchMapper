@@ -14,7 +14,8 @@ from .serializers import Sitecodes_samhsa_ftlocSerializer, Siterecs_samhsa_ftloc
 from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Siterecs_other_srcs, Sites_all
 import re 
 from spellchecker import SpellChecker
-
+from .model_translation import Sites_general_display
+from django.forms.models import model_to_dict
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
 @permission_classes([IsAuthenticated])
@@ -120,8 +121,12 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None)
     if request.GET.getlist('order'):
         order_by_list = request.GET.getlist('order')
         table_objects = table_objects.order_by(*order_by_list)
-    table_serializer = serializer_dict[table_name](table_objects, many=True)
-    return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : table_serializer.data})
+    general_display_list = [] 
+    for table_object in table_objects: 
+        general_display_list.append(Sites_general_display(table_name, model_to_dict(table_object)).output)
+    #table_serializer = serializer_dict[table_name](table_objects, many=True)
+    print(len(general_display_list))
+    return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : general_display_list})
 
 
 @api_view(["GET", "POST", "DELETE"])

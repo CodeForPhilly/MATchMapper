@@ -132,7 +132,7 @@
                 </td>
                 <td class="nowrap">
                   <p class="cellText">
-                    {% if site.tele %}
+                    {% if site.telehealth %}
                       Yes
                     {% else %}
                       No
@@ -141,18 +141,7 @@
                 </td>
                 <td class="nowrap">
                   <p class="cellText bold">
-                    {{site.phone|format_phone}}
                   </p>
-                  {% if site.phone_intake1 %}
-                  <p class="cellText">
-                    Intake 1: <span class="bold">{{site.phone_intake1|format_phone}}</span>
-                  </p>
-                  {% endif %}
-                  {% if site.phone_intake2 %}
-                  <p class="cellText">
-                    Intake 2: <span class="bold">{{site.phone_intake2|format_phone}}</span>
-                  </p>
-                  {% endif %}
                 </td>
                 <td class="nowrap">
                   <p class="cellText bold">
@@ -258,7 +247,7 @@
                 {% for site in objects %}
                   <tr>
                     <td class="facilityName is-pinned">
-                      <p class="cellText bold">{{site.name1}}</p>
+                      <p class="cellText bold">{{site}}</p>
                       <p class="cellText semibold">{{site.name2}}</p>
                       <p class="cellText"><a target="_blank" href="{{site.website|legal_url}}">{{site.website}}</a></p>
                     </td>
@@ -272,19 +261,6 @@
                       </p>
                     </td>
                     <td class="nowrap">
-                      <p class="cellText bold">
-                        {{site.phone|format_phone}}
-                      </p>
-                      {% if site.phone_intake1 %}
-                      <p class="cellText">
-                        Intake 1: <span class="bold">{{site.phone_intake1|format_phone}}</span>
-                      </p>
-                      {% endif %}
-                      {% if site.phone_intake2 %}
-                      <p class="cellText">
-                        Intake 2: <span class="bold">{{site.phone_intake2|format_phone}}</span>
-                      </p>
-                      {% endif %}
                     </td>
                     <td class="nowrap">
                       <p class="cellText bold">
