@@ -87,7 +87,6 @@ class Command(BaseCommand):
                 sites.why_hidden = row['why_hidden']
             if row['data_review'] != '':
                 sites.data_review= row['data_review']
-            ir row
             if row['mat_avail'] == '':
                 sites.mat_avail = 'Unknown'
             else:
@@ -105,16 +104,11 @@ class Command(BaseCommand):
                     #    print(s.oid)
 
                     #sites.site_id.samhsa_oid = sites_all.samhsa_otp_id
-                    
-                    siteotp.program_name = r1['program_name']
+
+                    siteotp.name_program = r1['name_program']
                     if r1['name_dba'] != '':
                         siteotp.name_dba = r1['name_dba']
-                    siteotp.street = r1['street']
-                    siteotp.site_id = r1['site_id'] 
-                    siteotp.archival_only = r1['archival_only'] 
-                    siteotp.why_hidden = r1['why_hidden'] 
-                    siteotp.dba = r1['dba'] 
-                    siteotp.date_review = r1['date_review']
+                    siteotp.street_address = r1['address']
                     siteotp.city = r1['city']
                     siteotp.state_usa = r1['state_usa']
                     siteotp.zipcode = r1['zipcode']
@@ -146,25 +140,33 @@ class Command(BaseCommand):
 
                 else:
                     sites.save()
+
             for r1 in DictReader(open('./hfp.csv')):
                 if r1['site_id'] == row['site_id']:
                     print(r1['site_id'])
                     hfp = Siterecs_hfp_fqhc()
-                    hfp.oid = r1['ref_id']
+                    hfp.oid = r1['oid']
+                    hfp.site_id = r1['site_id']
                     hfp.name_short = r1['name_short']
                     hfp.name_system = r1['name_system']
                     hfp.name_site = r1['name_site']
                     hfp.website = r1['website']
                     if r1['admin_office'] !='':
                         hfp.admin_office = r1['admin_office']
-                    hfp.street_address = r1['street_address']
-                    hfp.loc_suppl = r1['address_suppl']
+                    hfp.street1 = r1['street1']
+                    hfp.steet2 = r1['street2']
                     hfp.city = r1['city']
                     hfp.state_usa = r1['state_usa']
-                    hfp.zip5 = r1['zip5']
+                    hfp.zipcode = r1['zipcode']
                     hfp.phone1 = r1['phone1']
                     if r1['phone2'] != '':
                         hfp.phone2 = r1['phone2']
+                    if r1['archival_only'] != '':
+                        hfp.archival_only = r1['archival_only']
+                    if r1['why_hidden'] == '':
+                        hfp.why_hidden = "Data needs review" 
+                    else:
+                        hfp.why_hidden = r1['why_hidden']
                     if r1['why_hidden'] != '':
                         hfp.why_hidden = r1['why_hidden']
                     if r1['data_review'] != '':
@@ -186,15 +188,49 @@ class Command(BaseCommand):
                 if r3['site_id'] == row['site_id']:
                     print(r3['name_listed'])
                     tad = Siterecs_dbhids_tad()
-                    tad.oid = r3['id']
-                    tad.name_listed = r3['name_listed']
-                    tad.street_address = r3['street_address']
-                    if r3['address_suppl'] != '':
-                        tad.loc_suppl = r3['address_suppl']
-                    tad.zip5 = r3['zip5']
+                    tad.oid = r3['oid']
+                    tad.site_id = r3['site_id']
+                    tad.name1 = r3['name1']
+                    tad.street1 = r3['street1']
+                    if r3['street2'] != '':
+                        tad.street2 = r3['street2']
+                    if r3['city'] == '':
+                        tad.city= 'Philadelphia'
+                    else:
+                        tad.city = r3['city']
+                    if r3['state_usa'] == '':
+                        tad.state_usa= 'PA'
+                    else:
+                        tad.state_usa = r3['PA']
+                    tad.zipcode = r3['zipcode']
+                    tad.ref_address = r3['ref_address']
                     tad.phone = r3['phone']
                     tad.mat_info = r3['mat_info']
-                    if r3['iop'] != '':
+                    if r3['bu'] != '':
+                        tad.bu = r3['bu']
+                    if r3['bui'] != '':
+                        tad.bui = r3['bui']
+                    if r3['bum'] !='':
+                        tad.bum = r3['bum']
+                    if r3['bwn'] != '':
+                        tad.bwn = r3['bwn']
+                    if r3['buu'] != '':
+                        tad.buu = r3['buu']
+                    if r3['mu'] !='':
+                        tad.mu = r3['mu']
+                    if r3['mui'] != '':
+                        tad.mui = r3['mui']
+                    if r3['mm'] != '':
+                        tad.mm = r3['mm']
+                    if r3['nu'] !='':
+                        tad.nu = r3['nu']
+                    if r3['vti'] !='':
+                        tad.vti = r3['vti']
+                    if r3['vtm'] != '':
+                        tad.vtm = r3['vtm']
+                    if r3['vtrl'] != '':
+                        tad.vtrl = r3['vtrl']
+                    if r3['iop'] !='':
                         tad.iop = r3['iop']
                     if r3['op'] != '':
                         tad.op = r3['op']
@@ -205,6 +241,10 @@ class Command(BaseCommand):
                     tad.walk_in_hours = r3['walk_in_hours']
                     if r3['coe'] != '':
                         tad.coe = r3['coe']
+                    if r3['other_notes'] != '':
+                        tad.other_notes = r3['other_notes']
+                    if r3['data_review'] != '':
+                        tad.data_review = r3['data_review']
                     sites.save()
                     tad.save()
                     sites.id_dbhids_tad.add(tad)
@@ -233,22 +273,20 @@ class Command(BaseCommand):
                         Sam_site.street1 = r2['street1']
                     if r2['street2']!='':
                         Sam_site.street2 = r2['street2']
-                    if r2['tele']!='':
-                        Sam_site.tele= r2['tele']   
                     if r2['city']!= '':
                         Sam_site.city = r2['city']
                     if r2['state_usa']!= '':
                         Sam_site.state_usa = r2['state_usa']
-                    if r2['zipcode']!='':
-                        Sam_site.zipcode = r2['zipcode']
+                    if r2['zip5']!='':
+                        Sam_site.zip5 = r2['zip5']
                     if r2['zip4']!='':
                         Sam_site.zip4 = r2['zip4']
                     if r2['county']!='':
                         Sam_site.county = r2['county']
                     if r2['phone']!='':
                         Sam_site.phone = r2['phone']
-                    Sam_site.intake1 = r2['intake1']
-                    Sam_site.intake2 = r2['intake2']
+                    Sam_site.phone_intake1 = r2['phone_intake1']
+                    Sam_site.phone_intake2 = r2['phone_intake2']
                     if r2['website']!='':
                         Sam_site.website = r2['website']
                     if r2['latitude']!='':
@@ -257,6 +295,7 @@ class Command(BaseCommand):
                         Sam_site.longitude = r2['longitude']
                     if r2['type_facility']:
                         Sam_site.type_facility = r2['type_facility']
+                    Sam_site.tele = r2['tele']
                     Sam_site.sa = r2['sa']
                     Sam_site.dt = r2['dt']
                     Sam_site.bu = r2['bu']
