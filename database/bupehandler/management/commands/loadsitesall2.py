@@ -20,9 +20,8 @@ class Command(BaseCommand):
             sites.oid = row['site_id']
 
     
-            sites.dbhids_tad_id.sites_all_id = row['site_id']
-            sites.hfp_fqhc_id.sites_all_id = row['site_id']
-            sites.other_srcs_id.sites_all_id = row['site_id']
+            sites.id_dbhids_tad.sites_all_id = row['site_id']
+            sites.id_hfp_fqhc.sites_all_id = row['site_id']
             if row['name1'] != '':
                 sites.name1 = row['name1']
             if row['name2'] != '':
@@ -50,10 +49,10 @@ class Command(BaseCommand):
             if row['state_usa'] == '':
                 sites.state_usa= 'PA'
             else:
-                sites.state_usa = row['PA']
+                sites.state_usa = row['state_usa']
             if row['zipcode'] != '':
                 sites.zipcode = row['zipcode']
-            if row['latittude'] != '':
+            if row['latitude'] != '':
                 sites.latitude = row['latitude']
             if row['longitude'] != '':
                 sites.longitude = row['longitude']
@@ -77,8 +76,6 @@ class Command(BaseCommand):
                 sites.prim_care = 'Unclear'
             else:
                 sites.prim_care = row['prim_care']
-            if row['name_site'] != '':
-                sites.name_site = row['name_site']
             if row['archival_only'] != '':
                 sites.archival_only = row['archival_only']
             if row['why_hidden'] == '':
@@ -99,7 +96,7 @@ class Command(BaseCommand):
                     siteotp = Siterecs_samhsa_otp()
                 #    print(siteotp)
 
-                    siteotp.oid = r1['rec_id']
+                    siteotp.oid = r1['oid']
                     #for s in sitesallid:
                     #    print(s.oid)
 
@@ -151,7 +148,7 @@ class Command(BaseCommand):
                     print(r1['site_id'])
                     hfp = Siterecs_hfp_fqhc()
                     hfp.oid = r1['oid']
-                    hfp.site_id = r1['site_id']
+                    hfp.site_id.set(r1['site_id'])
                     hfp.name_short = r1['name_short']
                     hfp.name_system = r1['name_system']
                     hfp.name_site = r1['name_site']
