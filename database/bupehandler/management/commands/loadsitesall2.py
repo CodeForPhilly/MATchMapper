@@ -115,7 +115,6 @@ class Command(BaseCommand):
                     siteotp.zipcode = r1['zipcode']
                     siteotp.phone = r1['phone']
                     siteotp.certification = r1['certification']
-                    siteotp.full_certification = r1['full_certification']
                     if r1['full_certification'] != '':
                         fdate = r1['full_certification']
                         siteotp.date_full_certification = datetime.strptime(fdate,DATETIME_FORMAT)
