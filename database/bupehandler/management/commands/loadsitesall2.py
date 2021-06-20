@@ -19,43 +19,79 @@ class Command(BaseCommand):
         #    print(row['site_id'])
             sites.oid = row['site_id']
 
-
+    
             sites.dbhids_tad_id.sites_all_id = row['site_id']
             sites.hfp_fqhc_id.sites_all_id = row['site_id']
             sites.other_srcs_id.sites_all_id = row['site_id']
-
-            if row['url_site'] != '':
-                sites.url_site = row['url_site']
-            if row['street_address'] != '':
-                sites.street_address = row['street_address']
-            if row['address_suppl']  !='':
-                sites.address_suppl = row['address_suppl']
-            if row['zip5'] != '':
-                sites.zip5 = row['zip5']
-            if row['name_system'] != '':
-                sites.name_program = row['name_system']
+            if row['name1'] != '':
+                sites.name1 = row['name1']
+            if row['name2'] != '':
+                sites.name2 = row['name2']
+            if row['website1'] != '':
+                sites.website1 = row['website1']
+            if row['website2'] != '':
+                sites.website2 = row['website2']
+            if row['telehealth'] == '':
+                sites.telehealth = 'Unclear'
+            else:
+                sites.telehealth = row['telehealth']
+            if row['phone1'] != '':
+                sites.phone1 = row['phone1']
+            if row['phone2'] != '':
+                sites.phone2 = row['phone2']
+            if row['street1'] != '':
+                sites.street1 = row['street1']
+            if row['street2'] != '':
+                sites.street2 = row['street2']
+            if row['city'] == '':
+                sites.city= 'Philadelphia'
+            else:
+                sites.city = row['city']
+            if row['state_usa'] == '':
+                sites.state_usa= 'PA'
+            else:
+                sites.state_usa = row['PA']
+            if row['zipcode'] != '':
+                sites.zipcode = row['zipcode']
+            if row['latittude'] != '':
+                sites.latitude = row['latitude']
+            if row['longitude'] != '':
+                sites.longitude = row['longitude']
+            if row['bu'] == '':
+                sites.bu = 'Unclear'
+            else:
+                sites.bu = row['bu']
+            if row['mu'] == '':
+                sites.mu = 'Unclear'
+            else:
+                sites.mu = row['mu']
+            if row['nu'] == '':
+                sites.nu = 'Unclear'
+            else:
+                sites.nu = row['nu']
+            if row['fqhc'] == '':
+                sites.fqhc = 'Unclear'
+            else:
+                sites.fqhc = row['fqhc']
+            if row['prim_care'] == '':
+                sites.prim_care = 'Unclear'
+            else:
+                sites.prim_care = row['prim_care']
             if row['name_site'] != '':
                 sites.name_site = row['name_site']
+            if row['archival_only'] != '':
+                sites.archival_only = row['archival_only']
+            if row['why_hidden'] == '':
+                sites.why_hidden = "Data needs review" 
+            else:
+                sites.why_hidden = row['why_hidden']
+            if row['data_review'] != '':
+                sites.data_review= row['data_review']
+            ir row
             if row['mat_avail'] == '':
                 sites.mat_avail = 'Unknown'
             else:
                 sites.mat_avail = row['mat_avail']
-            if row['mat_bupe'] == '':
-                sites.mat_bupe = 'Unknown'
-            else:
-                sites.mat_bupe = row['mat_bupe']
-            if row['mat_mtd'] == '':
-                sites.mat_mtd = 'Unknown'
-            else:
-                sites.mat_mtd = row['mat_mtd']
-            if row['mat_ntrex'] == '':
-                sites.mat_ntrex = 'Unknown'
-            else:
-                sites.mat_ntrex = row['mat_ntrex']
-            if row['fqhc'] == '':
-                sites.fqhc = 'Unknown'
-            if row['archival_only'] != '':
-                sites.archival_only = row['archival_only']
             #sites.samhsa_otp_id.samhsa_oid = sites
             for r1 in DictReader(open('./sitesrecotp.csv')):
                 if r1['site_id'] == row['site_id']:
@@ -97,7 +133,7 @@ class Command(BaseCommand):
                     sites.save()
 
 
-                    sites.samhsa_otp_id.add(siteotp)
+                    sites.id_samhsa_otp.add(siteotp)
 
                     sites.save()
                     siteotp.save()
@@ -105,6 +141,7 @@ class Command(BaseCommand):
 
                 else:
                     sites.save()
+                '''
             for r1 in DictReader(open('./hfp.csv')):
                 if r1['site_id'] == row['site_id']:
                     print(r1['site_id'])
@@ -138,7 +175,7 @@ class Command(BaseCommand):
                     sites.save()
                     hfp.save()
 
-                    sites.hfp_fqhc_id.add(hfp)
+                    sites.id_hfp_fqhc.add(hfp)
                     sites.save()
                     hfp.save()
             for r3 in DictReader(open('./tad.csv')):
@@ -166,7 +203,7 @@ class Command(BaseCommand):
                         tad.coe = r3['coe']
                     sites.save()
                     tad.save()
-                    sites.dbhids_tad_id.add(tad)
+                    sites.id_dbhids_tad.add(tad)
                     sites.save()
                     tad.save()
 
@@ -438,6 +475,7 @@ class Command(BaseCommand):
                     Sam_site.n40 = r2['n40']
                     sites.save()
                     Sam_site.save()
-                    sites.samhsa_ftloc_id.add(Sam_site)
+                    sites.id_samhsa_ftloc.add(Sam_site)
                     sites.save()
                     Sam_site.save()
+'''
