@@ -105,10 +105,15 @@ class Command(BaseCommand):
 
                     #sites.site_id.samhsa_oid = sites_all.samhsa_otp_id
 
-                    siteotp.name_program = r1['name_program']
+                    siteotp.program_name = r1['program_name']
                     if r1['name_dba'] != '':
                         siteotp.name_dba = r1['name_dba']
-                    siteotp.street_address = r1['address']
+                    siteotp.street = r1['street']
+                    siteotp.site_id = r1['site_id'] 
+                    siteotp.archival_only = r1['archival_only'] 
+                    siteotp.why_hidden = r1['why_hidden'] 
+                    siteotp.dba = r1['dba'] 
+                    siteotp.date_review = r1['date_review']
                     siteotp.city = r1['city']
                     siteotp.state_usa = r1['state_usa']
                     siteotp.zipcode = r1['zipcode']
@@ -273,20 +278,22 @@ class Command(BaseCommand):
                         Sam_site.street1 = r2['street1']
                     if r2['street2']!='':
                         Sam_site.street2 = r2['street2']
+                    if r2['tele']!='':
+                        Sam_site.tele= r2['tele'] 
                     if r2['city']!= '':
                         Sam_site.city = r2['city']
                     if r2['state_usa']!= '':
                         Sam_site.state_usa = r2['state_usa']
-                    if r2['zip5']!='':
-                        Sam_site.zip5 = r2['zip5']
+                    if r2['zipcode']!='':
+                        Sam_site.zipcode = r2['zipcode']
                     if r2['zip4']!='':
                         Sam_site.zip4 = r2['zip4']
                     if r2['county']!='':
                         Sam_site.county = r2['county']
                     if r2['phone']!='':
                         Sam_site.phone = r2['phone']
-                    Sam_site.phone_intake1 = r2['phone_intake1']
-                    Sam_site.phone_intake2 = r2['phone_intake2']
+                    Sam_site.intake1 = r2['intake1']
+                    Sam_site.intake2 = r2['intake2']
                     if r2['website']!='':
                         Sam_site.website = r2['website']
                     if r2['latitude']!='':
