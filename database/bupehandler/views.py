@@ -10,8 +10,8 @@ from rest_framework import status
 from rest_framework.response import Response
 import json
 from django.core.exceptions import ObjectDoesNotExist
-from .serializers import Sitecodes_samhsa_ftlocSerializer, Siterecs_samhsa_ftlocSerializer, Siterecs_samhsa_otpSerializer, Siterecs_dbhids_tadSerializer, Siterecs_other_srcsSerializer, Sites_allSerializer
-from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Siterecs_other_srcs, Sites_all
+from .serializers import Sitecodes_samhsa_ftlocSerializer, Siterecs_samhsa_ftlocSerializer, Siterecs_samhsa_otpSerializer, Siterecs_dbhids_tadSerializer, Siterecs_other_srcsSerializer, Sites_allSerializer, Siterecs_hfp_fqhcSerializer
+from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Siterecs_other_srcs, Sites_all, Siterecs_hfp_fqhc
 import re 
 from spellchecker import SpellChecker
 from .model_translation import Sites_general_display
@@ -100,6 +100,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None)
     table_dict = {
         "sitecodes_samhsa_ftloc": Sitecodes_samhsa_ftloc,
         "siterecs_samhsa_ftloc": Siterecs_samhsa_ftloc,
+        "siterecs_hfp_fqhc": Siterecs_hfp_fqhc,
         "siterecs_samhsa_otp": Siterecs_samhsa_otp ,
         "siterecs_dbhids_tad": Siterecs_dbhids_tad,
         "siterecs_other_srcs" : Siterecs_other_srcs ,
@@ -108,6 +109,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None)
     serializer_dict = {
         "sitecodes_samhsa_ftloc" : Sitecodes_samhsa_ftlocSerializer,
         "siterecs_samhsa_ftloc" : Siterecs_samhsa_ftlocSerializer,
+        "siterecs_hfp_fqhc": Siterecs_hfp_fqhcSerializer,
         "siterecs_samhsa_otp": Siterecs_samhsa_otpSerializer,
         "siterecs_dbhids_tad": Siterecs_dbhids_tadSerializer,
         "siterecs_other_srcs" : Siterecs_other_srcsSerializer,

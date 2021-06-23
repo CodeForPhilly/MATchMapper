@@ -6,12 +6,12 @@ from django.core.management import BaseCommand
 from bupehandler.models import Sites_all,Siterecs_samhsa_otp,sites_site_recs_lookup,Siterecs_hfp_fqhc,Siterecs_samhsa_ftloc,Siterecs_dbhids_tad
 from pytz import UTC
 
-#TODO: update the csv to include why_hidden, archival only field for siterecs_samhsa_otp 
-DATETIME_FORMAT = '%Y-%m-%d'
+
+DATETIME_FORMAT = '%m/%d/%Y'
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        for row in DictReader(open('./0607_sites_all.csv')):
+        for row in DictReader(open('./sites_all.csv')):
             sites= Sites_all()
             #otp = Siterecs_samhsa_otp()
             #tad = Siterecs_dbhids_tad()
@@ -20,8 +20,9 @@ class Command(BaseCommand):
             sites.oid = row['site_id']
 
     
-            sites.id_dbhids_tad.sites_all_id = row['site_id']
-            sites.id_hfp_fqhc.sites_all_id = row['site_id']
+            sites.dbhids_tad_id.sites_all_id = row['site_id']
+            sites.hfp_fqhc_id.sites_all_id = row['site_id']
+            sites.other_srcs_id.sites_all_id = row['site_id']
             if row['name1'] != '':
                 sites.name1 = row['name1']
             if row['name2'] != '':
@@ -49,10 +50,10 @@ class Command(BaseCommand):
             if row['state_usa'] == '':
                 sites.state_usa= 'PA'
             else:
-                sites.state_usa = row['state_usa']
+                sites.state_usa = row['PA']
             if row['zipcode'] != '':
                 sites.zipcode = row['zipcode']
-            if row['latitude'] != '':
+            if row['latittude'] != '':
                 sites.latitude = row['latitude']
             if row['longitude'] != '':
                 sites.longitude = row['longitude']
@@ -76,6 +77,8 @@ class Command(BaseCommand):
                 sites.prim_care = 'Unclear'
             else:
                 sites.prim_care = row['prim_care']
+            if row['name_site'] != '':
+                sites.name_site = row['name_site']
             if row['archival_only'] != '':
                 sites.archival_only = row['archival_only']
             if row['why_hidden'] == '':
@@ -89,14 +92,14 @@ class Command(BaseCommand):
             else:
                 sites.mat_avail = row['mat_avail']
             #sites.samhsa_otp_id.samhsa_oid = sites
-            for r1 in DictReader(open('./0607_siterecs_samhsa_otp.csv')):
+            for r1 in DictReader(open('./sitesrecotp.csv')):
                 if r1['site_id'] == row['site_id']:
                     #print(r1['site_id'])
 
                     siteotp = Siterecs_samhsa_otp()
                 #    print(siteotp)
 
-                    siteotp.oid = r1['oid']
+                    siteotp.oid = r1['rec_id']
                     #for s in sitesallid:
                     #    print(s.oid)
 
@@ -105,18 +108,15 @@ class Command(BaseCommand):
                     siteotp.name_program = r1['name_program']
                     if r1['name_dba'] != '':
                         siteotp.name_dba = r1['name_dba']
-                    siteotp.street = r1['address']
-                    siteotp.archival_only = None 
-                    siteotp.why_hidden = "Data needs review" 
-                    siteotp.dba = r1['name_dba'] 
-                    siteotp.data_review = r1['data_review']
+                    siteotp.street_address = r1['address']
                     siteotp.city = r1['city']
-                    siteotp.state_usa = r1['ci']
+                    siteotp.state_usa = r1['state_usa']
                     siteotp.zipcode = r1['zipcode']
                     siteotp.phone = r1['phone']
-                    siteotp.certification = r1['certification']
-                    if r1['full_certification'] != '':
-                        fdate = r1['full_certification']
+                    siteotp.certification_status = r1['certification_status']
+                    siteotp.date_full_certification = r1['date_full_certification']
+                    if r1['date_full_certification'] != '':
+                        fdate = r1['date_full_certification']
                         siteotp.date_full_certification = datetime.strptime(fdate,DATETIME_FORMAT)
 
                     if r1['date_firstfind'] != '':
@@ -130,7 +130,7 @@ class Command(BaseCommand):
                     #sites.save()
                     siteotp.save()
                     sites.save()
-                    siteotp.site_id.add(Sites_all.objects.get(pk=r1['site_id']))
+
 
                     sites.id_samhsa_otp.add(siteotp)
 
@@ -141,11 +141,12 @@ class Command(BaseCommand):
                 else:
                     sites.save()
 
-            for r1 in DictReader(open('./0607_siterecs_hfp_fqhc.csv')):
+            for r1 in DictReader(open('./hfp.csv')):
                 if r1['site_id'] == row['site_id']:
                     print(r1['site_id'])
                     hfp = Siterecs_hfp_fqhc()
                     hfp.oid = r1['oid']
+                    hfp.site_id = r1['site_id']
                     hfp.name_short = r1['name_short']
                     hfp.name_system = r1['name_system']
                     hfp.name_site = r1['name_site']
@@ -179,14 +180,16 @@ class Command(BaseCommand):
                         hfp.date_lastfind  = datetime.strptime(ldate,DATETIME_FORMAT)
                     sites.save()
                     hfp.save()
-                    hfp.site_id.add(Sites_all.objects.get(pk=r1['site_id']))
+
                     sites.id_hfp_fqhc.add(hfp)
                     sites.save()
                     hfp.save()
-            for r3 in DictReader(open('./0607_siterecs_dbhids_tad.csv')):
+            for r3 in DictReader(open('./tad.csv')):
                 if r3['site_id'] == row['site_id']:
+                    print(r3['name_listed'])
                     tad = Siterecs_dbhids_tad()
                     tad.oid = r3['oid']
+                    tad.site_id = r3['site_id']
                     tad.name1 = r3['name1']
                     tad.street1 = r3['street1']
                     if r3['street2'] != '':
@@ -198,7 +201,7 @@ class Command(BaseCommand):
                     if r3['state_usa'] == '':
                         tad.state_usa= 'PA'
                     else:
-                        tad.state_usa = r3['state_usa']
+                        tad.state_usa = r3['PA']
                     tad.zipcode = r3['zipcode']
                     tad.ref_address = r3['ref_address']
                     tad.phone = r3['phone']
@@ -244,19 +247,18 @@ class Command(BaseCommand):
                         tad.data_review = r3['data_review']
                     sites.save()
                     tad.save()
-                    tad.site_id.add(Sites_all.objects.get(pk=r3['site_id']))
                     sites.id_dbhids_tad.add(tad)
                     sites.save()
                     tad.save()
 
 
 
-            for r2 in DictReader(open('./0607_siterecs_samhsa_ftloc.csv')):
+            for r2 in DictReader(open('./loc2.csv')):
                 if r2['site_id'] == row['site_id']:
                     Sam_site = Siterecs_samhsa_ftloc()
-                    print(r2)
+                    print(r2['rec_id'])
 
-                    Sam_site.oid = r2['oid']
+                    Sam_site.oid = r2['rec_id']
                     if r2['date_firstfind'] != '':
                         fdate = r2['date_firstfind']
                         Sam_site.date_firstfind = datetime.strptime(fdate,DATETIME_FORMAT)
@@ -271,22 +273,20 @@ class Command(BaseCommand):
                         Sam_site.street1 = r2['street1']
                     if r2['street2']!='':
                         Sam_site.street2 = r2['street2']
-                    if r2['tele']!='':
-                        Sam_site.tele= r2['tele'] 
                     if r2['city']!= '':
                         Sam_site.city = r2['city']
                     if r2['state_usa']!= '':
                         Sam_site.state_usa = r2['state_usa']
                     if r2['zip5']!='':
-                        Sam_site.zipcode = r2['zip5']
+                        Sam_site.zip5 = r2['zip5']
                     if r2['zip4']!='':
                         Sam_site.zip4 = r2['zip4']
                     if r2['county']!='':
                         Sam_site.county = r2['county']
                     if r2['phone']!='':
                         Sam_site.phone = r2['phone']
-                    Sam_site.intake1 = r2['intake1']
-                    Sam_site.intake2 = r2['intake2']
+                    Sam_site.phone_intake1 = r2['phone_intake1']
+                    Sam_site.phone_intake2 = r2['phone_intake2']
                     if r2['website']!='':
                         Sam_site.website = r2['website']
                     if r2['latitude']!='':
@@ -516,9 +516,7 @@ class Command(BaseCommand):
                     Sam_site.n18 = r2['n18']
                     Sam_site.n23 = r2['n23']
                     Sam_site.n24 = r2['n24']
-                    print(Sam_site.n40)
-                    print(r2['n40 '])
-                    Sam_site.n40 = r2['n40 ']
+                    Sam_site.n40 = r2['n40']
                     sites.save()
                     Sam_site.save()
                     sites.id_samhsa_ftloc.add(Sam_site)
