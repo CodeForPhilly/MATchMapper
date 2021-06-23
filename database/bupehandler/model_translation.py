@@ -8,7 +8,7 @@ class Sites_general_display:
          "bwn": None, "bwon": None, "beri" : None, "bsdm": None, "bum" : None, 
          "buu": None, "bmw": None, "db_field": None, "mu": None, "meth": None, 
          "mdi" : None, "mm": None, "mmw": None, "dm": None, "nu": None, 
-         "nxn": None, "vti": None, "vtm": None, "vtrl": None, "rpn": None}
+         "nxn": None, "vti": None, "vtm": None, "vtrl": None, "rpn": None, "table_source": None}
         if self.table_name == "siterecs_samhsa_ftloc": 
             mapping = {"website": "website1", 
             "tele": "telehealth", 
@@ -18,6 +18,10 @@ class Sites_general_display:
             }
         elif self.table_name == "sites_all": 
             mapping = dict()
+            self.output["table_url_source"] = {"siterecs_samhsa_ftloc": "siterecs_samhsa_ftloc/oid=" + source_object["id_samhsa_ftloc"],
+            "siterecs_samhsa_otp": "siterecs_samhsa_otp/oid=" + source_object["id_samhsa_otp"],
+            "siterecs_dbhids_tad": "siterecs_dbhids_tad/oid=" + source_object["id_dbhids_tad"],
+            "siterecs_hfp_fqhc": "siterecs_hfp_fqhc/oid=" + source_object["id_hfp_fqhc"]}
         elif self.table_name == "siterecs_samhsa_otp": 
             mapping = {"program_name": "name1", 
             "dba": "name2", 
