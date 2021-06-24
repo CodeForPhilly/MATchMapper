@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Siterecs_other_srcs, Sites_all
+from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Siterecs_other_srcs, Sites_all, Siterecs_hfp_fqhc
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
     """
@@ -28,6 +28,11 @@ class Sitecodes_samhsa_ftlocSerializer(DynamicFieldsModelSerializer):
 class Siterecs_samhsa_ftlocSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Siterecs_samhsa_ftloc
+        fields = '__all__'
+
+class Siterecs_hfp_fqhcSerializer(DynamicFieldsModelSerializer):
+    class Meta:
+        model = Siterecs_hfp_fqhc
         fields = '__all__'
 
 
