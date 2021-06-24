@@ -55,6 +55,8 @@ def bu_options(context):
     if site["bsdm"]:
         options.append("Sub-dermal implant (Probuphine)")
     options = ";<br/>".join(options) + ";"
+    if options == "":
+        print("options is empty")
     return mark_safe(options)
 
 @register.simple_tag(name="nu_options", takes_context=True)

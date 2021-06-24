@@ -1,6 +1,6 @@
 <!-- TODO: remove or complete "showOnlyFor" attribute on each field -->
 {% load table_formatters %}
-{{objects}}
+<!-- {{objects}} -->
 <html>
   <head>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -172,11 +172,22 @@
                 </td>
                 <td class="nowrap">
                   {% if site.bu == True %}
-                    <p class="cellText">
-                      Prescribed: <br/>
-                      <span class="bold">{% bu_options %}</span>
-                    </p>
+                    {% if site.bwn or site.bwon or site.beri or site.bsdm %}
+                      <p class="cellText">
+                        Prescribed: <br/>
+                        <span class="bold">{% bu_options %}</span>
+                      </p>
+                    {% endif %}
                     <p>
+                      <span showOnlyFor="siterecs_dbhids_tad">
+                        {% if site.buu is True or site.buu is False %}
+                          Used in treatment:
+                          <span class="bold">
+                            {% if site.buu or site.bu %} Yes {% else %} No {% endif %}
+                          </span>
+                          <br/>
+                        {% endif %}
+                      </span>
                       <span showOnlyFor="siterecs_dbhids_tad">
                         Induction:
                         <span class="bold">
@@ -205,12 +216,6 @@
                         </span>
                       </span>
                       <br/>
-                      <span showOnlyFor="siterecs_dbhids_tad">
-                        Used in treatment:
-                        <span class="bold">
-                          {% if site.buu %} Yes {% else %} No {% endif %}
-                        </span>
-                      </span>
                     </p>
                   {% else %}
                     <p class="cellText">Not available at this facility</p>
@@ -220,9 +225,11 @@
                     <td class="nowrap">
                       {% if site.mu == True %}
                       <p class="cellText">
+                        {% if site.meth is not None %}
                         Prescribed:
                         <span class="bold">{{site.meth}}</span>
                         <br/>
+                      {% endif %}
                         Induction:
                         <span class="bold">
                           {% if site.mdi %} Yes {% else %} No {% endif %}
@@ -250,9 +257,11 @@
                     <td class="nowrap">
                       {% if site.nu == True %}
                       <p class="cellText">
-                        Prescribed:
-                        <span class="bold">{% nu_options %}</span>
-                        <br/>
+                        {% if site.vtrl or site.nxn %}
+                          Prescribed:
+                          <span class="bold">{% nu_options %}</span>
+                          <br/>
+                        {% endif %}
                         Vivitrol Induction:
                         <span class="bold">
                           {% if site.vti %} Yes {% else %} No {% endif %}
