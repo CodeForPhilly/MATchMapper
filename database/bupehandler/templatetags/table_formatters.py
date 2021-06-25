@@ -16,6 +16,8 @@ def bu_options(context):
 
 @register.filter("legal_url", is_safe=True)
 def phone_number(illegal):
+    if illegal is None:
+        return ""
     splitIllegal = illegal.split(":")
     if splitIllegal[0] == "https://" or splitIllegal[0] == "http://":
         return mark_safe(illegal)
@@ -24,6 +26,8 @@ def phone_number(illegal):
 
 @register.filter("format_phone", is_safe=True)
 def phone_number(s):
+    if s is None or s == "":
+        return ""
     parsed = phonenumbers.parse(s, "US")
     autoFormatted = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.NATIONAL)
     rawNoExt = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
@@ -51,6 +55,8 @@ def bu_options(context):
     if site["bsdm"]:
         options.append("Sub-dermal implant (Probuphine)")
     options = ";<br/>".join(options) + ";"
+    if options == "":
+        print("options is empty")
     return mark_safe(options)
 
 @register.simple_tag(name="nu_options", takes_context=True)
