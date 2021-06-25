@@ -8,7 +8,7 @@ class Sites_general_display:
          "bwn": None, "bwon": None, "beri" : None, "bsdm": None, "bum" : None, 
          "buu": None, "bmw": None, "db_field": None, "mu": None, "meth": None, 
          "mdi" : None, "mm": None, "mmw": None, "dm": None, "nu": None, 
-         "nxn": None, "vti": None, "vtm": None, "vtrl": None, "rpn": None, "table_source": None}
+         "nxn": None, "vti": None, "vtm": None, "vtrl": None, "rpn": None, "table_url_source": None}
         if self.table_name == "siterecs_samhsa_ftloc": 
             mapping = {"website": "website1", 
             "tele": "telehealth", 
