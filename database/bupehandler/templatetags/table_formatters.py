@@ -27,13 +27,7 @@ def phone_number(illegal):
 @register.filter("notArchiveOnly", is_safe=True)
 def phone_number(objs):
     goodObjs = []
-    # for obj in objs:
-    #     if "archival_only" not in obj.keys() or not obj["archival_only"]:
-    #         goodObjs.append(obj)
-    #     if "Mercy Hospital" == obj["name1"]:
-    #         print("mercy")
-    #         print(obj.keys())
-    return goodObjs
+    return objs
 
 @register.filter("format_phone", is_safe=True)
 def phone_number(s):
