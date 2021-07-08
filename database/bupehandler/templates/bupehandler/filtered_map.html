@@ -8,6 +8,7 @@
   </head>
   <body>
    <h1>Map time!</h1>
+   <h2> Double click on the location to see details! </h2>
    <div id='map' style='width: 800px; height: 600px;'></div>
     <script>
         // if stuck, try this url : window.location.origin + "/api/geodata/siterecs_samhsa_ftloc/name1=Al-Assist
@@ -52,7 +53,7 @@
                                 .setPopup(new mapboxgl.Popup().setHTML(data['loc'][i][destination_name]))
                                 .addTo(map);
                                 var link_object = window.location.origin + "/table/" + table_name + "/name1=" + data['loc'][i][destination_name] + "/";
-                                marker.getElement().addEventListener('click', event => {
+                                marker.getElement().addEventListener('dblclick', event => {
                                 window.location.href = link_object;
                                 });
                         }
