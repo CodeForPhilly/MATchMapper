@@ -53,6 +53,9 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None)
     #The NOT filter is put after the normal filter:
     #Example of using the NOT filter: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/None/tele=True : all sites with tele not True
     #Another one using the NOT filter: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/state_usa%3DPA&bu%3DTrue/tele=True : all sites in PA, bu = True, with tele not True.
+    print(table_name)
+    print(param_values)
+    print(excluded_values)
     autofill = False
     autocorrect=False
     filter_params = {}
@@ -149,6 +152,13 @@ def filtered_map(request, table_name, param_values=None, excluded_values=None):
         "sites_all" : "name_program",
     }
     mapbox_access_token = 'pk.my_mapbox_access_token'
+    print(table_name)
+    print(param_values)
+    print(excluded_values)
+    if excluded_values is None: 
+        excluded_values = "" 
+    if param_values is None: 
+        param_values = ""
     if param_values: 
         return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "param_values": param_values, "excluded_values": excluded_values, "destination_name": naming_dict[table_name]})
     else: 

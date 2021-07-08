@@ -100,7 +100,7 @@ def single_object(request, object_type, oid):
 
 @api_view(["GET", "PUT", "DELETE"])
 @csrf_exempt
-def filtered_geodata(request, table_name, param_values=None, excluded_values = None): 
+def filtered_geodata(request, table_name, param_values=None, excluded_values=None): 
     #example default param url: http://127.0.0.1:8000/api/geodata/siterecs_samhsa_ftloc/state_usa=PA&bu=True/, this url retrieves locations from siterecs_samhsa_ftloc that has state_usa= PA and bu = True. Add as many paramters as you want
     #if you want to autofill all of your parameter values, then put autofill=True as a param_values pair in your url. Example: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/name1=Casa&autofill=True. This would match all rows that have name1 values contain Casa. 
     #if you want to autocorrect all of your parameter values, then put autocorrect=True as a param_values pair in your url. Example: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/city=philadelphi&autocorrect=True. This would correct philadelphi to Philadelphia. 
