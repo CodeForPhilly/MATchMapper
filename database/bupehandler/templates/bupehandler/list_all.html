@@ -13,19 +13,19 @@
     <script src="/static/js/stickyObserver.js"></script>
   </head>
   <body>
-    <header id="header">
-      <!-- TODO: Maybe change source?? Not sure if this is the same for all tables. -->
-      <h3 id="dataSource" class="bold">SOURCE: <a href="https://findtreatment.samhsa.gov/locator">Find Treatment Locator</a> (SAMHSA)</h3>
-      <!-- TODO: Am I getting the date from the right place? -->
-      {% if date_last_updated %}
-      <h5 id="lastUpdatedNotice">Most recent download: <span class="bold">{% date_last_updated %}</span></h5>
-      {% endif %}
-    </header>
+    <nav>
+      <div id="nav-logo"></div>
+      <ul id="nav-options">
+        <li>Map View</li>
+        <li>List View</li>
+      </ul>
+    </nav>
     <div id="flexContainer">
       <div id="sidebar">
         <!-- TODO: get svg version of logo -->
-        <div id="logo"></div>
+        <!-- <div id="logo"></div> -->
         <div id="filterOptions">
+          <h2>Filter search:</h2>
           <!-- <button id="applyFilters">Apply Filters</button> -->
           <label>Filter your search with the following criteria:</label>
           <div class="filterCriteria">
@@ -110,8 +110,17 @@
       <div id="table" onscroll="handleScroll(this.scrollTop, this.scrollLeft)">
         <!-- TODO: Where do I get total from? -->
         <!-- TODO: Where do I get the other stuff? -->
+        <header id="header">
+          <!-- TODO: Maybe change source?? Not sure if this is the same for all tables. -->
+          <h3 id="dataSource" class="bold">SOURCE: <a href="https://findtreatment.samhsa.gov/locator">Find Treatment Locator</a> (SAMHSA)</h3>
+          <!-- TODO: Am I getting the date from the right place? -->
+          {% if date_last_updated %}
+          <h5 id="lastUpdatedNotice">Most recent download: <span class="bold">{% date_last_updated %}</span></h5>
+          {% endif %}
+        </header>
         <h5 id="resultDescription">
           <span class="bold">{{ objects|length }}</span> of <span class="bold">X</span> records for <span class="bold">Substance Use Facilities</span> in <span class="bold">Philadelphia</span>
+          <button id="clearFilters">Clear all filters</button>
         </h5>
         <div id="extraContainer">
           <table>
@@ -125,7 +134,7 @@
                 <th>Methadone</th>
                 <th>Naltrexone</th>
               </tr>
-              {% for site in objects %}
+              {% for site in objects|notArchiveOnly %}
               <tr>
                 <td class="facilityName wrap">
                   <p class="cellText bold">{{site.name1|default_if_none:""}}</p>
@@ -179,7 +188,7 @@
                       </p>
                     {% endif %}
                     <p>
-                      <span showOnlyFor="siterecs_dbhids_tad">
+                      <span>
                         {% if site.buu is True or site.buu is False %}
                           Used in treatment:
                           <span class="bold">
@@ -188,7 +197,7 @@
                           <br/>
                         {% endif %}
                       </span>
-                      <span showOnlyFor="siterecs_dbhids_tad">
+                      <span>
                         Induction:
                         <span class="bold">
                           {% if site.bui %} Yes {% else %} No {% endif %}
@@ -202,14 +211,14 @@
                         </span>
                       </span>
                       <br/>
-                      <span showOnlyFor="siterecs_samhsa_ftloc">
+                      <span>
                         Maintenance for predetermined time:
                         <span class="bold">
                           {% if site.bmw %} Yes {% else %} No {% endif %}
                         </span>
                       </span>
                       <br/>
-                      <span showOnlyFor="siterecs_samhsa_ftloc">
+                      <span>
                         Detoxification:
                         <span class="bold">
                           {% if site.db_field %} Yes {% else %} No {% endif %}
@@ -232,7 +241,7 @@
                       {% endif %}
                         Induction:
                         <span class="bold">
-                          {% if site.mdi %} Yes {% else %} No {% endif %}
+                          {% if site.mui %} Yes {% else %} No {% endif %}
                         </span>
                         <br/>
                         Maintenance:
@@ -291,5 +300,6 @@
       </div>
     </div>
     <script src="/static/js/filter.js"></script>
+    <script src="/static/js/hideColumns.js"></script>
   </body>
 </html>

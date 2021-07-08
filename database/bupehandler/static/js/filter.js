@@ -118,6 +118,17 @@ function setFilters(){
   window.location.pathname = splitPath.join("/")
 }
 
+function removeBlanks(array){
+  var filtered = array.filter(function (el) {
+      return el != "";
+  })
+  return filtered
+}
+
+function clearFilters(){
+  window.location.pathname = "/" + removeBlanks(window.location.pathname.split("/")).slice(0,2).join("/")
+}
+
 $(".filterCriteria").click(function(e){
   // toggleHighlight(e.currentTarget)
   console.log(e.currentTarget.querySelector("input").value)
@@ -127,6 +138,10 @@ $(".filterCriteria").click(function(e){
 $("#applyFilters").click(function(e){
   setFilters()
 });
+
+$("#clearFilters").click(function(e){
+  clearFilters()
+})
 
 // var filterStringFull = ""
 //

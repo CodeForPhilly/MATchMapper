@@ -13,7 +13,7 @@ white: #ffffff */
 body {
   font-family: "Montserrat", sans-serif;
   font-weight: 500;
-  margin: 10px;
+  margin: 0px;
 }
 
 #header {
@@ -35,8 +35,9 @@ body {
 
 #flexContainer {
   display: flex;
-  width: 100%;
+  width: calc(100% - 10px);
   overflow: hidden;
+  margin: 10px;
 }
 
 #logo {
@@ -48,7 +49,8 @@ body {
 }
 
 #table {
-  margin: 0px 10px;
+  margin: 0px 0px;
+  margin-left: 10px;
   /* flex-shrink: 2; */
   flex: 1 1 auto;
   overflow: scroll;
@@ -238,4 +240,62 @@ a:hover {
 
 .filterCriteria input {
   display: none;
+}
+
+#clearFilters {
+  border-width: 0px;
+  padding: 5px;
+  margin: 10px 10px;
+  width: 120px;
+  font-weight: 400;
+  color:white;
+  background-color: #0f4d90;
+  cursor: pointer;
+}
+
+#clearFilters:hover {
+  opacity: 0.8;
+}
+
+#nav-logo {
+  width: 100px;
+  height: calc(100% - 30px);
+  background: url("/static/images/MM_infinity-logo_ghost-gray.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  flex-grow: 0;
+  margin: 10px 55px;
+  cursor: pointer;
+}
+
+nav {
+  background-color:#0f4d90;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100px;
+  -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.44); 
+  box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.44);  
+}
+
+#nav-options {
+  list-style: none;
+  display: flex;
+  align-self: flex-end;
+  padding-left: 0px;
+  padding-bottom: 15px;
+}
+
+#nav-options li {
+  margin: 5px 10px;
+  font-size: 16px;
+  text-transform: uppercase;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#nav-options li:hover {
+  text-decoration: underline;
 }
