@@ -4,7 +4,7 @@ A quick guide on how to filter in the map and table interface by Tung:
 I. TABLE FILTERING
 For the table interface, which is filtering the results and displaying them in the format of a table, we use the following URL structure: 
 
-.../table/<table_name>/<param_names>/<excluded_values>
+.../table/<table_name>/<param_names>/<excluded_values>/<keyword>
 
 The "<table_name>" should be replaced by the table which you want to display. This is a required part of the URL. 
 
@@ -24,6 +24,8 @@ The "<excluded_values>" is the NOT filter, and is optional. If you want to use N
 In other words, you should create your URL of this format: http://127.0.0.1:8000/table/<table_name>/None/tele=True, which will get all the rows with tele is not True.
 If you want to combine NOT filter with the normal filter, try URL of this format: 
 http://127.0.0.1:8000/table/<table_name>/col1=value1&col2=value2&col3=value3/col4=value4&col5=value5, which will return all the rows with col1=value1, col2=value2,col3=value3, col4 NOT = value 4, col5 NOT value 5.
+
+The "<keyword>" is the filter of a keyword that applies to all fields. For example, setting keyword to "Casa" will look for all locations with any field containing the word "Casa".
 
 We can break down some example URLs here: 
 
@@ -51,15 +53,18 @@ Example 4: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/state_usa%3DPA&bu%3
 Based on param_values, we choose all sites in PA, bu = True
 Based on excluded values, we further choose those with tele not equal to True.
 
+Example 5: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/None/tele=True/Casa/ 
+
+Looks for all locations with tele not True and with any field containing the word "Casa". 
 ------------------------------------------
 II. MAP/GEODATA API FILTERING 
 For the map/geodata interface, which is filtering the results and displaying them in the format of a map/ raw locations (lat/long), we use the following URL structure: 
 
-.../map/<table_name>/<param_names>/<excluded_values>  (for map interface)
+.../map/<table_name>/<param_names>/<excluded_values>/<keyword>/  (for map interface)
 
-.../api/geodata/<table_name>/<param_names>/<excluded_values> (for geodata API)
+.../api/geodata/<table_name>/<param_names>/<excluded_values>/<keyword> (for geodata API)
 
-The way table_name, param_names, and excluded values work are exactly the same as for table filtering, so I will refer to the section above.
+The way table_name, param_names, and excluded_values, and keyword work are exactly the same as for table filtering, so I will refer to the section above.
 Map filtering/geodata filtering is only a different way of illustration of data, but the way the data are processed is the exact same.
 
 

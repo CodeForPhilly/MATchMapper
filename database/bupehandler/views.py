@@ -16,6 +16,8 @@ import re
 from spellchecker import SpellChecker
 from .model_translation import Sites_general_display
 from django.forms.models import model_to_dict
+from django.db.models import CharField
+from django.db.models import  Q
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
 @permission_classes([IsAuthenticated])
@@ -44,7 +46,7 @@ def siterecs_samhsa_otp_display(request, filter_params=None, order_by_params=Non
 
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
-def filtered_table(request, table_name, param_values=None, excluded_values=None):
+def filtered_table(request, table_name, param_values=None, excluded_values=None, keyword = None):
     #example default param url: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/state_usa=PA&bu=True/, this url retrieves row form siterecs_samhsa_ftloc that has state_usa= PA and bu = True. Add as many paramters as you want
     #if you want to autofill all of your parameter values, then put autofill=True as a param_values pair in your url. Example: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/name1=Casa&autofill=True. This would match all rows that have name1 values contain Casa.
     #if you want to autocorrect all of your parameter values, then put autocorrect=True as a param_values pair in your url. Example: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/city=philadelphi&autocorrect=True. This would correct philadelphi to Philadelphia.
@@ -74,13 +76,14 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None)
                 else:
                     filter_params['%s__iexact' % list_pair[0]] = list_pair[1]
     if excluded_values:
-        query_pairs = excluded_values.split("&")
-        for pair in query_pairs:
-            list_pair = pair.split("=")
-            if list_pair[1] == "None":
-                list_pair[1] = None
-            else:
-                excluded_params[list_pair[0]] = list_pair[1]
+        if excluded_values != "None": 
+            query_pairs = excluded_values.split("&")
+            for pair in query_pairs:
+                list_pair = pair.split("=")
+                if list_pair[1] == "None":
+                    list_pair[1] = None
+                else:
+                    excluded_params[list_pair[0]] = list_pair[1]
     #change query dictionary if autocorrect is on
     if autocorrect:
         spell = SpellChecker()
@@ -123,6 +126,13 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None)
         current_excluded_param = {}
         current_excluded_param[excluded_param] = excluded_params[excluded_param]
         table_objects=table_objects.exclude(**current_excluded_param)
+    if keyword != None: 
+        fields = [f for f in table_dict[table_name]._meta.fields if isinstance(f, CharField)]
+        queries = [Q(**{f.name + "__icontains": keyword}) for f in fields]
+        qs = Q()
+        for query in queries:
+            qs = qs | query
+        table_objects = table_objects.filter(qs)
     if request.GET.getlist('order'):
         order_by_list = request.GET.getlist('order')
         table_objects = table_objects.order_by(*order_by_list)
@@ -130,7 +140,6 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None)
     for table_object in table_objects: 
         general_display_list.append(Sites_general_display(table_name, model_to_dict(table_object)).output)
     #table_serializer = serializer_dict[table_name](table_objects, many=True)
-    print(len(general_display_list))
     return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : general_display_list})
 
 
@@ -142,7 +151,7 @@ def default_map(request):
 
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
-def filtered_map(request, table_name, param_values=None, excluded_values=None):
+def filtered_map(request, table_name, param_values="", excluded_values="", keyword = ""):
     naming_dict = { 
         "sitecodes_samhsa_ftloc" : "category_name",
         "siterecs_samhsa_ftloc" : "name1",
@@ -152,15 +161,8 @@ def filtered_map(request, table_name, param_values=None, excluded_values=None):
         "sites_all" : "name_program",
     }
     mapbox_access_token = 'pk.my_mapbox_access_token'
-    print(table_name)
-    print(param_values)
-    print(excluded_values)
-    if excluded_values is None: 
-        excluded_values = "" 
-    if param_values is None: 
-        param_values = ""
     if param_values: 
-        return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "param_values": param_values, "excluded_values": excluded_values, "destination_name": naming_dict[table_name]})
+        return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "param_values": param_values, "excluded_values": excluded_values, "destination_name": naming_dict[table_name], "keyword": keyword})
     else: 
         return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "destination_name": naming_dict[table_name]})
 # @api_view(["GET", "POST", "DELETE"])
