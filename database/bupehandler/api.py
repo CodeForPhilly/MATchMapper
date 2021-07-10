@@ -13,6 +13,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseNotFound
 import json
 import random
+from django.db.models import CharField
+from django.db.models import  Q
 object_type_dict = {
     'sitecodes_samhsa_ftloc': (Sitecodes_samhsa_ftloc, Sitecodes_samhsa_ftlocSerializer),
     'siterecs_samhsa_ftloc': (Siterecs_samhsa_ftloc, Siterecs_samhsa_ftlocSerializer),
@@ -100,7 +102,7 @@ def single_object(request, object_type, oid):
 
 @api_view(["GET", "PUT", "DELETE"])
 @csrf_exempt
-def filtered_geodata(request, table_name, param_values=None, excluded_values = None): 
+def filtered_geodata(request, table_name, param_values=None, excluded_values=None, keyword = None): 
     #example default param url: http://127.0.0.1:8000/api/geodata/siterecs_samhsa_ftloc/state_usa=PA&bu=True/, this url retrieves locations from siterecs_samhsa_ftloc that has state_usa= PA and bu = True. Add as many paramters as you want
     #if you want to autofill all of your parameter values, then put autofill=True as a param_values pair in your url. Example: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/name1=Casa&autofill=True. This would match all rows that have name1 values contain Casa. 
     #if you want to autocorrect all of your parameter values, then put autocorrect=True as a param_values pair in your url. Example: http://127.0.0.1:8000/table/siterecs_samhsa_ftloc/city=philadelphi&autocorrect=True. This would correct philadelphi to Philadelphia. 
@@ -126,16 +128,17 @@ def filtered_geodata(request, table_name, param_values=None, excluded_values = N
                 else:
                     filter_params['%s__iexact' % list_pair[0]] = list_pair[1]
     if excluded_values:
-        query_pairs = excluded_values.split("&")
-        for pair in query_pairs:
-            list_pair = pair.split("=")
-            if list_pair[1] == "None":
-                list_pair[1] = None
-            else:
-                excluded_params[list_pair[0]] = list_pair[1]
-    #change query dictionary if autocorrect is on
+        if excluded_values != "None": 
+            query_pairs = excluded_values.split("&")
+            for pair in query_pairs:
+                list_pair = pair.split("=")
+                if list_pair[1] == "None":
+                    list_pair[1] = None
+                else:
+                    excluded_params[list_pair[0]] = list_pair[1]
+    #change query dictionary if autocorrect is on 
     if autocorrect:
-        spell = SpellChecker()
+        spell = SpellChecker() 
         autocorrect_filter_params = {} 
         for key in filter_params: 
             if filter_params[key] == None: 
@@ -177,6 +180,13 @@ def filtered_geodata(request, table_name, param_values=None, excluded_values = N
         "sites_all" : "name_program",
     }
     table_objects = table_dict[table_name].objects.all().filter(**filter_params)
+    if keyword != None: 
+        fields = [f for f in table_dict[table_name]._meta.fields if isinstance(f, CharField)]
+        queries = [Q(**{f.name + "__icontains": keyword}) for f in fields]
+        qs = Q()
+        for query in queries:
+            qs = qs | query
+        table_objects = table_objects.filter(qs)
     for excluded_param in excluded_params:
         current_excluded_param = {}
         current_excluded_param[excluded_param] = excluded_params[excluded_param]
