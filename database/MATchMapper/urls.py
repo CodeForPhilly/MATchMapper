@@ -35,13 +35,3 @@ urlpatterns = [
     url(r'^map/(?P<table_name>.+)/(?P<param_values>.+)/$', views.filtered_map, name="filtered_map"),
     url(r'^map/(?P<table_name>.+)/$', views.filtered_map, name="filtered_map"), 
 ]
-
-# Does caching just when FRONTEND_DEV == 1
-if os.environ.get('FRONTEND_DEV') == "1":
-    print("FRONTEND_DEV==1, caching tables")
-    urlpatterns[3:7] = [
-        url(r'^table/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)/(?P<keyword>.+)$', cache_page(60*cache_duration)(views.filtered_table), name="filtered_table"),
-        url(r'^table/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)$', cache_page(60*cache_duration)(views.filtered_table), name="filtered_table"),
-        url(r'^table/(?P<table_name>.+)/(?P<param_values>.+)/$', cache_page(60*cache_duration)(views.filtered_table), name="filtered_table"),
-        url(r'^table/(?P<table_name>.+)/$',cache_page(60*cache_duration)(views.filtered_table), name = "filtered_table")
-    ]

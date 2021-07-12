@@ -18,6 +18,9 @@ from .model_translation import Sites_general_display
 from django.forms.models import model_to_dict
 from django.db.models import CharField
 from django.db.models import  Q
+from .tableCaching import fetchCachedIfRecent
+
+
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
 @permission_classes([IsAuthenticated])
@@ -122,6 +125,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
         "sites_all" : Sites_allSerializer,
     }
     table_objects = table_dict[table_name].objects.all().filter(**filter_params)
+    # table_objects = fetchCachedIfRecent(table_name, ttl=300).filter(**filter_params)
     for excluded_param in excluded_params:
         current_excluded_param = {}
         current_excluded_param[excluded_param] = excluded_params[excluded_param]
@@ -136,9 +140,11 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
     if request.GET.getlist('order'):
         order_by_list = request.GET.getlist('order')
         table_objects = table_objects.order_by(*order_by_list)
-    general_display_list = [] 
-    for table_object in table_objects: 
-        general_display_list.append(Sites_general_display(table_name, model_to_dict(table_object)).output)
+    general_display_list = []
+    for table_object in table_objects:
+        dicted = table_object.__dict__
+        generalDisplayed = Sites_general_display(table_name, dicted)
+        general_display_list.append(generalDisplayed.output)
     #table_serializer = serializer_dict[table_name](table_objects, many=True)
     return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : general_display_list})
 

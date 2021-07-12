@@ -277,6 +277,8 @@ function clearFilters(){
   enabledIsFilters = []
   enabledNotFilters = []
   searchTerm = "None"
+  orderString = ""
   unhighlightAll()
+  window.history.replaceState( {} , "title", window.location.href.split("?")[0] );
   applyFilters()
 }

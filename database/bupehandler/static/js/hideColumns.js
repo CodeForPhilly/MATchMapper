@@ -62,3 +62,4 @@ function autoHideEmpty(){
         childNumber++
     }
 }
+autoHideEmpty()

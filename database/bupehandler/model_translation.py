@@ -18,10 +18,14 @@ class Sites_general_display:
             }
         elif self.table_name == "sites_all": 
             mapping = dict()
-            siterecs_samhsa_ftloc_links = ["siterecs_samhsa_ftloc/oid=" + str(x.oid) for x in source_object["id_samhsa_ftloc"]]
-            siterecs_samhsa_otp_links = ["siterecs_samhsa_otp/oid=" + str(x.oid) for x in source_object["id_samhsa_otp"]]
-            siterecs_dbhids_tad_links = ["siterecs_dbhids_tad/oid=" + str(x.oid) for x in source_object["id_dbhids_tad"]]
-            siterecs_hfp_fqhc_links = ["siterecs_hfp_fqhc/oid=" + str(x.oid) for x in source_object["id_hfp_fqhc"]]
+            # siterecs_samhsa_ftloc_links = ["siterecs_samhsa_ftloc/oid=" + str(x.oid) for x in source_object["id_samhsa_ftloc"]]
+            # siterecs_samhsa_otp_links = ["siterecs_samhsa_otp/oid=" + str(x.oid) for x in source_object["id_samhsa_otp"]]
+            # siterecs_dbhids_tad_links = ["siterecs_dbhids_tad/oid=" + str(x.oid) for x in source_object["id_dbhids_tad"]]
+            # siterecs_hfp_fqhc_links = ["siterecs_hfp_fqhc/oid=" + str(x.oid) for x in source_object["id_hfp_fqhc"]]
+            siterecs_samhsa_ftloc_links = ["siterecs_samhsa_ftloc/oid=" + str(source_object["oid"])]
+            siterecs_samhsa_otp_links = ["siterecs_samhsa_otp/oid=" + str(source_object["oid"])]
+            siterecs_dbhids_tad_links = ["siterecs_dbhids_tad/oid=" + str(source_object["oid"])]
+            siterecs_hfp_fqhc_links = ["siterecs_hfp_fqhc/oid=" + str(source_object["oid"])]
             self.output["table_url_source"] = {"siterecs_samhsa_ftloc": siterecs_samhsa_ftloc_links,
             "siterecs_samhsa_otp": siterecs_samhsa_otp_links,
             "siterecs_dbhids_tad": siterecs_dbhids_tad_links,
