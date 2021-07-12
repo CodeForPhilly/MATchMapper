@@ -204,20 +204,47 @@ a:hover {
 }
 
 .filterCriteria {
-  border: 1px solid white;
-  padding: 5px;
+  border: 2px solid white;
   margin: 10px 0px;
   font-weight: 400;
+  display: flex;
+  flex-direction: row;
 }
 
 .filterCriteria, .filterCriteria label {
   cursor: pointer;
 }
 
+.filterCriteria label {
+  flex-shrink: 1;
+  margin: 5px;
+}
+
+.filterCriteria .specifier {
+  width: 25px;
+  border-left: 2px solid white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+.filterCriteria .specifier.equal.selected, .filterCriteria .specifier.equal:hover {
+  background-color: #4caf50;
+}
+.filterCriteria .specifier.notequal.selected, .filterCriteria .specifier.notequal:hover {
+  background-color: #f44336;
+}
+.filterCriteria .specifier p {
+  font-size: 16px;
+}
+
+
+
 .filterCriteria:hover, .filterCriteria.selected {
   /* background-color: rgba(255,255,255,0.3); */
-  background-color: white;
-  color: #0f4d90;
+  /* background-color: white;
+  color: #0f4d90; */
 }
 
 .subfilter {
@@ -298,4 +325,21 @@ nav {
 
 #nav-options li:hover {
   text-decoration: underline;
+}
+
+#filterOptions #searchBar {
+  background-color: #0f4d90;
+  border: 2px solid white;
+  color: white;
+  padding: 5px;
+  margin: 10px 0px;
+  font-weight: 400;
+  width: 100%;
+  font-size: 16px;
+}
+
+#filterOptions #searchBar:focus {
+  outline-style: solid;
+  outline-color: white;
+  outline-width: 1px !important;
 }
