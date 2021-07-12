@@ -24,6 +24,21 @@
         <div id="filterOptions">
           <h2>Search:</h2>
           <input id="searchBar" type="text" placeholder="Search..."/>
+          <h2>Sort:</h2>
+          <div id="sortOptions">
+            <label>By:</label>
+            <select id="sortBy">
+              <option selected disabled hidden value=""></option>
+              <option value="name1">Facility Name</option>
+              <option value="zipcode">Zip Code</option>
+            </select>
+            <label>Order:</label>
+            <select id="orderingOptions">
+              <option selected disabled hidden value=""></option>
+              <option value="">Ascending</option>
+              <option value="-">Descending</option>
+            </select>
+          </div>
           <h2>Filter:</h2>
           <!-- <button id="applyFilters">Apply Filters</button> -->
           <label>Filter your search with the following criteria:</label>
