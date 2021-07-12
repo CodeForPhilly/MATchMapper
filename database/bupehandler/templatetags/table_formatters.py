@@ -24,6 +24,11 @@ def phone_number(illegal):
     else:
         return "//" + illegal
 
+@register.filter("notArchiveOnly", is_safe=True)
+def phone_number(objs):
+    goodObjs = []
+    return objs
+
 @register.filter("format_phone", is_safe=True)
 def phone_number(s):
     if s is None or s == "":
