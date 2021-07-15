@@ -11,7 +11,7 @@ from rest_framework.response import Response
 import json
 from django.core.exceptions import ObjectDoesNotExist
 from .serializers import Sitecodes_samhsa_ftlocSerializer, Siterecs_samhsa_ftlocSerializer, Siterecs_samhsa_otpSerializer, Siterecs_dbhids_tadSerializer, Siterecs_other_srcsSerializer, Sites_allSerializer, Siterecs_hfp_fqhcSerializer
-from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Siterecs_other_srcs, Sites_all, Siterecs_hfp_fqhc
+from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Siterecs_other_srcs, Sites_all, Siterecs_hfp_fqhc, Table_info
 import re 
 from spellchecker import SpellChecker
 from .model_translation import Sites_general_display
@@ -148,8 +148,9 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
         dicted = table_object.__dict__
         generalDisplayed = Sites_general_display(table_name, dicted)
         general_display_list.append(generalDisplayed.output)
+    table_info = Table_info.objects.get(table_name=table_name).__dict__
     #table_serializer = serializer_dict[table_name](table_objects, many=True)
-    return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : general_display_list})
+    return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : general_display_list, "table_info": table_info})
 
 
 @api_view(["GET", "POST", "DELETE"])
