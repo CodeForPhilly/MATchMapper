@@ -1,43 +1,37 @@
 from django.db import models
 from django.utils import timezone
 
-# def increment_provider_id():
-#     last_provider = Provider.objects.all().order_by('provider_id').last()
-#     if not last_provider:
-#         return 'P00000000'
-
-#     provider_id = last_provider.provider_id
-#     provider_int = provider_id[1:]
-#     new_provider_int = int(provider_int) + 1
-#     new_provider_id = 'P' + str(new_provider_int).zfill(8)
-#     return new_provider_id
-
 Multi_Choices_Enum3 = [
 ('Yes','Yes'),
 ('No','No'),
-('Unclear','Unclear'),
+('Unclear','Unclear'), ## Why final comma?
 ]
 
-Multi_Choices_Enum5 = [
+Multi_Choices_EnumWhyHide = [ ## TODO: Fine-tune this list to fit use cases
+('No MAT?','No MAT?'),
 ('Site closed','Site closed'),
-('Data needs review','Data needs review'),
 ('Not a practice site','Not a practice site'),
 ('Record redundant' ,'Record redundant'),
-('Other','Other'),
+('Source removed record','Source removed record'),
+('Too far from Philadelphia?','Too far from Philadelphia?'),  
+('Data needs review','Data needs review'),
+('Other','Other'), ## Why final comma?
 ]
-
 
 
 class Sitecodes_samhsa_ftloc(models.Model):
+## Fields from source:
     service_code = models.CharField(primary_key=True, max_length=10)
     category_code = models.CharField(max_length=6)
     category_name = models.CharField(max_length=70)
     service_name = models.CharField(max_length=120)
     service_description = models.CharField(max_length=999)
-    sa_listings_match = models.CharField(max_length=15) ## Our addition
-    mm_filters = models.CharField(max_length=15) ## Our addition -- renamed _highlights to _filters here and in data table
-    filter_seq = models.IntegerField() ## NEW: Our addition -- fill col from ForMostFilters tab; TODO: does () need parameters??
-    ui_reference = models.CharField(max_length=50) ## NEW: Our addition -- fill col from ForMostFilters tab
+## MATchMapper additions:
+    sa_listings_match = models.CharField(max_length=15) ## Checking presence in siterecs_samhsa_ftloc data (found vs. missing_there/missing_here)
+    mm_filters = models.CharField(max_length=15)
+    ## See TableOfTables instead
+        #filter_seq = models.IntegerField()
+        #ui_reference = models.CharField(max_length=50)
     date_update = models.DateTimeField(default=timezone.now) ## Our addition
 
     class Meta:
@@ -50,12 +44,19 @@ class Sitecodes_samhsa_ftloc(models.Model):
 # Gave all Siterecs_ classes an oid (object id for ease of abstraction for backend) ## = Audit tables
 
 class Siterecs_samhsa_ftloc(models.Model):
+  ## MATchMapper additions: 
     oid = models.IntegerField(primary_key=True)
-    site_id = models.ManyToManyField('Sites_all', through = 'Sites_ftloc') ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
+    site_id = models.ManyToManyField('Sites_all', through = 'Sites_ftloc')
+    mat_misc = models.BooleanField(blank=True, null=True) #TODO: check with stakeholders/core users): lofexididine, clonidine
+    mat_avail = models.BooleanField(blank=True, null=True)
+    oi = models.BooleanField(blank=True, null=True) ## For 'Other insurance' (besides Medicaid and Medicare: private, state, military)
+    dvh = models.BooleanField(blank=True, null=True) ## For 'Domestic violence help' (dvfp = safety assistance, dv = program/group for people who experienced domestic violence)
+    archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
+    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
     date_firstfind = models.DateField(blank=True, null=True)
-    date_lastfind = models.DateField(blank=True, null=True)
-    archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records admin (Editor) deletes from Finder
-    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_Enum5, blank=True) # Require only if archival_only = True
+    date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
+    date_update = models.DateTimeField(default=timezone.now)
+  ## Fields from source:
     name1 = models.CharField(max_length=120)
     name2 = models.CharField(max_length=120)
     street1 = models.CharField(max_length=120)
@@ -63,12 +64,12 @@ class Siterecs_samhsa_ftloc(models.Model):
     tele = models.BooleanField(blank=True, null=True)
     city = models.CharField(max_length=30)
     state_usa = models.CharField(max_length=120) # TODO change to Enum??? ## Downloaded data uses abbrev (not full names)
-    zipcode = models.CharField(max_length=5,blank=True, null=True) # Cannot use zip (=SAMHSA source label) due to Python keyword conflict
+    zip5 = models.CharField(max_length=5,blank=True, null=True) # Cannot use zip (=SAMHSA source label) due to Python keyword conflict
     zip4 = models.CharField(max_length=9,blank=True, null=True)
     county = models.CharField(max_length=120)
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
-    intake1 = models.CharField(max_length=20,blank=True, null=True) # Frontend TODO: Access phone2 instead of phone_intake1
-    intake2 = models.CharField(max_length=20,blank=True, null=True) # Frontend TODO: Access phone3 instead of phone_intake2
+    intake1 = models.CharField(max_length=20, blank=True, null=True)
+    intake2 = models.CharField(max_length=20, blank=True, null=True)
     website = models.URLField()
     latitude = models.FloatField()
     longitude = models.FloatField()
@@ -294,25 +295,20 @@ class Siterecs_samhsa_ftloc(models.Model):
     n23 = models.BooleanField(blank=True, null=True)
     n24 = models.BooleanField(blank=True, null=True)
     n40  = models.BooleanField(blank=True, null=True)
-    ## mat_bupe = models.IntegerField(blank=True, null=True) # Removed as redundant with bu
-    ## mat_ntrex = models.IntegerField(blank=True, null=True) # Removed as redundant with nu
-    ## mat_mtd = models.IntegerField(blank=True, null=True) # Removed as redundant with mu
-    mat_misc = models.IntegerField(blank=True, null=True) # Retained in case of usefulness (TBD by stakeholders/core users)
-    mat_avail = models.IntegerField(blank=True, null=True) # Retained in case of usefulness (TBD by stakeholders/core users)
-    date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
         managed = True
         db_table = 'siterecs_samhsa_ftloc'
 
     def __str__(self):
-        return ', '.join([self.street1, self.street2, self.city, self.state_usa, self.zipcode]) ## All zip5 now zipcode
+        return ', '.join([self.street1, self.street2, self.city, self.state_usa, self.zip5]) ## Reverted zipcode to zip5 (disambiguate from zip4)
+
 
 class Siterecs_samhsa_otp(models.Model):
+  ## MATchMapper additions: 
     oid = models.IntegerField(primary_key=True)
     site_id = models.ManyToManyField('Sites_all', through = 'sites_site_recs_lookup') ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
-    archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records admin (Editor) deletes from Finder
-    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_Enum5, blank=True) # Require only if archival_only = True
+  ## Fields from source: 
     program_name = models.CharField(max_length=250)
     dba = models.CharField(max_length=120,blank=True, null=True)
     street = models.CharField(max_length=120)
@@ -322,8 +318,11 @@ class Siterecs_samhsa_otp(models.Model):
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####) -- extended max_length to 20 to accommodate occasional extensions
     certification = models.CharField(max_length=120)
     full_certification = models.DateField(blank=True, null=True)
+  ## MATchMapper additions: 
+    archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
+    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
     date_firstfind = models.DateField(blank=True, null=True)
-    date_lastfind = models.DateField(blank=True, null=True)
+    date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
     data_review = models.CharField(max_length=250,blank=True, null=True) # Notes from manual review, e.g. "ZIP typo: corrected 19007 to 19107..."
     date_update = models.DateTimeField(default=timezone.now)
 
@@ -335,44 +334,55 @@ class Siterecs_samhsa_otp(models.Model):
         return self.program_name ## Renamed to match source more closely
 
 
-
 class Siterecs_dbhids_tad(models.Model):
     oid = models.IntegerField(primary_key=True)
     site_id = models.ManyToManyField('Sites_all', through = 'Siterecs_dbhids_sites_all_lookup')  ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
-    archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records admin (Editor) deletes from Finder
-    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_Enum5, blank=True) # Require only if archival_only = True
-    name1 = models.CharField(max_length=120)
+  ## [DCS] = directly copied from source PDF. Interspersed with MATchMapper boolean additions: 
+    name1 = models.CharField(max_length=120) #[DCS]: Max LEN in data = 51 char.
+    coe = models.BooleanField(blank=True, null=True) ## Asterisked names (*Center of Excellence)
+    ref_address = models.CharField(max_length=100, null=True) #[DCS]: Max LEN in data = 53 char.
     street1 = models.CharField(max_length=120)
     street2 = models.CharField(max_length=50,blank=True, null=True)
     city = models.CharField(max_length=30, default='Philadelphia') # Added Philadelphia as default city BY SAM
     state_usa = models.CharField(max_length=30, default='PA') ## Can replace with Enum to match above classes BY SAM
     zipcode = models.CharField(max_length=5)
-    ref_address = models.CharField(max_length=100, null=True) # Current max LEN in data is 53
-    phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
-    mat_info = models.CharField(max_length=100) ## Current max = 50char, so 100 is just for flex
-    ## Make sure data specifies 0 for False and 1 for True in all Boolean fields for this class ... [was 0/1 necessary or did this mean simply to encode data consistently? current consistency has TRUE/blank cell for all]
+    phone1 = models.CharField(max_length=20) #[DCS] but reformatted: ###-###-#### (with optional x####)
+    asm = models.BooleanField(blank=True, null=True) ## Added to make page 2 entries filterable (Assessment directory)
+    ba = models.BooleanField(blank=True, null=True) ## Added to make page 5 entries link-and-filterable (Bed availability! = top ask in March 2020 hackathon response)
+    name_ba = models.CharField(max_length=50) #[DCS] page 5, to facilitate cross-refs | TODO: Add to model_translation.py IF frontend visibility needed (for EDITOR)
+    mat_info = models.CharField(max_length=100) #[DCS]: Max LEN in data = 50 char. For line breaks, use pipe: |
     bu = models.BooleanField(blank=True, null=True)
     bui = models.BooleanField(blank=True, null=True)
-    bum = models.BooleanField(blank=True, null=True)
-    buu = models.BooleanField(blank=True, null=True)
-    bwn = models.BooleanField(blank=True, null=True)
-    mu = models.BooleanField(blank=True, null=True)
-    mdi = models.BooleanField(blank=True, null=True)
-    mm = models.BooleanField(blank=True, null=True)
+    #bum = models.BooleanField(blank=True, null=True)
+    #buu = models.BooleanField(blank=True, null=True)
+    #bwn = models.BooleanField(blank=True, null=True)
     nu = models.BooleanField(blank=True, null=True)
     vti = models.BooleanField(blank=True, null=True)
-    vtm = models.BooleanField(blank=True, null=True)
-    vtrl = models.BooleanField(blank=True, null=True) # Renamed to match SAMHSA sitecodes
-    iop = models.BooleanField(blank=True, null=True)
+    #vtm = models.BooleanField(blank=True, null=True)
+    #vtrl = models.BooleanField(blank=True, null=True) # Renamed to match SAMHSA sitecodes
+    mu = models.BooleanField(blank=True, null=True)
+    #mui = models.BooleanField(blank=True, null=True)
+    #mm = models.BooleanField(blank=True, null=True)
+    additional_info = models.CharField(max_length=150,blank=True, null=True) #[DCS] after separating Walk-in: Max LEN in data = 88 char. For line breaks, use pipe: |
+    phone2 = models.CharField(max_length=20, blank=True, null=True) ## Added for 3 entries with second phone from additional_info
+    walk_in_hours = models.CharField(max_length=80,blank=True, null=True) #[DCS] for yellow records: List '[unspecified]' if no days & times available. Max LEN in data = 38 char, but increased limit from 50 to 80 just in case.
+    wih_induction = models.BooleanField(blank=True, null=True) # True if PDF record is yellow (vs. blue or white)
+    oit = models.BooleanField(blank=True, null=True)
     op = models.BooleanField(blank=True, null=True)
-    mh_tx = models.BooleanField(blank=True, null=True)
-    wih_induction = models.BooleanField(blank=True, null=True)
-    walk_in_hours = models.CharField(max_length=50,blank=True, null=True)## TODO: Retain for reference or delete as unreliable?
-    coe = models.BooleanField(blank=True, null=True)
-    other_notes = models.CharField(max_length=150,blank=True, null=True) ## Current max = 111char but second = just 52char
-    data_review = models.CharField(max_length=250, null=True, blank=True) # Added null=True for now BY SAM
-
-    ## TODO: Construct table that holds per-table metadata (recency, facility type, etc.)
+    mhs = models.BooleanField(blank=True, null=True)
+    ccc = models.BooleanField(blank=True, null=True)
+    hs = models.BooleanField(blank=True, null=True)
+    pw = models.BooleanField(blank=True, null=True)
+    male = models.BooleanField(blank=True, null=True)
+    sp = models.BooleanField(blank=True, null=True)
+    ales = models.BooleanField(blank=True, null=True)
+    f47 = models.BooleanField(blank=True, null=True)
+    f92 = models.BooleanField(blank=True, null=True)
+    f17 = models.BooleanField(blank=True, null=True)
+    f44 = models.BooleanField(blank=True, null=True)
+    archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
+    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
+    data_review = models.CharField(max_length=250, null=True, blank=True) # Added null=True for now BY SAM. ## Max LEN so far = 161 char.  
 
     class Meta:
         managed = True
@@ -384,11 +394,12 @@ class Siterecs_dbhids_tad(models.Model):
         return str(self.oid)
         #return self.rec_id
 
+
 class Siterecs_hfp_fqhc(models.Model): ## TODO
     oid = models.IntegerField(primary_key=True)
     site_id = models.ManyToManyField('Sites_all', through = 'Siterecs_hfp_fqhc_sites_all_lookup')
-    archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records admin (Editor) deletes from Finder
-    why_hidden = models.CharField(max_length=150, default="Data needs review", choices=Multi_Choices_Enum5, blank=True) # Require only if archival_only = True
+    archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
+    why_hidden = models.CharField(max_length=150, default="Data needs review", choices=Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
     name_system = models.CharField(max_length=120)
     name_site = models.CharField(max_length=120)
     name_short = models.CharField(max_length=50)
@@ -402,7 +413,7 @@ class Siterecs_hfp_fqhc(models.Model): ## TODO
     phone1 = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
     phone2 = models.CharField(max_length=20,blank=True, null=True) # Format: ###-###-#### (with optional x####)
     date_firstfind = models.DateField()
-    date_lastfind = models.DateField()
+    date_lastfind = models.DateField() ## Blank unless or until source removes record
     data_review = models.CharField(max_length=250)
 
     def __str__(self):
@@ -411,11 +422,12 @@ class Siterecs_hfp_fqhc(models.Model): ## TODO
         return str(self.name_short)
         #return self.rec_id
 
+
 class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous columns!! Note crucial links to other tables!!
     oid = models.IntegerField(primary_key=True)
     site_id = models.ManyToManyField('Sites_all', through = "sitesrecs_other_srcs_sitesall_lk")
-    archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records admin (Editor) deletes from Finder
-    why_hidden = models.CharField(max_length=150, default="Data needs review", choices=Multi_Choices_Enum5, blank=True) # Require only if archival_only = True
+    archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
+    why_hidden = models.CharField(max_length=150, default="Data needs review", choices=Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
     name1 = models.CharField(max_length=120)
     name2 = models.CharField(max_length=120)
     name3 = models.CharField(max_length=120)
@@ -455,16 +467,14 @@ class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous colu
         return self.name1
 
 
-
-
-
 class Sites_all(models.Model):
     oid = models.CharField(primary_key=True, max_length=120) # TODO integer or varchar? ## Probably serialized varchar?
-    id_samhsa_ftloc = models.ManyToManyField('Siterecs_samhsa_ftloc',blank=True, null=True) ## Renamed to make all inner-MATchMapper links start with id_
-    #samhsa_ftloc_id = models.ForeignKey('Siterecs_samhsa_ftloc', blank=True, null=True,on_delete=models.CASCADE)
-    id_samhsa_otp = models.ManyToManyField('Siterecs_samhsa_otp',blank=True, null=True) ## Renamed to make all inner-MATchMapper links start with id_
-    id_dbhids_tad = models.ManyToManyField('Siterecs_dbhids_tad',blank=True, null=True) ## Renamed to make all inner-MATchMapper links start with id_
+    id_samhsa_ftloc = models.ManyToManyField('Siterecs_samhsa_ftloc',blank=True, null=True)
+    id_samhsa_otp = models.ManyToManyField('Siterecs_samhsa_otp',blank=True, null=True)
+    id_dbhids_tad = models.ManyToManyField('Siterecs_dbhids_tad',blank=True, null=True)
+    id_ba_tad
     id_hfp_fqhc = models.ManyToManyField('Siterecs_hfp_fqhc',blank=True, null=True) ## Renamed to make all inner-MATchMapper links start with id_
+    id_hrsa_fqhc
     ## id_other_srcs = models.ManyToManyField('Siterecs_other_srcs',blank=True, null=True)  ## TODO: reincorporate after IDs are checked
     name1 = models.CharField(max_length=120) ## WAS name_program
     name2 = models.CharField(max_length=120) ## WAS name_site
@@ -487,8 +497,8 @@ class Sites_all(models.Model):
     fqhc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # June 6: empty for now
     prim_care = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # June 6: empty for now
     telehealth = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # June 6: empty for now
-    archival_only = models.BooleanField(blank=True, null=True) ## Added to mark records not approved for Finder listings
-    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_Enum5, blank=True) # Require only if archival_only = True
+    archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
+    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
     data_review = models.CharField(max_length=250, null=True, blank=True) # Added per TODO in data-load sheet
     ## TODO: Add other fields for key filters (insurance, services, etc.)!!
     date_update = models.DateTimeField(default=timezone.now)
