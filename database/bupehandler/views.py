@@ -15,6 +15,7 @@ from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samh
 import re 
 from spellchecker import SpellChecker
 from .model_translation import Sites_general_display
+from .model_translation import filterKeyToLocalKey
 from django.forms.models import model_to_dict
 from django.db.models import CharField
 from django.db.models import  Q
@@ -70,6 +71,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
             query_pairs = param_values.split("&")
             for pair in query_pairs:
                 list_pair = pair.split("=")
+                list_pair[0] = filterKeyToLocalKey(list_pair[0], table_name)
                 if list_pair[1] == "None":
                     list_pair[1] = None
                 if list_pair[0] == "autofill" and list_pair[1] == "True":
@@ -83,6 +85,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
             query_pairs = excluded_values.split("&")
             for pair in query_pairs:
                 list_pair = pair.split("=")
+                list_pair[0] = filterKeyToLocalKey(list_pair[0])
                 if list_pair[1] == "None":
                     list_pair[1] = None
                 else:
@@ -168,6 +171,16 @@ def filtered_map(request, table_name, param_values="", excluded_values="", keywo
     }
     mapbox_access_token = 'pk.my_mapbox_access_token'
     if param_values: 
+        paramList = [paramString.split("=") for paramString in param_values.split("&")]
+        for param in paramList:
+            param[0] = filterKeyToLocalKey(param[0], table_name)
+        param_values = "&".join(["=".join(param) for param in paramList])
+
+        exclusionList = [exclusionString.split("=") for exclusionString in excluded_values.split("&")]
+        for exclusion in exclusionList:
+            exclusion[0] = filterKeyToLocalKey(exclusion[0], table_name)
+        excluded_values = "&".join(["=".join(exclusion) for exclusion in exclusionList])
+
         return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "param_values": param_values, "excluded_values": excluded_values, "destination_name": naming_dict[table_name], "keyword": keyword})
     else: 
         return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "destination_name": naming_dict[table_name]})
