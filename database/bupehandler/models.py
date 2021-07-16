@@ -423,40 +423,67 @@ class Siterecs_hfp_fqhc(models.Model): ## TODO
         #return self.rec_id
 
 
-class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous columns!! Note crucial links to other tables!!
+class Siterecs_other_srcs(models.Model): ## Substantially similar to sites_all: central table for direct research on FQHCs and other BP Locs (incl. 2020 work, integration underway)
     oid = models.IntegerField(primary_key=True)
     site_id = models.ManyToManyField('Sites_all', through = "sitesrecs_other_srcs_sitesall_lk")
-    archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, default="Data needs review", choices=Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
+    ## TODO: Do cross-referencing id_ fields need to be integrated in ManyToMany model (where?)?
+    id_ba_tad = models.ManyToManyField('Ba_dbhids_tad',blank=True, null=True) ## Class not yet created
+    id_hfp_fqhc = models.ManyToManyField('Siterecs_hfp_fqhc',blank=True, null=True)
+    id_hrsa_fqhc = models.ManyToManyField('Siterecs_hrsa_fqhc',blank=True, null=True) ## Class not yet created
+    id_bploc = models.ManyToManyField('Bplocs_samhsa_npi_etc',blank=True, null=True) ## Class not yet created
     name1 = models.CharField(max_length=120)
     name2 = models.CharField(max_length=120)
     name3 = models.CharField(max_length=120)
     website1 = models.URLField()
     website2 = models.URLField()
-    street1 = models.CharField(max_length=120, null=True)
-    street2 = models.CharField(max_length=120,null=True)
-    city = models.CharField(max_length=30, default='Philadelphia')
-    state_usa = models.CharField(max_length=30, default='PA') ## Can replace with Enum to match above classes   
+    phone1 = models.CharField(max_length=80, null=True, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
+    phone2 = models.CharField(max_length=80, null=True, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
+    phone3 = models.CharField(max_length=80, null=True, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
+    street1 = models.CharField(max_length=120, null=True, blank=True) 
+    street2 = models.CharField(max_length=120,blank=True, null=True)
+    city = models.CharField(max_length=30)
+    state_usa = models.CharField(max_length=30) ## Optional: replace with Enum eventually (across classes)
     zipcode = models.CharField(max_length=5)
-    fqhc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
+    bu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    nu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    mu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    otp = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     mat_avail = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    bu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # was mat_bupe
-    mu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # was mat_mtd
-    nu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # was mat_ntrex
-    bupe_type = models.CharField(max_length=120, blank=True)
-    telehealth_avail = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    telehealth_notes = models.CharField(max_length=120, blank=True)
-    insurance_notes = models.CharField(max_length=120, blank=True)
-    pregnant_women_treated = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    pregnant_women_notes = models.CharField(max_length=120, blank=True)
-    # TODO not sure what to do about key listings
-    insurance = models.CharField(blank=True, max_length=120)
-    clients = models.CharField(blank=True, max_length=120)
-    services = models.CharField(blank=True, max_length=120)
-    setting = models.CharField(blank=True, max_length=120)
-    corr_date = models.DateField(blank=True)
-    corr_source = models.CharField(blank=True, max_length=120)
-    corr_notes = models.CharField(blank=True, max_length=120)
+    asm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Assessment site
+    ba = models.BooleanField(blank=True, null=True) ## Link to DBHIDS Bed Availability (BA) data, updated 2-3x weekly
+    ref_notes = models.CharField(max_length=299, null=True, blank=True) ## Notes to display for users (FINDER)
+    hh = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Halfway house
+    hwm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Hospital withdrawal management
+    rhl = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Long-term rehab
+    rhs = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Short-term rehab
+    wm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ##: BA: Withdrawal management
+    uo = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Unspecified type
+    fqhc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    prim_care = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    telehealth = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    md = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Medicaid
+    mc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Medicare
+    oi = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Other insurance (for details, cross-ref SAMHSA FT Loc or Other Sources table(s))
+    pa = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Payment assistance
+    oit = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Intensive outpatient
+    op = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Outpatient
+    ta = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Transportation assistance
+    hs = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Housing services TODO: Clarify = help to find housing (vs. residential program)?
+    mhs = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Mental health services
+    ccc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Child care
+    dvh = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Domestic violence (safety assistance [25], group [15], or both [35])
+    pw = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Pregnant/postpartum women
+    ad = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Adolescents
+    se = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Program for older adults (seniors, 65+)
+    gl = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Program for LGBTQ+
+    sp = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Spanish
+    ah = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Deaf and hard of hearing assistance
+    fem = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Women (included to mark non-coed facilities)
+    male = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Men (included to mark non-coed facilities)
+    archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
+    why_hidden = models.CharField(max_length=150, default="Data needs review", choices=Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
     date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -470,37 +497,66 @@ class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous colu
 class Sites_all(models.Model):
     oid = models.CharField(primary_key=True, max_length=120) # TODO integer or varchar? ## Probably serialized varchar?
     id_samhsa_ftloc = models.ManyToManyField('Siterecs_samhsa_ftloc',blank=True, null=True)
-    id_samhsa_otp = models.ManyToManyField('Siterecs_samhsa_otp',blank=True, null=True)
     id_dbhids_tad = models.ManyToManyField('Siterecs_dbhids_tad',blank=True, null=True)
-    id_ba_tad
-    id_hfp_fqhc = models.ManyToManyField('Siterecs_hfp_fqhc',blank=True, null=True) ## Renamed to make all inner-MATchMapper links start with id_
-    id_hrsa_fqhc
-    ## id_other_srcs = models.ManyToManyField('Siterecs_other_srcs',blank=True, null=True)  ## TODO: reincorporate after IDs are checked
+    id_ba_tad = models.ManyToManyField('Ba_dbhids_tad',blank=True, null=True) ## Class not yet created | TODO: Does this need to be integrated in ManyToMany model (where?)?
+    id_samhsa_otp = models.ManyToManyField('Siterecs_samhsa_otp',blank=True, null=True)
+    #id_hfp_fqhc = models.ManyToManyField('Siterecs_hfp_fqhc',blank=True, null=True) ## Just reference via Siterecs_other_srcs
+    id_other_srcs = models.ManyToManyField('Siterecs_other_srcs',blank=True, null=True)
     name1 = models.CharField(max_length=120) ## WAS name_program
     name2 = models.CharField(max_length=120) ## WAS name_site
+    name3 = models.CharField(max_length=120)
     website1 = models.URLField() ## Important addition: functions with address fields as composite primary key
     website2 = models.URLField(null=True) # Added just in case (to match siterecs_other_srcs)
-    phone1 = models.CharField(max_length=30, null=True, blank=True)  ## Format: ###-###-#### with optional x####
-    phone2 = models.CharField(max_length=30, null=True, blank=True)  ## Format: ###-###-#### with optional x####
+    phone1 = models.CharField(max_length=80, null=True, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
+    phone2 = models.CharField(max_length=80, null=True, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
+    phone3 = models.CharField(max_length=80, null=True, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
     street1 = models.CharField(max_length=120, null=True, blank=True) 
     street2 = models.CharField(max_length=120,blank=True, null=True)
-    city = models.CharField(max_length=30, default='Philadelphia')
-    state_usa = models.CharField(max_length=30, default='PA') ## Can replace with Enum to match above classes
-    zipcode = models.CharField(max_length=120)
+    city = models.CharField(max_length=30)
+    state_usa = models.CharField(max_length=30) ## Optional: replace with Enum eventually (across classes)
+    zipcode = models.CharField(max_length=5)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
     ## TODO: Identify how to link relevant fields from Audit tables to Enum fields below!! June 2021: Revising to consistent fieldnames helps
-    mat_avail = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # June 6: empty for now
-    bu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # June 6: empty for now
-    mu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # June 6: empty for now
-    nu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # June 6: empty for now
-    fqhc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # June 6: empty for now
-    prim_care = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # June 6: empty for now
-    telehealth = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) # June 6: empty for now
+    bu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    nu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    mu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    otp = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    mat_avail = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    asm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Assessment site
+    ba = models.BooleanField(blank=True, null=True) ## Link to DBHIDS Bed Availability (BA) data, updated 2-3x weekly
+    ref_notes = models.CharField(max_length=299, null=True, blank=True) ## Notes to display for users (FINDER)
+    hh = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Halfway house
+    hwm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Hospital withdrawal management
+    rhl = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Long-term rehab
+    rhs = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Short-term rehab
+    wm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ##: BA: Withdrawal management
+    uo = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Unspecified type
+    fqhc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    prim_care = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    telehealth = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    md = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Medicaid
+    mc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Medicare
+    oi = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Other insurance (for details, cross-ref SAMHSA FT Loc or Other Sources table(s))
+    pa = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Payment assistance
+    oit = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Intensive outpatient
+    op = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Outpatient
+    ta = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Transportation assistance
+    hs = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Housing services TODO: Clarify = help to find housing (vs. residential program)?
+    mhs = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Mental health services
+    ccc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Child care
+    dvh = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Domestic violence (safety assistance [25], group [15], or both [35])
+    pw = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Pregnant/postpartum women
+    ad = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Adolescents
+    se = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Program for older adults (seniors, 65+)
+    gl = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Program for LGBTQ+
+    sp = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Spanish
+    ah = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Deaf and hard of hearing assistance
+    fem = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Women (included to mark non-coed facilities)
+    male = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Men (included to mark non-coed facilities)
     archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
     why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
-    data_review = models.CharField(max_length=250, null=True, blank=True) # Added per TODO in data-load sheet
-    ## TODO: Add other fields for key filters (insurance, services, etc.)!!
+    data_review = models.CharField(max_length=499, null=True, blank=True) ## Notes for admin/data management (EDITOR)
     date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -510,7 +566,8 @@ class Sites_all(models.Model):
     def __str__(self):
         return ', '.join([self.oid, self.name1, self.name2]) ## Updated to match renaming consistency
 
-
+## TODO: Does any of the below need updating for new classes, or is it obsolete?
+    
 class sitesrecs_other_srcs_sitesall_lk(models.Model):
     samhsa_oid = models.ForeignKey(Siterecs_other_srcs, on_delete=models.CASCADE)
     sites_all_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
