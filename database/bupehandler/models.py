@@ -22,14 +22,14 @@ Multi_Choices_EnumWhyHide = [ ## TODO: Fine-tune this list to fit use cases
 class Sitecodes_samhsa_ftloc(models.Model):
 ## Fields from source:
     service_code = models.CharField(primary_key=True, max_length=10)
-    category_code = models.CharField(max_length=6)
-    category_name = models.CharField(max_length=70)
-    service_name = models.CharField(max_length=120)
-    service_description = models.CharField(max_length=999)
+    category_code = models.CharField(max_length=6, blank=True, null=True)
+    category_name = models.CharField(max_length=70, blank=True, null=True)
+    service_name = models.CharField(max_length=120, blank=True, null=True)
+    service_description = models.CharField(max_length=999, blank=True, null=True)
 ## MATchMapper additions:
     sa_listings_match = models.CharField(max_length=15) ## Checking presence in siterecs_samhsa_ftloc data (found vs. missing_there/missing_here)
-    mm_filters = models.CharField(max_length=15)
-    ## See TableOfTables instead
+    ## See TableOfTables instead = Table_info class below
+        #mm_filters = models.CharField(max_length=15)
         #filter_seq = models.IntegerField()
         #ui_reference = models.CharField(max_length=50)
     date_update = models.DateTimeField(default=timezone.now) ## Our addition
@@ -46,8 +46,8 @@ class Sitecodes_samhsa_ftloc(models.Model):
 class Siterecs_samhsa_ftloc(models.Model):
   ## MATchMapper additions: 
     oid = models.IntegerField(primary_key=True)
-    site_id = models.ManyToManyField('Sites_all', through = 'Sites_ftloc')
-    mat_misc = models.BooleanField(blank=True, null=True) #TODO: check with stakeholders/core users): lofexididine, clonidine
+    site_id = models.ManyToManyField('Sites_all', through = 'Sites_ftloc') ##TODO: Check ManyToMany setup across scripts
+    mat_misc = models.BooleanField(blank=True, null=True) #TODO: Check with stakeholders/core users): lofexididine, clonidine
     mat_avail = models.BooleanField(blank=True, null=True)
     oi = models.BooleanField(blank=True, null=True) ## For 'Other insurance' (besides Medicaid and Medicare: private, state, military)
     dvh = models.BooleanField(blank=True, null=True) ## For 'Domestic violence help' (dvfp = safety assistance, dv = program/group for people who experienced domestic violence)
@@ -61,55 +61,43 @@ class Siterecs_samhsa_ftloc(models.Model):
     name2 = models.CharField(max_length=120)
     street1 = models.CharField(max_length=120)
     street2 = models.CharField(max_length=120)
-    tele = models.BooleanField(blank=True, null=True)
     city = models.CharField(max_length=30)
-    state_usa = models.CharField(max_length=120) # TODO change to Enum??? ## Downloaded data uses abbrev (not full names)
+    state_usa = models.CharField(max_length=30) # TODO change to Enum??? ## Downloaded data uses abbrev (not full names)
     zip5 = models.CharField(max_length=5,blank=True, null=True) # Cannot use zip (=SAMHSA source label) due to Python keyword conflict
     zip4 = models.CharField(max_length=9,blank=True, null=True)
     county = models.CharField(max_length=120)
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
+    intake_prompt = models.CharField(max_length=10) # Not useful, but added to mirror data SAMHSA provides
     intake1 = models.CharField(max_length=20, blank=True, null=True)
     intake2 = models.CharField(max_length=20, blank=True, null=True)
     website = models.URLField()
     latitude = models.FloatField()
     longitude = models.FloatField()
     type_facility = models.CharField(max_length=10) ## Data unlikely to exceed 4 characters; reduced 120 to 10
-    sa = models.BooleanField(blank=True, null=True)
+    sa = models.BooleanField(blank=True, null=True) ## 222 fields now exactly matched to sequence in data provided
     dt = models.BooleanField(blank=True, null=True)
-    bu = models.BooleanField(blank=True, null=True)
-    bum = models.BooleanField(blank=True, null=True)
-    ub = models.BooleanField(blank=True, null=True)
-    bwn = models.BooleanField(blank=True, null=True)
-    bwon = models.BooleanField(blank=True, null=True)
-    bmw = models.BooleanField(blank=True, null=True)
-    beri = models.BooleanField(blank=True, null=True)
-    bsdm = models.BooleanField(blank=True, null=True)
-    db_field = models.BooleanField(blank=True, null=True)
-    bmo = models.BooleanField(blank=True, null=True)
-    mo = models.BooleanField(blank=True, null=True)
-    mu = models.BooleanField(blank=True, null=True)
-    meth = models.BooleanField(blank=True, null=True)
     mm = models.BooleanField(blank=True, null=True)
     mmw = models.BooleanField(blank=True, null=True)
     dm = models.BooleanField(blank=True, null=True)
-    nu = models.BooleanField(blank=True, null=True)
-    un = models.BooleanField(blank=True, null=True)
-    vtrl = models.BooleanField(blank=True, null=True)
-    nxn = models.BooleanField(blank=True, null=True)
+    bum = models.BooleanField(blank=True, null=True)
+    bmw = models.BooleanField(blank=True, null=True)
+    db_field = models.BooleanField(blank=True, null=True)
     rpn = models.BooleanField(blank=True, null=True)
-    otp = models.BooleanField(blank=True, null=True)
-    omb = models.BooleanField(blank=True, null=True)
-    otpa = models.BooleanField(blank=True, null=True)
-    pain = models.BooleanField(blank=True, null=True)
-    ulc = models.BooleanField(blank=True, null=True)
-    moa = models.BooleanField(blank=True, null=True)
-    odtx = models.BooleanField(blank=True, null=True)
-    ubn = models.BooleanField(blank=True, null=True)
+    bu = models.BooleanField(blank=True, null=True)
+    nxn = models.BooleanField(blank=True, null=True)
+    vtrl = models.BooleanField(blank=True, null=True)
+    meth = models.BooleanField(blank=True, null=True)
     hh = models.BooleanField(blank=True, null=True)
     noop = models.BooleanField(blank=True, null=True)
+    pain = models.BooleanField(blank=True, null=True)
     nmoa = models.BooleanField(blank=True, null=True)
+    moa = models.BooleanField(blank=True, null=True)
+    ubn = models.BooleanField(blank=True, null=True) ## Unexplained field, all False
+    otpa = models.BooleanField(blank=True, null=True)
+    otp = models.BooleanField(blank=True, null=True)
     cbt = models.BooleanField(blank=True, null=True)
     dbt = models.BooleanField(blank=True, null=True)
+    tele = models.BooleanField(blank=True, null=True) ## SAMHSA corrected this gap in 2021
     saca = models.BooleanField(blank=True, null=True)
     trc = models.BooleanField(blank=True, null=True)
     rebt = models.BooleanField(blank=True, null=True)
@@ -123,12 +111,13 @@ class Siterecs_samhsa_ftloc(models.Model):
     rl = models.BooleanField(blank=True, null=True)
     rd = models.BooleanField(blank=True, null=True)
     od = models.BooleanField(blank=True, null=True)
+    omb = models.BooleanField(blank=True, null=True)
     odt = models.BooleanField(blank=True, null=True)
     oit = models.BooleanField(blank=True, null=True)
     ort = models.BooleanField(blank=True, null=True)
     hid = models.BooleanField(blank=True, null=True)
     hit = models.BooleanField(blank=True, null=True)
-    ct = models.BooleanField(blank=True, null=True)
+    ct = models.BooleanField(blank=True, null=True) ## Unexplained field, all False
     gh = models.BooleanField(blank=True, null=True)
     psyh = models.BooleanField(blank=True, null=True)
     vamc = models.BooleanField(blank=True, null=True)
@@ -153,7 +142,7 @@ class Siterecs_samhsa_ftloc(models.Model):
     si = models.BooleanField(blank=True, null=True)
     pi_field = models.BooleanField(blank=True, null=True)
     mi = models.BooleanField(blank=True, null=True)
-    atr = models.BooleanField(blank=True, null=True)
+    atr = models.BooleanField(blank=True, null=True) ## Unexplained field, all False
     fsa = models.BooleanField(blank=True, null=True)
     ss = models.BooleanField(blank=True, null=True)
     pa = models.BooleanField(blank=True, null=True)
@@ -180,6 +169,7 @@ class Siterecs_samhsa_ftloc(models.Model):
     bdtx = models.BooleanField(blank=True, null=True)
     cdtx = models.BooleanField(blank=True, null=True)
     mdtx = models.BooleanField(blank=True, null=True)
+    odtx = models.BooleanField(blank=True, null=True)
     tgd = models.BooleanField(blank=True, null=True)
     tid = models.BooleanField(blank=True, null=True)
     ico = models.BooleanField(blank=True, null=True)
@@ -200,6 +190,8 @@ class Siterecs_samhsa_ftloc(models.Model):
     adlt = models.BooleanField(blank=True, null=True)
     fem = models.BooleanField(blank=True, null=True)
     male = models.BooleanField(blank=True, null=True)
+    bmo = models.BooleanField(blank=True, null=True)
+    mo = models.BooleanField(blank=True, null=True)
     du = models.BooleanField(blank=True, null=True)
     duo = models.BooleanField(blank=True, null=True)
     acc = models.BooleanField(blank=True, null=True)
@@ -236,12 +228,20 @@ class Siterecs_samhsa_ftloc(models.Model):
     taec = models.BooleanField(blank=True, null=True)
     tbs = models.BooleanField(blank=True, null=True)
     cm = models.BooleanField(blank=True, null=True)
-    fpsy = models.BooleanField(blank=True, null=True)
+    fpsy = models.BooleanField(blank=True, null=True) ## Unexplained field, all False
     hs = models.BooleanField(blank=True, null=True)
     nrt = models.BooleanField(blank=True, null=True)
     peer = models.BooleanField(blank=True, null=True)
     stu = models.BooleanField(blank=True, null=True)
     tcc = models.BooleanField(blank=True, null=True)
+    bsdm = models.BooleanField(blank=True, null=True)
+    nu = models.BooleanField(blank=True, null=True)
+    mu = models.BooleanField(blank=True, null=True)
+    bwn = models.BooleanField(blank=True, null=True)
+    bwon = models.BooleanField(blank=True, null=True)    
+    ub = models.BooleanField(blank=True, null=True)
+    un = models.BooleanField(blank=True, null=True)
+    beri = models.BooleanField(blank=True, null=True)
     pvtp = models.BooleanField(blank=True, null=True)
     pvtn = models.BooleanField(blank=True, null=True)
     vo = models.BooleanField(blank=True, null=True)
@@ -256,6 +256,7 @@ class Siterecs_samhsa_ftloc(models.Model):
     auinpe = models.BooleanField(blank=True, null=True)
     aurpe = models.BooleanField(blank=True, null=True)
     aupc = models.BooleanField(blank=True, null=True)
+    ulc = models.BooleanField(blank=True, null=True)
     mhiv = models.BooleanField(blank=True, null=True)
     mhcv = models.BooleanField(blank=True, null=True)
     lfxd = models.BooleanField(blank=True, null=True)
@@ -313,7 +314,7 @@ class Siterecs_samhsa_otp(models.Model):
     dba = models.CharField(max_length=120,blank=True, null=True)
     street = models.CharField(max_length=120)
     city = models.CharField(max_length=30)
-    state_usa = models.CharField(max_length=120) # TODO change to Enum??? ## Match above class; downloaded data again uses abbrev (not full names)
+    state_usa = models.CharField(max_length=30) # TODO change to Enum??? ## Match above class; downloaded data again uses abbrev (not full names)
     zipcode = models.CharField(max_length=10)
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####) -- extended max_length to 20 to accommodate occasional extensions
     certification = models.CharField(max_length=120)
@@ -395,7 +396,7 @@ class Siterecs_dbhids_tad(models.Model):
         #return self.rec_id
 
 
-class Siterecs_hfp_fqhc(models.Model): ## TODO
+class Siterecs_hfp_fqhc(models.Model):   ## TODO: Reload in July 2021 prototype to save time -- may nix in next major iteration
     oid = models.IntegerField(primary_key=True)
     site_id = models.ManyToManyField('Sites_all', through = 'Siterecs_hfp_fqhc_sites_all_lookup')
     archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
@@ -427,10 +428,10 @@ class Siterecs_other_srcs(models.Model): ## Substantially similar to sites_all: 
     oid = models.IntegerField(primary_key=True)
     site_id = models.ManyToManyField('Sites_all', through = "sitesrecs_other_srcs_sitesall_lk")
     ## TODO: Do cross-referencing id_ fields need to be integrated in ManyToMany model (where?)?
-    id_ba_tad = models.ManyToManyField('Ba_dbhids_tad',blank=True, null=True) ## Class not yet created
+    #id_ba_tad = models.ManyToManyField('Ba_dbhids_tad',blank=True, null=True) ## Class not yet created
     id_hfp_fqhc = models.ManyToManyField('Siterecs_hfp_fqhc',blank=True, null=True)
-    id_hrsa_fqhc = models.ManyToManyField('Siterecs_hrsa_fqhc',blank=True, null=True) ## Class not yet created
-    id_bploc = models.ManyToManyField('Bplocs_samhsa_npi_etc',blank=True, null=True) ## Class not yet created
+    #id_hrsa_fqhc = models.ManyToManyField('Siterecs_hrsa_fqhc',blank=True, null=True) ## Class not yet created
+    #id_bploc = models.ManyToManyField('Bplocs_samhsa_npi_etc',blank=True, null=True) ## Class not yet created
     name1 = models.CharField(max_length=120)
     name2 = models.CharField(max_length=120)
     name3 = models.CharField(max_length=120)
