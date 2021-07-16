@@ -50,9 +50,18 @@ Onload
         fillSearchBar()
 */
 
+
+function removeBlanks(array){
+  var filtered = array.filter(function (el) {
+      return el != "";
+  })
+  return filtered
+}
+
 var enabledIsFilters = []
 var enabledNotFilters = []
 var searchTerm = "None"
+var orderString = ""
 
 function readFilters(){
   if(window.location.pathname.split("/").length > 3){
@@ -76,6 +85,16 @@ function readFilters(){
     if(filterPathElements.length >= 3){
       searchTerm = filterPathElements[2]
       fillSearchBar()
+    }
+  }
+  if(window.location.search != ""){
+    orderString = window.location.search.split("=")[1]
+    if(orderString.charAt(0) == "-"){
+      document.querySelector("#orderingOptions").value = "-"
+      document.querySelector("#sortBy").value = orderString.substring(1)
+    }
+    else {
+      document.querySelector("#sortBy").value = orderString
     }
   }
 }
@@ -139,6 +158,11 @@ $("#searchBar").on('keypress',function(e) {
   if(e.which == 13) {
       search(e.currentTarget.value)
   }
+})
+
+$("#sortOptions, #orderingOptions").change(function(e){
+  orderString = document.querySelector("#orderingOptions").value + document.querySelector("#sortBy").value
+  applyQueryString()
 })
 
 function toggleFilter(filterValue){
@@ -229,6 +253,12 @@ function search(term){
   applyFilters()
 }
 
+function applyQueryString(){
+  if(orderString != ""){
+    window.location.search = "order=" + orderString
+  }
+}
+
 function applyFilters(){
   var basePathElements = removeBlanks(window.location.pathname.split("/")).splice(0,2)
   var isFilterString = enabledIsFilters.join("&")
@@ -246,6 +276,7 @@ function applyFilters(){
   }
   console.log(searchTerm)
   var fullPath = fullPathElements.join("/")
+
   window.location.pathname = fullPath
   console.log(fullPath)
 }
@@ -254,286 +285,8 @@ function clearFilters(){
   enabledIsFilters = []
   enabledNotFilters = []
   searchTerm = "None"
+  orderString = ""
   unhighlightAll()
+  window.history.replaceState( {} , "title", window.location.href.split("?")[0] );
   applyFilters()
 }
-
-
-
-
-
-
-
-
-// function removeBlanks(a){
-//   for(var i = 0; i < a.length; i++){
-//     if(a[i] == ""){
-//       a.splice(i, 1)
-//     }
-//   }
-//   return a
-// }
-
-// var enabledFilters = []
-
-// async function expandSubfilters(){
-//   var subfilterSections = document.querySelectorAll(".subfilter")
-//   for(var section of subfilterSections){
-//     var predicate = section.getAttribute("predicate")
-//     if(enabledFilters.includes(predicate)){
-//       section.classList.add("visible")
-//     }
-//   }
-// }
-
-// async function highlightSelected(){
-//   var criteria = document.querySelectorAll(".filterCriteria")
-//   for(var criterion of criteria){
-//     var value = criterion.querySelector("input").value
-//     if(enabledFilters.includes(value)){
-//       criterion.classList.add("selected")
-//     }
-//   }
-// }
-
-// async function highlightSingle(filter){
-//   for(var criterion of document.querySelectorAll(".filterCriteria")){
-//     if(criterion.querySelector("input").value == filter){
-//       criterion.classList.add("selected")
-//     }
-//   }
-// }
-
-// async function unhighlightSingle(filter){
-//   for(var criterion of document.querySelectorAll(".filterCriteria")){
-//     if(criterion.querySelector("input").value == filter){
-//       criterion.classList.remove("selected")
-//     }
-//   }
-// }
-
-// async function toggleHighlight(el){
-//   if(enabledFilters.includes(el.querySelector("input").value)){
-//     unhighlightSingle(el)
-//   }
-//   else {
-//     highlightSingle(el)
-//   }
-// }
-
-// function readFilters(){
-//   var urlString = window.location.pathname.split("/")
-//   while(urlString.length < 6){
-//     urlString.push("")
-//   }
-//   var normalfilterString = window.location.pathname.split("/")[3]
-//   if(normalfilterString == "None"){
-//     var normalFilters = []
-//   }
-//   else {
-//     var normalFilters = removeBlanks(normalfilterString.split("&"))
-//   }
-//   var notfilterString = window.location.pathname.split("/")[4]
-//   if(notfilterString == "None"){
-//     var notFilters = []
-//   }
-//   else {
-//     var notFilters = removeBlanks(notFilters.split("&"))
-//   }
-//   for(var filter of notFilters){
-//     filter = filter.replace("=", "!=").replace("%3D","!=")
-//   }
-//   filters = normalFilters.concat(notFilters)
-//   for(var filter of filters){
-//     enableFilter(filter.replace("%3D","="))
-//   }
-//   expandSubfilters()
-//   highlightSelected()
-// }
-// readFilters()
-// console.log(enabledFilters)
-
-// async function enableFilter(filter){
-//   highlightSingle(filter)
-//   enabledFilters.push(filter)
-//   console.log(enabledFilters)
-// }
-
-// async function disableFilter(filter){
-//   unhighlightSingle(filter)
-//   console.log("disabling")
-//   for(var i = 0; i < enabledFilters.length; i++){
-//     if(enabledFilters[i] == filter){
-//       enabledFilters.splice(i, 1)
-//     }
-//   }
-// }
-
-// async function disablePredicatedFilters(filter){
-//   var subfilterSections = document.querySelectorAll(".subfilter")
-//   for(var section of subfilterSections){
-//     var predicate = section.getAttribute("predicate")
-//     if(predicate == filter){
-//       section.classList.remove("visible")
-//       for(var predicatedFilter of section.querySelectorAll(".filterCriteria")){
-//         disableFilter(predicatedFilter.querySelector("input").value)
-//       }
-//     }
-//   }
-// }
-
-// function toggleFilter(filter){
-//   if(enabledFilters.includes(filter)){
-//     disableFilter(filter)
-//     disablePredicatedFilters(filter)
-//   }
-//   else {
-//     enableFilter(filter)
-//     expandSubfilters()
-//   }
-//   setFilters()
-// }
-
-// function setFilters(){
-//   normalFilters = []
-//   notFilters = []
-//   for(var filter of enabledFilters){
-//     if(filter.split("=")[1].charAt(0) == "!"){
-//       notFilters.push(filter)
-//     }
-//     else {
-//       normalFilters.push(filter)
-//     }
-//   }
-//   var splitPath = window.location.pathname.split("/")
-
-//   while(splitPath.length < 6){
-//     splitPath.push("")
-//   }
-
-//   if(normalFilters.length == 0){
-//     splitPath[3] == "None"
-//   }
-//   else {
-//     splitPath[3] = normalFilters.join("&").replace("=", "%3D")
-//   }
-//   if(notFilters.length == 0){
-//     splitPath[4] == "None"
-//   }
-//   else {
-//     splitPath[4] = notFilters.join("&").replace("=", "%3D")
-//   }
-//   splitPath = removeBlanks(splitPath)
-//   window.location.pathname = splitPath.join("/")
-// }
-
-// function removeBlanks(array){
-//   var filtered = array.filter(function (el) {
-//       return el != "";
-//   })
-//   return filtered
-// }
-
-// function clearFilters(){
-//   enabledFilters = []
-//   setFilters()
-// }
-
-// $(".filterCriteria").click(function(e){
-//   console.log(e.currentTarget.querySelector("input").value)
-//   toggleFilter(e.currentTarget.querySelector("input").value)
-// });
-
-// $("#clearFilters").click(function(e){
-//   clearFilters()
-// })
-
-// $(document).on('keypress',function(e) {
-//   if(e.which == 13) {
-//       alert('You pressed enter!');
-//   }
-// });
-
-// var filterStringFull = ""
-//
-// function removePredicated(filter){
-//   console.log(filter)
-//   for(var subfilter of document.querySelectorAll(".subfilter")){
-//     var predicate = subfilter.getAttribute("predicate")
-//     if(predicate == filter.replace("%3D","=")){
-//       for(var predicatedFilter of subfilter.querySelectorAll(".filterCriteria input")){
-//         toggleFilter(predicatedFilter.value, true)
-//       }
-//     }
-//   }
-// }
-//
-// function toggleFilter(filter, noEnable){
-//   // Convert addition to URL style
-//   var filterStringAddition = filter.replace("=","%3D")
-//
-//   // Split current filterString into individual filters
-//   var filterString = filterStringFull
-//   var splitFilters = filterString.split("&")
-//
-//   // If already includes filter, disable filter and its predicated filters
-//   if(splitFilters.includes(filterStringAddition)){
-//     var itemIndex = splitFilters.indexOf(filterStringAddition)
-//     splitFilters.splice(itemIndex, 1)
-//
-//       console.log("removing " + filterStringAddition)
-//     removePredicated(filterStringAddition)
-//   }
-//   // Else, add it to the filterString
-//   else if(!noEnable) {
-//     splitFilters.push(filterStringAddition)
-//   }
-//   // Remove blank filters
-//   for(var filter of splitFilters){
-//     if(filter == ""){
-//       var itemIndex = splitFilters.indexOf(filter)
-//       splitFilters.splice(itemIndex, 1)
-//     }
-//   }
-//   filterStringFull = splitFilters.join("&")
-//   console.log(filterStringFull)
-// }
-//
-// jQuery(".filterCriteria").click(function(e){
-//   toggleFilter(e.currentTarget.querySelector("input").value)
-//   var splitPath = window.location.pathname.split("/")
-//   splitPath[3] = filterStringFull
-//   for(var element of splitPath){
-//     if(element == ""){
-//       var itemIndex = splitPath.indexOf("")
-//       splitPath.splice(itemIndex, 1)
-//     }
-//   }
-//   window.location.pathname = splitPath.join("/")
-// });
-//
-// function readFilters(){
-//   var splitPath = window.location.pathname.split("/")
-//   var filterString = splitPath[3]
-//   filterStringFull = filterString
-//   var splitFilters = filterString.split("&")
-//   // For each filter in path
-//   for(var filter of splitFilters){
-//     // Show as selected in sidebar
-//     for(var criteria of document.querySelectorAll(".filterCriteria")){
-//       var value = criteria.querySelector("input").value
-//       if(value == filter.replace("%3D","=")){
-//         criteria.classList.add("selected")
-//       }
-//     }
-//     // Enable predicated subfilters
-//     for(var subfilter of document.querySelectorAll(".subfilter")){
-//       var predicate = subfilter.getAttribute("predicate")
-//       if(predicate == filter.replace("%3D","=")){
-//         subfilter.classList.add("visible")
-//       }
-//     }
-//   }
-// }
-//
-// readFilters()

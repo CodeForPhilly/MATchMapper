@@ -455,6 +455,26 @@ class Siterecs_other_srcs(models.Model): ## TODO (jkd): Clean up extraneous colu
         return self.name1
 
 
+class Table_info(models.Model):
+    oid = models.IntegerField(primary_key=True)
+    table_name = models.CharField(max_length=120)
+    display_name = models.CharField(max_length=120)
+    source_url = models.URLField()
+    update_recency = models.DateField()
+    records_count = models.IntegerField()
+    facility_type = models.CharField(max_length=250)
+    source_range = models.CharField(max_length=120)
+    notes = models.CharField(max_length=500)
+    filters = models.CharField(max_length=5000)
+    annual_updates = models.IntegerField()
+    # display_cols = models.CharField(max_length=500)
+    # hide_cols = models.CharField(max_length=500)
+
+    def __str__(self):
+        #i change this to return oid instead of rec_id because rec_id doesn't exist
+        #please change the returned value to rec_id if applicable later on.
+        return str(self.display_name)
+        #return self.rec_id
 
 
 

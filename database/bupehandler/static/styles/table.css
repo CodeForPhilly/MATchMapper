@@ -186,6 +186,19 @@ a:hover {
   padding: 10px;
 }
 
+#sortOptions label {
+  margin-right: 5px;
+}
+
+#sortOptions select {
+  margin: 5px;
+  border-radius: 0px;
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
+  padding: 3px;
+}
+
 #applyFilters {
   padding: 5px;
   margin: 10px 0px;

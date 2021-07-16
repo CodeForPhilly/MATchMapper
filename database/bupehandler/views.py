@@ -11,13 +11,17 @@ from rest_framework.response import Response
 import json
 from django.core.exceptions import ObjectDoesNotExist
 from .serializers import Sitecodes_samhsa_ftlocSerializer, Siterecs_samhsa_ftlocSerializer, Siterecs_samhsa_otpSerializer, Siterecs_dbhids_tadSerializer, Siterecs_other_srcsSerializer, Sites_allSerializer, Siterecs_hfp_fqhcSerializer
-from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Siterecs_other_srcs, Sites_all, Siterecs_hfp_fqhc
+from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Siterecs_other_srcs, Sites_all, Siterecs_hfp_fqhc, Table_info
 import re 
 from spellchecker import SpellChecker
 from .model_translation import Sites_general_display
+from .model_translation import filterKeyToLocalKey
 from django.forms.models import model_to_dict
 from django.db.models import CharField
 from django.db.models import  Q
+from .tableCaching import fetchCachedIfRecent
+
+
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
 @permission_classes([IsAuthenticated])
@@ -67,6 +71,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
             query_pairs = param_values.split("&")
             for pair in query_pairs:
                 list_pair = pair.split("=")
+                list_pair[0] = filterKeyToLocalKey(list_pair[0], table_name)
                 if list_pair[1] == "None":
                     list_pair[1] = None
                 if list_pair[0] == "autofill" and list_pair[1] == "True":
@@ -80,6 +85,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
             query_pairs = excluded_values.split("&")
             for pair in query_pairs:
                 list_pair = pair.split("=")
+                list_pair[0] = filterKeyToLocalKey(list_pair[0])
                 if list_pair[1] == "None":
                     list_pair[1] = None
                 else:
@@ -122,6 +128,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
         "sites_all" : Sites_allSerializer,
     }
     table_objects = table_dict[table_name].objects.all().filter(**filter_params)
+    # table_objects = fetchCachedIfRecent(table_name, ttl=300).filter(**filter_params)
     for excluded_param in excluded_params:
         current_excluded_param = {}
         current_excluded_param[excluded_param] = excluded_params[excluded_param]
@@ -136,11 +143,14 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
     if request.GET.getlist('order'):
         order_by_list = request.GET.getlist('order')
         table_objects = table_objects.order_by(*order_by_list)
-    general_display_list = [] 
-    for table_object in table_objects: 
-        general_display_list.append(Sites_general_display(table_name, model_to_dict(table_object)).output)
+    general_display_list = []
+    for table_object in table_objects:
+        dicted = table_object.__dict__
+        generalDisplayed = Sites_general_display(table_name, dicted)
+        general_display_list.append(generalDisplayed.output)
+    table_info = Table_info.objects.get(table_name=table_name).__dict__
     #table_serializer = serializer_dict[table_name](table_objects, many=True)
-    return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : general_display_list})
+    return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : general_display_list, "table_info": table_info})
 
 
 @api_view(["GET", "POST", "DELETE"])
@@ -162,6 +172,16 @@ def filtered_map(request, table_name, param_values="", excluded_values="", keywo
     }
     mapbox_access_token = 'pk.my_mapbox_access_token'
     if param_values: 
+        paramList = [paramString.split("=") for paramString in param_values.split("&")]
+        for param in paramList:
+            param[0] = filterKeyToLocalKey(param[0], table_name)
+        param_values = "&".join(["=".join(param) for param in paramList])
+
+        exclusionList = [exclusionString.split("=") for exclusionString in excluded_values.split("&")]
+        for exclusion in exclusionList:
+            exclusion[0] = filterKeyToLocalKey(exclusion[0], table_name)
+        excluded_values = "&".join(["=".join(exclusion) for exclusion in exclusionList])
+
         return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "param_values": param_values, "excluded_values": excluded_values, "destination_name": naming_dict[table_name], "keyword": keyword})
     else: 
         return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "destination_name": naming_dict[table_name]})
