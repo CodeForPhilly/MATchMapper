@@ -50,6 +50,14 @@ Onload
         fillSearchBar()
 */
 
+
+function removeBlanks(array){
+  var filtered = array.filter(function (el) {
+      return el != "";
+  })
+  return filtered
+}
+
 var enabledIsFilters = []
 var enabledNotFilters = []
 var searchTerm = "None"
