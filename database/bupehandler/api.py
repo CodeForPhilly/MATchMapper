@@ -177,7 +177,7 @@ def filtered_geodata(request, table_name, param_values=None, excluded_values=Non
         "siterecs_samhsa_otp": "name_program",
         "siterecs_dbhids_tad": "name_listed", 
         "siterecs_other_srcs" : "name1", 
-        "sites_all" : "name_program",
+        "sites_all" : "name1",
     }
     table_objects = table_dict[table_name].objects.all().filter(**filter_params)
     if keyword != None: 
