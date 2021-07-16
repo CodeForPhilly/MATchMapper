@@ -121,6 +121,10 @@ def filtered_geodata(request, table_name, param_values=None, excluded_values=Non
                 list_pair = pair.split("=")
                 if list_pair[1] == "None":
                     list_pair[1] = None
+                if list_pair[1] == "True": 
+                    list_pair[1] = True 
+                if list_pair[1] == "False": 
+                    list_pair[1] = False
                 if list_pair[0] == "autofill" and list_pair[1] == "True":
                     autofill = True
                 elif list_pair[0] == "autocorrect" and list_pair[1] == "True":
@@ -172,10 +176,10 @@ def filtered_geodata(request, table_name, param_values=None, excluded_values=Non
         "sites_all" : Sites_allSerializer,
     }
     naming_dict = { 
-        "sitecodes_samhsa_ftloc" : "category_name",
+        "sitecodes_samhsa_ftloc" : "name1",
         "siterecs_samhsa_ftloc" : "name1",
-        "siterecs_samhsa_otp": "name_program",
-        "siterecs_dbhids_tad": "name_listed", 
+        "siterecs_samhsa_otp": "program_name",
+        "siterecs_dbhids_tad": "name1", 
         "siterecs_other_srcs" : "name1", 
         "sites_all" : "name1",
     }

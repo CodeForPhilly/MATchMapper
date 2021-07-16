@@ -43,13 +43,14 @@ $(document).ready(function() {
                     center: [-75.158924, 39.9629223],
                     zoom: 11
                 });
+                var link_object; 
                 for (i = 0; i < data['loc'].length; i++) {
                     console.log([data['loc'][i]['latitude'], data['loc'][i]['longitude']])
                     var marker = new mapboxgl.Marker()
                         .setLngLat([data['loc'][i]['longitude'], data['loc'][i]['latitude']])
                         .setPopup(new mapboxgl.Popup().setHTML(data['loc'][i][destination_name]))
                         .addTo(map);
-                        var link_object = window.location.origin + "/table/" + table_name + "/name1=" + data['loc'][i][destination_name] + "/";
+                        link_object = window.location.origin + "/table/" + table_name + "/name1=" + data['loc'][i][destination_name] + "/";
                         marker.getElement().addEventListener('dblclick', event => {
                         window.location.href = link_object;
                         });

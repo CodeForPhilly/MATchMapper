@@ -168,7 +168,7 @@ def filtered_map(request, table_name, param_values="", excluded_values="", keywo
         "siterecs_samhsa_otp": "name_program",
         "siterecs_dbhids_tad": "name_listed", 
         "siterecs_other_srcs" : "name1", 
-        "sites_all" : "name_program",
+        "sites_all" : "name1",
     }
     mapbox_access_token = 'pk.my_mapbox_access_token'
     if param_values: 
@@ -184,7 +184,7 @@ def filtered_map(request, table_name, param_values="", excluded_values="", keywo
 
         return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "param_values": param_values, "excluded_values": excluded_values, "destination_name": naming_dict[table_name], "keyword": keyword})
     else: 
-        return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "destination_name": naming_dict[table_name]})
+        return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "destination_name": naming_dict[table_name], "keyword": keyword})
 # @api_view(["GET", "POST", "DELETE"])
 # @csrf_exempt
 # @permission_classes([IsAuthenticated])
