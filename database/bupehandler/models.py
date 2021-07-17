@@ -55,8 +55,8 @@ class Siterecs_samhsa_ftloc(models.Model):
     mat_avail = models.BooleanField(blank=True, null=True)
     oi = models.BooleanField(blank=True, null=True) ## For 'Other insurance' (besides Medicaid and Medicare: private, state, military)
     dvh = models.BooleanField(blank=True, null=True) ## For 'Domestic violence help' (dvfp = safety assistance, dv = program/group for people who experienced domestic violence)
-    archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
+    archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
+    why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
     date_firstfind = models.DateField()
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
     date_update = models.DateTimeField(default=timezone.now)
@@ -325,8 +325,8 @@ class Siterecs_samhsa_otp(models.Model):
     certification = models.CharField(max_length=120)
     full_certification = models.DateField(blank=True, null=True)
   ## MATchMapper additions: 
-    archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
+    archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
+    why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
     date_firstfind = models.DateField()
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
     data_review = models.CharField(max_length=250, blank=True) # Notes from manual review, e.g. "ZIP typo: corrected 19007 to 19107..."
@@ -386,8 +386,8 @@ class Siterecs_dbhids_tad(models.Model):
     f92 = models.BooleanField(blank=True, null=True)
     f17 = models.BooleanField(blank=True, null=True)
     f44 = models.BooleanField(blank=True, null=True)
-    archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
+    archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
+    why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
     data_review = models.CharField(max_length=250, blank=True) ## Max LEN so far = 161 char.  
 
     class Meta:
@@ -411,16 +411,16 @@ class Ba_dbhids_tad(models.Model):   ## Added as bridge to link sites_all to 3x/
     date_firstfind = models.DateField()
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
     date_update = models.DateTimeField(default=timezone.now)
-    archival_only = models.BooleanField(blank=True, null=True)
-    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
+    archival_only = models.BooleanField(blank=False)
+    why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
     data_review = models.CharField(max_length=250, blank=True)
 
     
 class Siterecs_hfp_fqhc(models.Model):   ## TODO: Reload in July 2021 prototype to save time -- may nix in next major iteration
     oid = models.IntegerField(primary_key=True)
     site_id = models.ManyToManyField('Sites_all', through = 'Lookup_siterecs_hfp_fqhc')
-    archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, default="Data needs review", choices=Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
+    archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
+    why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
     name_system = models.CharField(max_length=120, blank=True)
     name_site = models.CharField(max_length=120)
     name_short = models.CharField(max_length=50, blank=True)
@@ -471,7 +471,7 @@ class Siterecs_other_srcs(models.Model): ## What is this: Central table for dire
     mat_avail = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     asm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Assessment site
     ba = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3) ## Link to DBHIDS Bed Availability (BA) data, updated 2-3x weekly
-    ref_notes = models.CharField(max_length=299, null=True, blank=True) ## Notes to display for users (FINDER)
+    ref_notes = models.CharField(max_length=299, blank=True) ## Notes to display for users (FINDER)
     hh = models.BooleanField(blank=True, null=True) ## BA: Halfway house
     hwm = models.BooleanField(blank=True, null=True) ## BA: Hospital withdrawal management
     rhl = models.BooleanField(blank=True, null=True) ## BA: Long-term rehab
@@ -500,8 +500,8 @@ class Siterecs_other_srcs(models.Model): ## What is this: Central table for dire
     ah = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Deaf and hard of hearing assistance
     fem = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Women (included to mark non-coed facilities)
     male = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Men (included to mark non-coed facilities)
-    archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, default="Data needs review", choices=Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
+    archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
+    why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
     date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -543,7 +543,7 @@ class Sites_all(models.Model):
     mat_avail = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     asm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Assessment site
     ba = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3) ## Link to DBHIDS Bed Availability (BA) data, updated 2-3x weekly
-    ref_notes = models.CharField(max_length=299, null=True, blank=True) ## Notes to display for users (FINDER)
+    ref_notes = models.CharField(max_length=299, blank=True) ## Notes to display for users (FINDER)
     hh = models.BooleanField(blank=True, null=True) ## BA: Halfway house
     hwm = models.BooleanField(blank=True, null=True) ## BA: Hospital withdrawal management
     rhl = models.BooleanField(blank=True, null=True) ## BA: Long-term rehab
@@ -572,8 +572,8 @@ class Sites_all(models.Model):
     ah = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Deaf and hard of hearing assistance
     fem = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Women (included to mark non-coed facilities)
     male = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Men (included to mark non-coed facilities)
-    archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
+    archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
+    why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
     data_review = models.CharField(max_length=499, null=True, blank=True) ## Notes for admin/data management (EDITOR)
     date_update = models.DateTimeField(default=timezone.now)
 
