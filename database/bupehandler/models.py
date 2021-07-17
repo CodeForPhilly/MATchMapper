@@ -504,6 +504,7 @@ class Siterecs_other_srcs(models.Model): ## What is this: Central table for dire
     male = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Men (included to mark non-coed facilities)
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
     why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
+    data_review = models.CharField(max_length=1000) ## Added in case: For EDITOR use
     date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
