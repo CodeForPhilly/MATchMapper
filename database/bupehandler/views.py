@@ -10,8 +10,8 @@ from rest_framework import status
 from rest_framework.response import Response
 import json
 from django.core.exceptions import ObjectDoesNotExist
-from .serializers import Sitecodes_samhsa_ftlocSerializer, Siterecs_samhsa_ftlocSerializer, Siterecs_samhsa_otpSerializer, Siterecs_dbhids_tadSerializer, Siterecs_other_srcsSerializer, Sites_allSerializer, Siterecs_hfp_fqhcSerializer
-from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Siterecs_other_srcs, Sites_all, Siterecs_hfp_fqhc, Table_info
+from .serializers import Sitecodes_samhsa_ftlocSerializer, Siterecs_samhsa_ftlocSerializer, Siterecs_samhsa_otpSerializer, Siterecs_dbhids_tadSerializer, Ba_dbhids_tadSerializer, Siterecs_other_srcsSerializer, Sites_allSerializer, Siterecs_hfp_fqhcSerializer
+from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Ba_dbhids_tad, Siterecs_other_srcs, Sites_all, Siterecs_hfp_fqhc, Table_info
 import re 
 from spellchecker import SpellChecker
 from .model_translation import Sites_general_display
@@ -35,8 +35,8 @@ def sites_all_display(request):
 @csrf_exempt
 @permission_classes([IsAuthenticated])
 def siterecs_samhsa_otp_display(request, filter_params=None, order_by_params=None):
-    order_param = ['name_program']
-    filter_params={'name_program': 'Achievement Through Counseling and Treatment (ACT 1)'}
+    order_param = ['program_name']
+    filter_params={'program_name': 'Achievement Through Counseling and Treatment (ACT 1)'}
     siterecs_samhsa_otp_objects = Siterecs_samhsa_otp.objects.all()
     if filter_params:
         siterecs_samhsa_otp_objects = siterecs_samhsa_otp_objects.filter(**filter_params)
@@ -115,6 +115,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
         "siterecs_hfp_fqhc": Siterecs_hfp_fqhc,
         "siterecs_samhsa_otp": Siterecs_samhsa_otp ,
         "siterecs_dbhids_tad": Siterecs_dbhids_tad,
+        "ba_dbhids_tad": Ba_dbhids_tad,
         "siterecs_other_srcs" : Siterecs_other_srcs ,
         "sites_all" : Sites_all,
     }
@@ -124,6 +125,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
         "siterecs_hfp_fqhc": Siterecs_hfp_fqhcSerializer,
         "siterecs_samhsa_otp": Siterecs_samhsa_otpSerializer,
         "siterecs_dbhids_tad": Siterecs_dbhids_tadSerializer,
+        "ba_dbhids_tad": Ba_dbhids_tadSerializer,
         "siterecs_other_srcs" : Siterecs_other_srcsSerializer,
         "sites_all" : Sites_allSerializer,
     }
@@ -163,10 +165,12 @@ def default_map(request):
 @csrf_exempt
 def filtered_map(request, table_name, param_values="", excluded_values="", keyword = ""):
     naming_dict = { 
-        "sitecodes_samhsa_ftloc" : "category_name",
+        "sitecodes_samhsa_ftloc" : "service_name",
         "siterecs_samhsa_ftloc" : "name1",
-        "siterecs_samhsa_otp": "name_program",
-        "siterecs_dbhids_tad": "name_listed", 
+        "siterecs_samhsa_otp": "program_name",
+        "siterecs_dbhids_tad": "name1", 
+        "ba_dbhids_tad": "name_ba", 
+        "siterecs_hfp_fqhc": "name_short", 
         "siterecs_other_srcs" : "name1", 
         "sites_all" : "name1",
     }
@@ -185,6 +189,7 @@ def filtered_map(request, table_name, param_values="", excluded_values="", keywo
         return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "param_values": param_values, "excluded_values": excluded_values, "destination_name": naming_dict[table_name], "keyword": keyword})
     else: 
         return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "destination_name": naming_dict[table_name], "keyword": keyword})
+
 # @api_view(["GET", "POST", "DELETE"])
 # @csrf_exempt
 # @permission_classes([IsAuthenticated])
