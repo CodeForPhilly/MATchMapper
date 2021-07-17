@@ -67,14 +67,14 @@ class Siterecs_samhsa_ftloc(models.Model):
     street2 = models.CharField(max_length=120, blank=True)
     city = models.CharField(max_length=30)
     state_usa = models.CharField(max_length=30) # TODO change to Enum??? ## Downloaded data uses abbrev (not full names)
-    zip5 = models.CharField(max_length=5,blank=True) # Cannot use zip (=SAMHSA source label) due to Python keyword conflict
+    zip5 = models.CharField(max_length=5) # Cannot use zip (=SAMHSA source label) due to Python keyword conflict
     zip4 = models.CharField(max_length=4,blank=True)
     county = models.CharField(max_length=120)
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
-    intake_prompt = models.CharField(max_length=10) # Not useful, but added to mirror data SAMHSA provides
+    intake_prompt = models.CharField(max_length=10, blank=True) # Not useful, but added to mirror data SAMHSA provides
     intake1 = models.CharField(max_length=20, blank=True)
     intake2 = models.CharField(max_length=20, blank=True)
-    website = models.URLField()
+    website = models.URLField(blank=True, null=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
     type_facility = models.CharField(max_length=10) ## Data unlikely to exceed 4 characters; reduced 120 to 10
@@ -388,6 +388,8 @@ class Siterecs_dbhids_tad(models.Model):
     f44 = models.BooleanField(blank=True, null=True)
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
     why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
+    date_firstfind = models.DateField()
+    date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
     data_review = models.CharField(max_length=250, blank=True) ## Max LEN so far = 161 char.  
 
     class Meta:
@@ -450,10 +452,10 @@ class Siterecs_other_srcs(models.Model): ## What is this: Central table for dire
     #id_hrsa_fqhc = models.ManyToManyField('Siterecs_hrsa_fqhc',blank=True, null=True) ## Class not yet created
     #id_bploc = models.ManyToManyField('Bplocs_samhsa_npi_etc',blank=True, null=True) ## Class not yet created
     name1 = models.CharField(max_length=120)
-    name2 = models.CharField(max_length=120)
-    name3 = models.CharField(max_length=120)
-    website1 = models.URLField()
-    website2 = models.URLField()
+    name2 = models.CharField(max_length=120, blank=True)
+    name3 = models.CharField(max_length=120, blank=True)
+    website1 = models.URLField(blank=True, null=True) ## Would prefer to require, but optional is more scalable (e.g. if DBHIDS adds program that lacks working URL)
+    website2 = models.URLField(blank=True, null=True)
     phone1 = models.CharField(max_length=80, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
     phone2 = models.CharField(max_length=80, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
     phone3 = models.CharField(max_length=80, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
@@ -478,7 +480,7 @@ class Siterecs_other_srcs(models.Model): ## What is this: Central table for dire
     rhs = models.BooleanField(blank=True, null=True) ## BA: Short-term rehab
     wm = models.BooleanField(blank=True, null=True) ##: BA: Withdrawal management
     uo = models.BooleanField(blank=True, null=True) ## BA: Unspecified type
-    fqhc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    fqhc = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3)
     prim_care = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     telehealth = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     md = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Medicaid
@@ -550,7 +552,7 @@ class Sites_all(models.Model):
     rhs = models.BooleanField(blank=True, null=True) ## BA: Short-term rehab
     wm = models.BooleanField(blank=True, null=True) ##: BA: Withdrawal management
     uo = models.BooleanField(blank=True, null=True) ## BA: Unspecified type
-    fqhc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    fqhc = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3)
     prim_care = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     telehealth = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     md = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Medicaid
