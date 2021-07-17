@@ -18,14 +18,15 @@ Multi_Choices_EnumWhyHide = [ ## TODO: Fine-tune this list to fit use cases
 ('Other','Other'), ## Why final comma?
 ]
 
+## TODO: Review def __str__(self) references for which field(s) work best as foreign key in intermediaries for many-to-many relationships (https://docs.djangoproject.com/en/3.2/topics/db/models/#extra-fields-on-many-to-many-relationships)
 
 class Sitecodes_samhsa_ftloc(models.Model):
 ## Fields from source:
     service_code = models.CharField(primary_key=True, max_length=10)
-    category_code = models.CharField(max_length=6, blank=True, null=True)
-    category_name = models.CharField(max_length=70, blank=True, null=True)
-    service_name = models.CharField(max_length=120, blank=True, null=True)
-    service_description = models.CharField(max_length=999, blank=True, null=True)
+    category_code = models.CharField(max_length=6, blank=True)
+    category_name = models.CharField(max_length=70, blank=True)
+    service_name = models.CharField(max_length=120, blank=True)
+    service_description = models.CharField(max_length=999, blank=True)
 ## MATchMapper additions:
     sa_listings_match = models.CharField(max_length=15) ## Checking presence in siterecs_samhsa_ftloc data (found vs. missing_there/missing_here)
     ## See TableOfTables instead = Table_info class below
@@ -41,40 +42,41 @@ class Sitecodes_samhsa_ftloc(models.Model):
     def __str__(self):
         return self.service_name
 
-# Gave all Siterecs_ classes an oid (object id for ease of abstraction for backend) ## = Audit tables
+# Gave all Siterecs_ classes an oid (object id for ease of abstraction for backend)
 
 class Siterecs_samhsa_ftloc(models.Model):
   ## MATchMapper additions: 
     oid = models.IntegerField(primary_key=True)
-    site_id = models.ManyToManyField('Sites_all', through = 'Sites_ftloc') ##TODO: Check ManyToMany setup across scripts
+    site_id = models.ManyToManyField('Sites_all', through = 'Lookup_siterecs_samhsa_ftloc')
     mat_misc = models.BooleanField(blank=True, null=True) #TODO: Check with stakeholders/core users): lofexididine, clonidine
     mat_avail = models.BooleanField(blank=True, null=True)
     oi = models.BooleanField(blank=True, null=True) ## For 'Other insurance' (besides Medicaid and Medicare: private, state, military)
     dvh = models.BooleanField(blank=True, null=True) ## For 'Domestic violence help' (dvfp = safety assistance, dv = program/group for people who experienced domestic violence)
     archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
     why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
-    date_firstfind = models.DateField(blank=True, null=True)
+    date_firstfind = models.DateField()
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
     date_update = models.DateTimeField(default=timezone.now)
   ## Fields from source:
     name1 = models.CharField(max_length=120)
-    name2 = models.CharField(max_length=120)
+    name2 = models.CharField(max_length=120, blank=True)
     street1 = models.CharField(max_length=120)
-    street2 = models.CharField(max_length=120)
+    street2 = models.CharField(max_length=120, blank=True)
     city = models.CharField(max_length=30)
     state_usa = models.CharField(max_length=30) # TODO change to Enum??? ## Downloaded data uses abbrev (not full names)
-    zip5 = models.CharField(max_length=5,blank=True, null=True) # Cannot use zip (=SAMHSA source label) due to Python keyword conflict
-    zip4 = models.CharField(max_length=9,blank=True, null=True)
+    zip5 = models.CharField(max_length=5,blank=True) # Cannot use zip (=SAMHSA source label) due to Python keyword conflict
+    zip4 = models.CharField(max_length=4,blank=True)
     county = models.CharField(max_length=120)
     phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
     intake_prompt = models.CharField(max_length=10) # Not useful, but added to mirror data SAMHSA provides
-    intake1 = models.CharField(max_length=20, blank=True, null=True)
-    intake2 = models.CharField(max_length=20, blank=True, null=True)
+    intake1 = models.CharField(max_length=20, blank=True)
+    intake2 = models.CharField(max_length=20, blank=True)
     website = models.URLField()
     latitude = models.FloatField()
     longitude = models.FloatField()
     type_facility = models.CharField(max_length=10) ## Data unlikely to exceed 4 characters; reduced 120 to 10
-    sa = models.BooleanField(blank=True, null=True) ## 222 fields now exactly matched to sequence in data provided
+  ## 222 fields below now exactly matched to sequence in SAMHSA downloads, for ease of audit:
+    sa = models.BooleanField(blank=True, null=True)
     dt = models.BooleanField(blank=True, null=True)
     mm = models.BooleanField(blank=True, null=True)
     mmw = models.BooleanField(blank=True, null=True)
@@ -308,23 +310,23 @@ class Siterecs_samhsa_ftloc(models.Model):
 class Siterecs_samhsa_otp(models.Model):
   ## MATchMapper additions: 
     oid = models.IntegerField(primary_key=True)
-    site_id = models.ManyToManyField('Sites_all', through = 'sites_site_recs_lookup') ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
+    site_id = models.ManyToManyField('Sites_all', through = 'Lookup_siterecs_samhsa_otp')
   ## Fields from source: 
     program_name = models.CharField(max_length=250)
-    dba = models.CharField(max_length=120,blank=True, null=True)
+    dba = models.CharField(max_length=120, blank=True)
     street = models.CharField(max_length=120)
     city = models.CharField(max_length=30)
     state_usa = models.CharField(max_length=30) # TODO change to Enum??? ## Match above class; downloaded data again uses abbrev (not full names)
     zipcode = models.CharField(max_length=10)
-    phone = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####) -- extended max_length to 20 to accommodate occasional extensions
+    phone = models.CharField(max_length=20, blank=True) # Format: ###-###-#### (with optional x####) -- extended max_length to 20 to accommodate occasional extensions
     certification = models.CharField(max_length=120)
     full_certification = models.DateField(blank=True, null=True)
   ## MATchMapper additions: 
     archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
     why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
-    date_firstfind = models.DateField(blank=True, null=True)
+    date_firstfind = models.DateField()
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
-    data_review = models.CharField(max_length=250,blank=True, null=True) # Notes from manual review, e.g. "ZIP typo: corrected 19007 to 19107..."
+    data_review = models.CharField(max_length=250, blank=True) # Notes from manual review, e.g. "ZIP typo: corrected 19007 to 19107..."
     date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -337,21 +339,21 @@ class Siterecs_samhsa_otp(models.Model):
 
 class Siterecs_dbhids_tad(models.Model):
     oid = models.IntegerField(primary_key=True)
-    site_id = models.ManyToManyField('Sites_all', through = 'Siterecs_dbhids_sites_all_lookup')  ## we decided Jan 26th just to reference oid from every site Audit in sites_all Production table
+    site_id = models.ManyToManyField('Sites_all', through = 'Lookup_siterecs_dbhids_tad')
   ## [DCS] = directly copied from source PDF. Interspersed with MATchMapper boolean additions: 
     name1 = models.CharField(max_length=120) #[DCS]: Max LEN in data = 51 char.
     coe = models.BooleanField(blank=True, null=True) ## Asterisked names (*Center of Excellence)
-    ref_address = models.CharField(max_length=100, null=True) #[DCS]: Max LEN in data = 53 char.
+    ref_address = models.CharField(max_length=100) #[DCS]: Max LEN in data = 53 char.
     street1 = models.CharField(max_length=120)
-    street2 = models.CharField(max_length=50,blank=True, null=True)
+    street2 = models.CharField(max_length=50, blank=True)
     city = models.CharField(max_length=30, default='Philadelphia') # Added Philadelphia as default city BY SAM
     state_usa = models.CharField(max_length=30, default='PA') ## Can replace with Enum to match above classes BY SAM
     zipcode = models.CharField(max_length=5)
     phone1 = models.CharField(max_length=20) #[DCS] but reformatted: ###-###-#### (with optional x####)
     asm = models.BooleanField(blank=True, null=True) ## Added to make page 2 entries filterable (Assessment directory)
     ba = models.BooleanField(blank=True, null=True) ## Added to make page 5 entries link-and-filterable (Bed availability! = top ask in March 2020 hackathon response)
-    name_ba = models.CharField(max_length=50) #[DCS] page 5, to facilitate cross-refs | TODO: Add to model_translation.py IF frontend visibility needed (for EDITOR)
-    mat_info = models.CharField(max_length=100) #[DCS]: Max LEN in data = 50 char. For line breaks, use pipe: |
+    name_ba = models.CharField(max_length=50, blank=True) #[DCS] page 5, to facilitate cross-refs | TODO: Add to model_translation.py IF frontend visibility needed (for EDITOR)
+    mat_info = models.CharField(max_length=100, blank=True) #[DCS]: Max LEN in data = 50 char. For line breaks, use pipe: |
     bu = models.BooleanField(blank=True, null=True)
     bui = models.BooleanField(blank=True, null=True)
     #bum = models.BooleanField(blank=True, null=True)
@@ -364,9 +366,9 @@ class Siterecs_dbhids_tad(models.Model):
     mu = models.BooleanField(blank=True, null=True)
     #mui = models.BooleanField(blank=True, null=True)
     #mm = models.BooleanField(blank=True, null=True)
-    additional_info = models.CharField(max_length=150,blank=True, null=True) #[DCS] after separating Walk-in: Max LEN in data = 88 char. For line breaks, use pipe: |
-    phone2 = models.CharField(max_length=20, blank=True, null=True) ## Added for 3 entries with second phone from additional_info
-    walk_in_hours = models.CharField(max_length=80,blank=True, null=True) #[DCS] for yellow records: List '[unspecified]' if no days & times available. Max LEN in data = 38 char, but increased limit from 50 to 80 just in case.
+    additional_info = models.CharField(max_length=150, blank=True) #[DCS] after separating Walk-in: Max LEN in data = 88 char. For line breaks, use pipe: |
+    phone2 = models.CharField(max_length=20, blank=True) ## Added for 3 entries with second phone from additional_info
+    walk_in_hours = models.CharField(max_length=80, blank=True) #[DCS] for yellow records: List '[unspecified]' if no days & times available. Max LEN in data = 38 char, but increased limit from 50 to 80 just in case.
     wih_induction = models.BooleanField(blank=True, null=True) # True if PDF record is yellow (vs. blue or white)
     oit = models.BooleanField(blank=True, null=True)
     op = models.BooleanField(blank=True, null=True)
@@ -383,53 +385,65 @@ class Siterecs_dbhids_tad(models.Model):
     f44 = models.BooleanField(blank=True, null=True)
     archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
     why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
-    data_review = models.CharField(max_length=250, null=True, blank=True) # Added null=True for now BY SAM. ## Max LEN so far = 161 char.  
+    data_review = models.CharField(max_length=250, blank=True) ## Max LEN so far = 161 char.  
 
     class Meta:
         managed = True
         db_table = 'siterecs_dbhids_tad'
 
     def __str__(self):
-        #i change this to return oid instead of rec_id because rec_id doesn't exist
-        #please change the returned value to rec_id if applicable later on.
         return str(self.oid)
-        #return self.rec_id
 
 
+class Ba_dbhids_tad(models.Model):   ## Added as bridge to link sites_all to 3x/weekly DBHIDS updates
+    oid = models.IntegerField(primary_key=True)
+    site_id = models.ManyToManyField('Sites_all', through = 'Lookup_ba_dbhids_tad')
+    name_ba = models.CharField(max_length=50)
+    hh = models.BooleanField(blank=True, null=True)
+    hwm = models.BooleanField(blank=True, null=True)
+    rhl = models.BooleanField(blank=True, null=True)
+    rhs = models.BooleanField(blank=True, null=True)
+    wm = models.BooleanField(blank=True, null=True)
+    uo = models.BooleanField(blank=True, null=True)
+    date_firstfind = models.DateField()
+    date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
+    date_update = models.DateTimeField(default=timezone.now)
+    archival_only = models.BooleanField(blank=True, null=True)
+    why_hidden = models.CharField(max_length=150, default = "Data needs review", choices = Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
+    data_review = models.CharField(max_length=250, blank=True)
+
+    
 class Siterecs_hfp_fqhc(models.Model):   ## TODO: Reload in July 2021 prototype to save time -- may nix in next major iteration
     oid = models.IntegerField(primary_key=True)
-    site_id = models.ManyToManyField('Sites_all', through = 'Siterecs_hfp_fqhc_sites_all_lookup')
+    site_id = models.ManyToManyField('Sites_all', through = 'Lookup_siterecs_hfp_fqhc')
     archival_only = models.BooleanField(blank=True, null=True) ## For admin (EDITOR) to mark records not approved for FINDER
     why_hidden = models.CharField(max_length=150, default="Data needs review", choices=Multi_Choices_EnumWhyHide, blank=True) # Require only if archival_only = True
-    name_system = models.CharField(max_length=120)
+    name_system = models.CharField(max_length=120, blank=True)
     name_site = models.CharField(max_length=120)
-    name_short = models.CharField(max_length=50)
+    name_short = models.CharField(max_length=50, blank=True)
     admin_office = models.BooleanField(blank=True, null=True)
     street1 = models.CharField(max_length=120)
-    street2 = models.CharField(max_length=50,blank=True, null=True)
+    street2 = models.CharField(max_length=50, blank=True)
     city = models.CharField(max_length=30)
-    state_usa = models.CharField(max_length=30) ## Can replace with Enum to match above classes
+    state_usa = models.CharField(max_length=30, default='PA') ## Can replace with Enum to match above classes
     zipcode = models.CharField(max_length=5)
-    website = models.URLField()
+    website = models.URLField(blank=True, null=True)
     phone1 = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
-    phone2 = models.CharField(max_length=20,blank=True, null=True) # Format: ###-###-#### (with optional x####)
+    phone2 = models.CharField(max_length=20, blank=True) # Format: ###-###-#### (with optional x####)
     date_firstfind = models.DateField()
-    date_lastfind = models.DateField() ## Blank unless or until source removes record
+    date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
     data_review = models.CharField(max_length=250)
 
     def __str__(self):
-        #i change this to return oid instead of rec_id because rec_id doesn't exist
-        #please change the returned value to rec_id if applicable later on.
         return str(self.name_short)
-        #return self.rec_id
 
-
-class Siterecs_other_srcs(models.Model): ## Substantially similar to sites_all: central table for direct research on FQHCs and other BP Locs (incl. 2020 work, integration underway)
+## This class seems superfluous for FINDER (substantially similar to sites_all), but might help EDITOR.
+class Siterecs_other_srcs(models.Model): ## What is this: Central table for direct research on FQHCs and other BP Locs (incl. 2020 work, integration underway)
     oid = models.IntegerField(primary_key=True)
-    site_id = models.ManyToManyField('Sites_all', through = "sitesrecs_other_srcs_sitesall_lk")
-    ## TODO: Do cross-referencing id_ fields need to be integrated in ManyToMany model (where?)?
-    #id_ba_tad = models.ManyToManyField('Ba_dbhids_tad',blank=True, null=True) ## Class not yet created
-    id_hfp_fqhc = models.ManyToManyField('Siterecs_hfp_fqhc',blank=True, null=True)
+    site_id = models.ManyToManyField('Sites_all', through = "Lookup_siterecs_other_srcs")
+    ## TODO: Do cross-referencing id_ fields need to be integrated in ManyToMany model?
+    #id_ba_tad = models.ManyToManyField('Ba_dbhids_tad',blank=True, null=True)
+    #id_hfp_fqhc = models.ManyToManyField('Siterecs_hfp_fqhc',blank=True, null=True)
     #id_hrsa_fqhc = models.ManyToManyField('Siterecs_hrsa_fqhc',blank=True, null=True) ## Class not yet created
     #id_bploc = models.ManyToManyField('Bplocs_samhsa_npi_etc',blank=True, null=True) ## Class not yet created
     name1 = models.CharField(max_length=120)
@@ -437,23 +451,23 @@ class Siterecs_other_srcs(models.Model): ## Substantially similar to sites_all: 
     name3 = models.CharField(max_length=120)
     website1 = models.URLField()
     website2 = models.URLField()
-    phone1 = models.CharField(max_length=80, null=True, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
-    phone2 = models.CharField(max_length=80, null=True, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
-    phone3 = models.CharField(max_length=80, null=True, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
-    street1 = models.CharField(max_length=120, null=True, blank=True) 
-    street2 = models.CharField(max_length=120,blank=True, null=True)
+    phone1 = models.CharField(max_length=80, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
+    phone2 = models.CharField(max_length=80, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
+    phone3 = models.CharField(max_length=80, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
+    street1 = models.CharField(max_length=120, blank=True) 
+    street2 = models.CharField(max_length=120, blank=True)
     city = models.CharField(max_length=30)
     state_usa = models.CharField(max_length=30) ## Optional: replace with Enum eventually (across classes)
-    zipcode = models.CharField(max_length=5)
+    zipcode = models.CharField(max_length=5, blank=True)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
     bu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     nu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    mu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    otp = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    mu = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3)
+    otp = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3)
     mat_avail = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     asm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Assessment site
-    ba = models.BooleanField(blank=True, null=True) ## Link to DBHIDS Bed Availability (BA) data, updated 2-3x weekly
+    ba = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3) ## Link to DBHIDS Bed Availability (BA) data, updated 2-3x weekly
     ref_notes = models.CharField(max_length=299, null=True, blank=True) ## Notes to display for users (FINDER)
     hh = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Halfway house
     hwm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Hospital withdrawal management
@@ -495,60 +509,37 @@ class Siterecs_other_srcs(models.Model): ## Substantially similar to sites_all: 
         return self.name1
 
 
-class Table_info(models.Model):
-    oid = models.IntegerField(primary_key=True)
-    table_name = models.CharField(max_length=120)
-    display_name = models.CharField(max_length=120)
-    source_url = models.URLField()
-    update_recency = models.DateField()
-    records_count = models.IntegerField()
-    facility_type = models.CharField(max_length=250)
-    source_range = models.CharField(max_length=120)
-    notes = models.CharField(max_length=500)
-    filters = models.CharField(max_length=5000)
-    annual_updates = models.IntegerField()
-    # display_cols = models.CharField(max_length=500)
-    # hide_cols = models.CharField(max_length=500)
-
-    def __str__(self):
-        #i change this to return oid instead of rec_id because rec_id doesn't exist
-        #please change the returned value to rec_id if applicable later on.
-        return str(self.display_name)
-        #return self.rec_id
-
-
-
 class Sites_all(models.Model):
     oid = models.CharField(primary_key=True, max_length=120) # TODO integer or varchar? ## Probably serialized varchar?
-    id_samhsa_ftloc = models.ManyToManyField('Siterecs_samhsa_ftloc',blank=True, null=True)
-    id_dbhids_tad = models.ManyToManyField('Siterecs_dbhids_tad',blank=True, null=True)
-    id_ba_tad = models.ManyToManyField('Ba_dbhids_tad',blank=True, null=True) ## Class not yet created | TODO: Does this need to be integrated in ManyToMany model (where?)?
-    id_samhsa_otp = models.ManyToManyField('Siterecs_samhsa_otp',blank=True, null=True)
-    #id_hfp_fqhc = models.ManyToManyField('Siterecs_hfp_fqhc',blank=True, null=True) ## Just reference via Siterecs_other_srcs
-    id_other_srcs = models.ManyToManyField('Siterecs_other_srcs',blank=True, null=True)
+    id_samhsa_ftloc = models.ManyToManyField('Siterecs_samhsa_ftloc', blank=True, null=True)
+    id_dbhids_tad = models.ManyToManyField('Siterecs_dbhids_tad', blank=True, null=True)
+    id_ba_tad = models.ManyToManyField('Ba_dbhids_tad', blank=True, null=True)
+    id_samhsa_otp = models.ManyToManyField('Siterecs_samhsa_otp', blank=True, null=True)
+    id_hfp_fqhc = models.ManyToManyField('Siterecs_hfp_fqhc', blank=True, null=True)
+    id_other_srcs = models.ManyToManyField('Siterecs_other_srcs', blank=True, null=True)
     name1 = models.CharField(max_length=120) ## WAS name_program
-    name2 = models.CharField(max_length=120) ## WAS name_site
-    name3 = models.CharField(max_length=120)
-    website1 = models.URLField() ## Important addition: functions with address fields as composite primary key
-    website2 = models.URLField(null=True) # Added just in case (to match siterecs_other_srcs)
-    phone1 = models.CharField(max_length=80, null=True, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
-    phone2 = models.CharField(max_length=80, null=True, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
-    phone3 = models.CharField(max_length=80, null=True, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
-    street1 = models.CharField(max_length=120, null=True, blank=True) 
-    street2 = models.CharField(max_length=120,blank=True, null=True)
+    name2 = models.CharField(max_length=120, blank=True) ## WAS name_site
+    name3 = models.CharField(max_length=120, blank=True)
+    website1 = models.URLField(blank=True, null=True) ## Important addition: functions with address fields as composite primary key
+    website2 = models.URLField(blank=True, null=True) # Added just in case (to match siterecs_other_srcs)
+    phone1 = models.CharField(max_length=80, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
+    phone2 = models.CharField(max_length=80, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
+    phone3 = models.CharField(max_length=80, blank=True)  ## Format: ###-###-#### with optional x#### or note re: purpose
+    street1 = models.CharField(max_length=120, blank=True) 
+    street2 = models.CharField(max_length=120, blank=True)
     city = models.CharField(max_length=30)
     state_usa = models.CharField(max_length=30) ## Optional: replace with Enum eventually (across classes)
-    zipcode = models.CharField(max_length=5)
+    zipcode = models.CharField(max_length=5, blank=True)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
-    ## TODO: Identify how to link relevant fields from Audit tables to Enum fields below!! June 2021: Revising to consistent fieldnames helps
+  ## TODO: Documentation for connecting relevant fields from Audit tables to Enum fields below + records linkage for above
     bu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     nu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    mu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    otp = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
+    mu = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3)
+    otp = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3)
     mat_avail = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     asm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Assessment site
-    ba = models.BooleanField(blank=True, null=True) ## Link to DBHIDS Bed Availability (BA) data, updated 2-3x weekly
+    ba = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3) ## Link to DBHIDS Bed Availability (BA) data, updated 2-3x weekly
     ref_notes = models.CharField(max_length=299, null=True, blank=True) ## Notes to display for users (FINDER)
     hh = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Halfway house
     hwm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Hospital withdrawal management
@@ -590,27 +581,52 @@ class Sites_all(models.Model):
     def __str__(self):
         return ', '.join([self.oid, self.name1, self.name2]) ## Updated to match renaming consistency
 
-## TODO: Does any of the below need updating for new classes, or is it obsolete?
     
-class sitesrecs_other_srcs_sitesall_lk(models.Model):
-    samhsa_oid = models.ForeignKey(Siterecs_other_srcs, on_delete=models.CASCADE)
-    sites_all_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
+class Table_info(models.Model):
+    oid = models.IntegerField(primary_key=True)
+    table_name = models.CharField(max_length=120)
+    display_name = models.CharField(max_length=120)
+    source_url = models.URLField(blank=True)
+    update_recency = models.DateField() ## TBD: set default as .now?
+    records_count = models.IntegerField(blank=True, null=True)
+    facility_type = models.CharField(max_length=250)
+    source_range = models.CharField(max_length=120)
+    notes = models.CharField(max_length=500, blank=True)
+    filters = models.CharField(max_length=5000, blank=True)
+    display_cols = models.CharField(max_length=500, blank=True) # Just colnames (max = 273)
+    hide_cols = models.CharField(max_length=500, blank=True)
+    annual_updates = models.IntegerField()
 
-class sites_site_recs_lookup(models.Model):
-    samhsa_oid = models.ForeignKey(Siterecs_samhsa_otp, on_delete=models.CASCADE)
-    sites_all_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
+    def __str__(self):
+        return str(self.display_name)
 
-class Siterecs_dbhids_sites_all_lookup(models.Model):
-    samhsa_oid = models.ForeignKey(Siterecs_dbhids_tad, on_delete=models.CASCADE)
-    sites_all_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
 
-class Siterecs_hfp_fqhc_sites_all_lookup(models.Model):
-    samhsa_oid = models.ForeignKey(Siterecs_hfp_fqhc, on_delete=models.CASCADE)
-    sites_all_id = models.ForeignKey(Sites_all,on_delete=models.CASCADE)
-
-class Sites_ftloc(models.Model):
+##/ Renamed the below for consistency and resequenced to match sequence above.
+##/ TODO: Figure out which parts of codebase invoke the below and update naming there. Use this template to add other class(es) as needed, e.g. Ba_dbhids_tad => Lookup_ba_dbhids_tad
+    
+class Lookup_siterecs_samhsa_ftloc(models.Model): #/Renamed: WAS Sites_ftloc
     samhsa_oid = models.ForeignKey(Siterecs_samhsa_ftloc, on_delete=models.CASCADE)
     sites_all_id= models.ForeignKey(Sites_all, on_delete=models.CASCADE)
+
+class Lookup_siterecs_samhsa_otp(models.Model): #/Renamed: WAS sites_site_recs_lookup
+    samhsa_oid = models.ForeignKey(Siterecs_samhsa_otp, on_delete=models.CASCADE)
+    sites_all_id = models.ForeignKey(Sites_all, on_delete=models.CASCADE)
+
+class Lookup_siterecs_dbhids_tad(models.Model): #/Renamed: WAS Siterecs_dbhids_sites_all_lookup
+    samhsa_oid = models.ForeignKey(Siterecs_dbhids_tad, on_delete=models.CASCADE)
+    sites_all_id = models.ForeignKey(Sites_all, on_delete=models.CASCADE)
+
+class Lookup_ba_dbhids_tad(models.Model): #/Added for new class
+    samhsa_oid = models.ForeignKey(Ba_dbhids_tad, on_delete=models.CASCADE)
+    sites_all_id= models.ForeignKey(Sites_all, on_delete=models.CASCADE)
+
+class Lookup_siterecs_hfp_fqhc(models.Model): #/Renamed: WAS Siterecs_hfp_fqhc_sites_all_lookup
+    samhsa_oid = models.ForeignKey(Siterecs_hfp_fqhc, on_delete=models.CASCADE)
+    sites_all_id = models.ForeignKey(Sites_all, on_delete=models.CASCADE)
+
+class Lookup_siterecs_other_srcs(models.Model): #/Renamed: WAS sitesrecs_other_srcs_sitesall_lk
+    samhsa_oid = models.ForeignKey(Siterecs_other_srcs, on_delete=models.CASCADE)
+    sites_all_id = models.ForeignKey(Sites_all, on_delete=models.CASCADE)
 
 
 # class Address(models.Model):
