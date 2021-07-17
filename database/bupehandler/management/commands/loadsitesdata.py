@@ -927,14 +927,6 @@ class Command(BaseCommand):
                 if r7['site_id'] == row['site_id']:
                     oth = Siterecs_other_srcs()
                     oth.oid = r7['oid']
-
-                    oth.__ = r7['__']
-                    if r7['__'] != '':
-                        oth.__ = r7['__']
-                    if r7['__'] != '':
-                        oth.__ = 'Unclear'
-                    else:
-                        oth.__ = r7['__']
                     oth.name1 = r7['name1']
                     if r7['name2'] != '': # Update models.py to make name2, name3, and website2 optional
                         oth.name2 = r7['name2']
@@ -1096,7 +1088,7 @@ class Command(BaseCommand):
                     if r7['why_hidden'] != '':
                         oth.why_hidden = r7['why_hidden']
                     if r7['data_review'] != '':
-                        oth.data_review = r7['data_review']
+                        oth.data_review = r7['data_review'] # Belatedly added to models.py
                         
                     sites.save()
                     oth.save()
