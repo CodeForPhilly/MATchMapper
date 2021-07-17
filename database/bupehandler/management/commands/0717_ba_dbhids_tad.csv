@@ -1,0 +1,28 @@
+oid,site_id,name_ba,hh,hwm,rhl,rhs,wm,uo,date_firstfind,date_lastfind,date_update,archival_only,why_hidden,data_review
+1,S00002,Beacon Point,False,False,False,True,True,,2021-07-09,,,False,,
+2,S00003,DRC,False,False,True,True,False,,2021-07-09,,,False,,
+3,S00004,Eagleville,False,True,True,True,True,,2021-07-09,,,False,,
+4,S00005,Fairmount,False,False,False,True,True,,2021-07-09,,,False,,
+5,S00006,Family House Now,False,False,True,True,False,,2021-07-09,,,False,,
+6,S00007,Firetree/Conewago Hummelstown,False,False,True,True,False,,2021-07-09,,,False,,
+7,S00008,Firetree/Conewago Pottsville,False,False,False,True,True,,2021-07-09,,,False,,
+8,S00001,Gaudenzia,True,False,True,True,False,,2021-07-09,,,False,,
+9,S00009,Good Friends,True,False,False,False,False,,2021-07-09,,,False,,
+10,S00010,HUP Cedar,False,True,False,False,True,,2021-07-09,,,False,,
+11,S00012,Interim House,True,False,True,True,False,,2021-07-09,,,False,,
+12,S00013,Interim House West,False,False,True,True,False,,2021-07-09,,,False,,
+13,S00014,Kensington,False,True,False,True,True,,2021-07-09,,,False,,
+14,S00015,Keystone Center,False,False,False,True,True,,2021-07-09,,,False,,
+15,S00016,Kirkbride,False,False,True,True,True,,2021-07-09,,,False,,
+16,S00017,Libertae,True,False,True,False,False,,2021-07-09,,,False,,179
+17,S00018,Malvern Treatment Centers (7278),False,False,False,True,True,,2021-07-09,,,False,,[_] 5 locations: Which should be listed in MATchMapper? (https://www.malverntreatment.com/locations/ -- Willow Grove = S00018; others tentatively added July 2021 as S00293-S00296)
+18,S00023,My Sister's Place,False,False,True,True,False,,2021-07-09,,,False,,
+19,S00024,NPHS,False,False,True,True,True,,2021-07-09,,,False,,
+20,S00026,Nuestra Clinica Residential,False,False,True,True,False,,2021-07-09,,,False,,
+21,S00027,Presbyterian/Wright4,False,True,False,True,True,,2021-07-09,,,False,,
+22,S00028,Re-Enter,False,False,True,True,False,,2021-07-09,,,False,,
+23,S00029,Riversbend,False,False,False,True,False,,2021-07-09,,,False,,
+24,S00030,Self Help Movement Inc,True,False,True,True,False,,2021-07-09,,,False,,
+25,S00031,Valley Forge,False,True,True,True,True,,2021-07-09,,,False,,
+26,S00032,Wharton Center,True,False,True,True,False,,2021-07-09,,,False,,
+27,S00034,Journey of Hope Project,,,,,,True,2021-07-09,,,False,,Monthly updates; ask DBHIDS and see https://dbhids.org/about/organization/office-of-mental-health/office-of-addiction-services/the-journey-of-hope-project/
