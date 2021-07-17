@@ -1,12 +1,13 @@
 import time
-from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Siterecs_other_srcs, Sites_all, Siterecs_hfp_fqhc
+from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Ba_dbhids_tad, Siterecs_hfp_fqhc, Siterecs_other_srcs, Sites_all
 
 table_dict = {
     "sitecodes_samhsa_ftloc": Sitecodes_samhsa_ftloc,
     "siterecs_samhsa_ftloc": Siterecs_samhsa_ftloc,
-    "siterecs_hfp_fqhc": Siterecs_hfp_fqhc,
     "siterecs_samhsa_otp": Siterecs_samhsa_otp ,
     "siterecs_dbhids_tad": Siterecs_dbhids_tad,
+    "ba_dbhids_tad": Ba_dbhids_tad,
+    "siterecs_hfp_fqhc": Siterecs_hfp_fqhc,
     "siterecs_other_srcs" : Siterecs_other_srcs ,
     "sites_all" : Sites_all,
 }
