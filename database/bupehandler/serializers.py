@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Siterecs_other_srcs, Sites_all, Siterecs_hfp_fqhc
+from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Ba_dbhids_tad, Siterecs_hfp_fqhc, Siterecs_other_srcs, Sites_all
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
     """
@@ -25,16 +25,11 @@ class Sitecodes_samhsa_ftlocSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Sitecodes_samhsa_ftloc
         fields = '__all__'
+
 class Siterecs_samhsa_ftlocSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Siterecs_samhsa_ftloc
         fields = '__all__'
-
-class Siterecs_hfp_fqhcSerializer(DynamicFieldsModelSerializer):
-    class Meta:
-        model = Siterecs_hfp_fqhc
-        fields = '__all__'
-
 
 class Siterecs_samhsa_otpSerializer(DynamicFieldsModelSerializer):
     class Meta:
@@ -44,6 +39,16 @@ class Siterecs_samhsa_otpSerializer(DynamicFieldsModelSerializer):
 class Siterecs_dbhids_tadSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Siterecs_dbhids_tad
+        fields = '__all__'
+
+class Ba_dbhids_tadSerializer(DynamicFieldsModelSerializer):
+    class Meta:
+        model = Ba_dbhids_tad
+        fields = '__all__'
+        
+class Siterecs_hfp_fqhcSerializer(DynamicFieldsModelSerializer):
+    class Meta:
+        model = Siterecs_hfp_fqhc
         fields = '__all__'
 
 class Siterecs_other_srcsSerializer(DynamicFieldsModelSerializer):
