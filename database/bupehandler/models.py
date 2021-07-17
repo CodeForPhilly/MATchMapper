@@ -472,12 +472,12 @@ class Siterecs_other_srcs(models.Model): ## What is this: Central table for dire
     asm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Assessment site
     ba = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3) ## Link to DBHIDS Bed Availability (BA) data, updated 2-3x weekly
     ref_notes = models.CharField(max_length=299, null=True, blank=True) ## Notes to display for users (FINDER)
-    hh = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Halfway house
-    hwm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Hospital withdrawal management
-    rhl = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Long-term rehab
-    rhs = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Short-term rehab
-    wm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ##: BA: Withdrawal management
-    uo = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Unspecified type
+    hh = models.BooleanField(blank=True, null=True) ## BA: Halfway house
+    hwm = models.BooleanField(blank=True, null=True) ## BA: Hospital withdrawal management
+    rhl = models.BooleanField(blank=True, null=True) ## BA: Long-term rehab
+    rhs = models.BooleanField(blank=True, null=True) ## BA: Short-term rehab
+    wm = models.BooleanField(blank=True, null=True) ##: BA: Withdrawal management
+    uo = models.BooleanField(blank=True, null=True) ## BA: Unspecified type
     fqhc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     prim_care = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     telehealth = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
@@ -544,12 +544,12 @@ class Sites_all(models.Model):
     asm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Assessment site
     ba = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3) ## Link to DBHIDS Bed Availability (BA) data, updated 2-3x weekly
     ref_notes = models.CharField(max_length=299, null=True, blank=True) ## Notes to display for users (FINDER)
-    hh = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Halfway house
-    hwm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Hospital withdrawal management
-    rhl = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Long-term rehab
-    rhs = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Short-term rehab
-    wm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ##: BA: Withdrawal management
-    uo = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## BA: Unspecified type
+    hh = models.BooleanField(blank=True, null=True) ## BA: Halfway house
+    hwm = models.BooleanField(blank=True, null=True) ## BA: Hospital withdrawal management
+    rhl = models.BooleanField(blank=True, null=True) ## BA: Long-term rehab
+    rhs = models.BooleanField(blank=True, null=True) ## BA: Short-term rehab
+    wm = models.BooleanField(blank=True, null=True) ##: BA: Withdrawal management
+    uo = models.BooleanField(blank=True, null=True) ## BA: Unspecified type
     fqhc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     prim_care = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
     telehealth = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
