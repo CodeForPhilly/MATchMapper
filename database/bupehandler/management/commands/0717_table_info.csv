@@ -1,0 +1,43 @@
+oid,table_name,display_name,source_url,update_recency,records_count,facility_type,source_range,notes,filters,display_cols,hide_cols,annual_updates
+1,sites_all,Medication-Assisted Treatment,,2021-07-17,50,MAT Sites,in and near Philadelphia,Combines data from all of the other sources. URL forthcoming: static page in MATchMapper.,"ui_group;ui_label;ui_level;ui_seq;iff_field;this_field;options|Data
+sources;Data sources:;1;1;;;|Data sources;DBHIDS MAT
+Directory;2;2;;id_dbhids_tad;Boolean|Data sources;Bed Availability Updates
+(DBHIDS);2;3;;id_ba_tad;Boolean|Data sources;SAMHSA Find Treatment;2;4;;id_samhsa_ftloc;Boolean|Data
+sources;SAMHSA OTPs Directory;2;5;;id_samhsa_otp;Boolean|Data sources;HRSA or
+HFP (FQHCs);2;6;;fqhc;Boolean|MAT prescribed;MAT
+prescribed:;1;7;;mat_avail;Enum3|MAT
+prescribed;Buprenorphine;2;8;mat_avail;bu;Enum3|MAT
+prescribed;Naltrexone;2;9;mat_avail;nu;Enum3|MAT
+prescribed;Methadone;2;10;mat_avail;mu;Enum3|Primary care;Primary
+care;1;11;;prim_care;Enum3|Telehealth;Telehealth;1;12;;telehealth;Enum3|Payment
+options;Payment options:;1;13;;;|Payment options;Medicaid;2;14;;md;Enum3|Payment
+options;Medicare;2;15;;mc;Enum3|Payment options;Other insurance;2;16;;oi;Enum3|Payment
+options;Payment assistance available;2;17;;pa;Enum3|Also offers;Also
+offers:;1;18;;;|Also offers;Child care;2;19;;ccc;Enum3|Also offers;Deaf and
+hard of hearing services;2;20;;ah;Enum3|Also offers;Domestic violence help
+(safety &/or program);2;21;;dvh;Enum3|Also offers;Housing
+services;2;22;;hs;Enum3|Also offers;Mental health services;2;23;;mhs;Enum3|Also
+offers;Pregnancy care;2;24;;pw;Enum3|Also offers;Spanish;2;25;;sp;Enum3|Also
+offers;Transportation assistance;2;26;;ta;Enum3",['FACILITY';'TELEHEALTH';'PHONE';'ADDRESS';'ZIP CODE';'WHICH MAT';'BED AVAILABILITY';'PAYMENT OPTIONS';'SERVICES';'LANGUAGES';'CLIENTS';'SETTING';'DATA SOURCE(S)'],['WALK-IN HOURS';'MAT INFO';'BUPRENORPHINE';'NALTREXONE';'METHADONE';'ADDITIONAL INFORMATION';'CERTIFICATION DATE'],4
+2,siterecs_dbhids_tad,Treatment Availability Database (DBHIDS),https://dbhids.org/MAT,2021-07-09,49,Community MAT Programs and Assessment Centers,in Philadelphia,"Records from pages 3-4 + page 2 of ""Treatment Availability Database"" PDF by DBHIDS. Updated 1-2x per year (2019q1 - 2021q2). 1 of the 50 records currently listed should be hidden (archival_only = True)","ui_group;ui_label;ui_level;ui_seq;iff_field;this_field;options|Hours;Same-day
+inductions during walk-in hours;1;1;;wih_induction;Boolean|Buprenorphine;Buprenorphine:;1;2;;bu;Boolean|Buprenorphine;Induction;2;3;bu;bui;Boolean|Naltrexone;Naltrexone
+(Vivitrol):;1;4;;nu;Boolean|Naltrexone;Induction;2;5;nu;vti;Boolean|Methadone;Methadone;1;6;;mu;Boolean|Program
+info;Program info:;1;7;;;|Program info;Center of Excellence*;2;8;;coe;Boolean|Program
+info;Intensive Outpatient Program (IOP);2;9;;oit;Boolean|Program
+info;Outpatient Program (OP);2;10;;op;Boolean|Also offers;Also offers:;1;11;;;|Also
+offers;Assessment;2;12;;asmt;Boolean|Also offers;Bed availability
+updates;2;13;;ba;Boolean|Also offers;Child care;2;14;;ccc;Boolean|Also
+offers;Housing services;2;15;;hs;Boolean|Also offers;Mental health treatment
+(MH Tx);2;16;;mhs;Boolean|Also offers;Pregnancy care;2;17;;pw;Boolean|Also
+offers;Spanish;2;18;;sp;Boolean|Also offers;Additional languages (besides
+English & Spanish);2;19;;ales;Boolean",['FACILITY';'PHONE';'ADDRESS';'ZIP CODE';'WALK-IN HOURS';'MAT INFO';'ADDITIONAL INFORMATION';'BED AVAILABILITY'],['TELEHEALTH';'WHICH MAT';'BUPRENORPHINE';'NALTREXONE';'METHADONE';'PAYMENT OPTIONS';'SERVICES';'LANGUAGES';'CLIENTS';'SETTING';'CERTIFICATION DATE';'DATA SOURCE(S)'],2
+3,ba_dbhids_tad,Bed-Based Substance Use Treatment (DBHIDS),,2021-07-12,27,sites providing weekly or monthly updates,in and near Philadelphia,"Records from page 5 of ""Treatment Availability Database"" PDF by DBHIDS. Updated 2-3x per week (Mon/Wed/Fri)! Could URL follow a formula that changes based on the DATE in update_recency? https://dbhids.org/wp-content/uploads
+/[4-digit year]/[2-digit month]
+/TAD-[integer_month].[integer_date].[4-digit year].pdf",,,,150
+4,siterecs_samhsa_ftloc,Find Treatment Locator (SAMHSA),https://findtreatment.samhsa.gov/locator,2021-07-09,100,Substance Abuse Facilities,in and near Philadelphia,"Data collection widened from Philadelphia to 15 mile radius.
+Ask DBHIDS for what geographic range would be useful.",[UPDATE FORTHCOMING],['FACILITY';'TELEHEALTH';'PHONE';'ADDRESS';'ZIP CODE';'BUPRENORPHINE';'NALTREXONE';'METHADONE';'PAYMENT OPTIONS';'SERVICES';'LANGUAGES';'CLIENTS';'SETTING'],['WHICH MAT';'WALK-IN HOURS';'MAT INFO';'ADDITIONAL INFORMATION';'BED AVAILABILITY';'CERTIFICATION DATE';'DATA SOURCE(S)'],4
+5,siterecs_samhsa_otp,OTP Directory (SAMHSA),https://dpt2.samhsa.gov/treatment/directory.aspx,2021-07-09,105,Opioid Treatment Programs,in Pennsylvania,"Current records_count = 104 for in Pennsylvania. (Was previously 20 for in Philadelphia.)
+Ask DBHIDS for insight to widen data collection. (Which nearby states to include: DE, NJ, maybe MD?)",,['FACILITY';'PHONE';'ADDRESS';'ZIP CODE';'CERTIFICATION DATE'],['TELEHEALTH';'WHICH MAT';'WALK-IN HOURS';'MAT INFO';'BUPRENORPHINE';'NALTREXONE';'METHADONE';'ADDITIONAL INFORMATION';'BED AVAILABILITY';'PAYMENT OPTIONS';'SERVICES';'LANGUAGES';'CLIENTS';'SETTING';'DATA SOURCE(S)'],4
+6,siterecs_other_srcs,[Data management table for listings absent from main sources],,2021-07-17,26,MAT Sites,in and near Philadelphia,"Adds websites where absent from all other listings, MAT etc. info (esp. for FQHCs) where missing from other listings, and additional locations from buprenorphine providers data (mid-2020 through early 2021 team research).",,['FACILITY';'TELEHEALTH';'PHONE';'ADDRESS';'ZIP CODE';'WHICH MAT';'BED AVAILABILITY';'PAYMENT OPTIONS';'SERVICES';'LANGUAGES';'CLIENTS';'SETTING'],['WALK-IN HOURS';'MAT INFO';'BUPRENORPHINE';'NALTREXONE';'METHADONE';'ADDITIONAL INFORMATION';'CERTIFICATION DATE';'DATA SOURCE(S)'],4
+7,siterecs_hfp_fqhc,Community Health Centers (HFP),https://healthfederation.org/CommunityHealthCenters,2021-02-23,62,Federally Qualified Health Centers,in and near Philadelphia,[may retire this table -- use _hrsa_fqhc instead] 5 of the 67 records currently listed should be hidden (archival_only = True),,['FACILITY';'PHONE';'ADDRESS';'ZIP CODE'],['TELEHEALTH';'WHICH MAT';'WALK-IN HOURS';'MAT INFO';'BUPRENORPHINE';'NALTREXONE';'METHADONE';'ADDITIONAL INFORMATION';'BED AVAILABILITY';'PAYMENT OPTIONS';'SERVICES';'LANGUAGES';'CLIENTS';'SETTING';'CERTIFICATION DATE';'DATA SOURCE(S)'],0
+8,siterecs_hrsa_fqhc,Community Health Centers (HRSA),https://findahealthcenter.hrsa.gov/,2021-07-09,117,Federally Qualified Health Centers,in and near Philadelphia,,,,,4

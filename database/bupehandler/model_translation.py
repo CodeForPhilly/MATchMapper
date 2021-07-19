@@ -1,13 +1,13 @@
-standardOutput = {"name1": None, "name2": None, "name3": None, "website1": None, 
-                "website2": None, "telehealth": None, "phone1": None, "phone2": None, 
-                "phone3": None, "street1": None, "street2": None, "city": None,
-                "state_usa": None, "zipcode": None, "bu": None, "bui": None, 
-                "bwn": None, "bwon": None, "beri" : None, "bsdm": None, "bum" : None, 
-                "buu": None, "bmw": None, "db_field": None, "mu": None, "meth": None, 
-                "mdi" : None, "mm": None, "mmw": None, "dm": None, "nu": None, 
-                "nxn": None, "vti": None, "vtm": None, "vtrl": None, "rpn": None, "table_url_source": None,
+standardOutput = {"name1": None, "name2": None, "name3": None, 
+                "website1": None, "website2": None, "telehealth": None, 
+                "phone1": None, "phone2": None, "phone3": None, 
+                "street1": None, "street2": None, "city": None,
+                "state_usa": None, "zipcode": None, 
+                "table_url_source": None, ## What is this?
                 "latitude": None, "longitude": None
-                }
+                } 
+              ## No translation needed = "bu": None, "bui": None, "bwn": None, "bwon": None, "beri" : None, "bsdm": None, "bum" : None, "bmw": None, "db_field": None, "mu": None, "meth": None, "mm": None, "mmw": None, "dm": None, "nu": None, "nxn": None, "vti": None, "vtrl": None, "rpn": None, 
+              ## Removed from specs (July 2021) = "buu": None, "vtm": None, "mdi" [mui]: None, 
 mappings = {
     "siterecs_samhsa_ftloc": {
         "website": "website1", 
@@ -15,6 +15,7 @@ mappings = {
         "phone": "phone1", 
         "intake1" : "phone2", 
         "intake2" : "phone3", 
+        "zip5": "zipcode"
         },
     "sites_all": dict(),
     "siterecs_samhsa_otp": {
@@ -23,9 +24,9 @@ mappings = {
         "phone": "phone1", 
         "street" : "street1" 
         },
-    "siterecs_dbhids_tad": {
-        "phone": "phone1"
-        },
+    #"siterecs_dbhids_tad": {
+    #    "phone": "phone1"   ## Since July refresh this data has phone1, phone2
+    #    },
     "siterecs_hfp_fqhc": {
         "name_system": "name1",
         "name_site": "name2",

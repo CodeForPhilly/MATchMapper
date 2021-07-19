@@ -3,8 +3,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .serializers import Sitecodes_samhsa_ftlocSerializer, Siterecs_samhsa_ftlocSerializer, Siterecs_samhsa_otpSerializer, Siterecs_dbhids_tadSerializer, Siterecs_other_srcsSerializer, Sites_allSerializer
-from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Siterecs_other_srcs, Sites_all
+from .serializers import Sitecodes_samhsa_ftlocSerializer, Siterecs_samhsa_ftlocSerializer, Siterecs_samhsa_otpSerializer, Siterecs_dbhids_tadSerializer, Ba_dbhids_tadSerializer, Siterecs_hfp_fqhcSerializer, Siterecs_other_srcsSerializer, Sites_allSerializer
+from .models import Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Ba_dbhids_tad, Siterecs_hfp_fqhc, Siterecs_other_srcs, Sites_all
 from .scrapers.samhsa_bupe_locator_scraper import main as scrape_samhsa
 from rest_framework import status
 from rest_framework.response import Response
@@ -20,6 +20,8 @@ object_type_dict = {
     'siterecs_samhsa_ftloc': (Siterecs_samhsa_ftloc, Siterecs_samhsa_ftlocSerializer),
     'siterecs_samhsa_otp': (Siterecs_samhsa_otp, Siterecs_samhsa_otpSerializer),
     'siterecs_dbhids_tad': (Siterecs_dbhids_tad, Siterecs_dbhids_tadSerializer),
+    'ba_dbhids_tad': (Ba_dbhids_tad, Ba_dbhids_tadSerializer),
+    'siterecs_hfp_fqhc': (Siterecs_hfp_fqhc, Siterecs_hfp_fqhcSerializer),
     'siterecs_other_srcs': (Siterecs_other_srcs, Siterecs_other_srcsSerializer),
     'sites_all': (Sites_all, Sites_allSerializer)
 }
@@ -121,6 +123,10 @@ def filtered_geodata(request, table_name, param_values=None, excluded_values=Non
                 list_pair = pair.split("=")
                 if list_pair[1] == "None":
                     list_pair[1] = None
+                if list_pair[1] == "True": 
+                    list_pair[1] = True 
+                if list_pair[1] == "False": 
+                    list_pair[1] = False
                 if list_pair[0] == "autofill" and list_pair[1] == "True":
                     autofill = True
                 elif list_pair[0] == "autocorrect" and list_pair[1] == "True":
@@ -168,16 +174,20 @@ def filtered_geodata(request, table_name, param_values=None, excluded_values=Non
         "siterecs_samhsa_ftloc" : Siterecs_samhsa_ftlocSerializer, 
         "siterecs_samhsa_otp": Siterecs_samhsa_otpSerializer, 
         "siterecs_dbhids_tad": Siterecs_dbhids_tadSerializer, 
+        "ba_dbhids_tad": Ba_dbhids_tadSerializer, 
+        "siterecs_hfp_fqhc": Siterecs_hfp_fqhcSerializer, 
         "siterecs_other_srcs" : Siterecs_other_srcsSerializer, 
         "sites_all" : Sites_allSerializer,
     }
     naming_dict = { 
-        "sitecodes_samhsa_ftloc" : "category_name",
+        "sitecodes_samhsa_ftloc" : "service_name", ## Changed from name1 (doesn't exist in sitecodes)
         "siterecs_samhsa_ftloc" : "name1",
-        "siterecs_samhsa_otp": "name_program",
-        "siterecs_dbhids_tad": "name_listed", 
+        "siterecs_samhsa_otp": "program_name",
+        "siterecs_dbhids_tad": "name1", 
+        "ba_dbhids_tad": "name_ba", 
+        "siterecs_hfp_fqhc" : "name_short", 
         "siterecs_other_srcs" : "name1", 
-        "sites_all" : "name_program",
+        "sites_all" : "name1",
     }
     table_objects = table_dict[table_name].objects.all().filter(**filter_params)
     if keyword != None: 
