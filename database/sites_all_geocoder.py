@@ -10,7 +10,7 @@ geocode = RateLimiter(geolocator.geocode, min_delay_seconds=0.1)
 sites_all = pd.read_csv('database/sites_all.csv', encoding='cp1252')
 
 # collapse address to single vector
-addresses = sites_all['street_address'] + " " + "Philadelphia, PA" + sites_all['zip5'].astype(str)
+addresses = sites_all['street1'] + " " + sites_all['city'] + " " + sites_all['state_usa'] + " " + sites_all['zipcode'].astype(str)
 
 # geocode
 locations = addresses.apply(geocode)
@@ -20,4 +20,4 @@ sites_all['latitude'] = locations.apply(lambda x: x.latitude)
 sites_all['longitude'] = locations.apply(lambda x: x.longitude)
 
 # write new csv
-sites_all.to_csv('database/sites_all_geocoded.csv')
+sites_all.to_csv('database/sites_all_geocoded.csv', index=False) 

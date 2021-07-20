@@ -173,6 +173,7 @@ def filtered_map(request, table_name, param_values="", excluded_values="", keywo
         "siterecs_hfp_fqhc": "name_short", 
         "siterecs_other_srcs" : "name1", 
         "sites_all" : "name1",
+        "Siterecs_dbhids_tads": "name1"
     }
     mapbox_access_token = 'pk.my_mapbox_access_token'
     if param_values: 

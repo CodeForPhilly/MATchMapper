@@ -15,7 +15,7 @@ from django.core.management import BaseCommand
 """
 from pytz import UTC
 
-from bupehandler.models import Sites_all, Siterecs_samhsa_ftloc, Siterecs_dbhids_tad, Siterecs_hfp_fqhc, Siterecs_samhsa_otp, Siterecs_other_srcs, Ba_dbhids_tad
+from bupehandler.models import Sites_all, Siterecs_samhsa_ftloc, Siterecs_dbhids_tad, Siterecs_hfp_fqhc, Siterecs_samhsa_otp, Siterecs_other_srcs, Ba_dbhids_tad, Sitecodes_samhsa_ftloc
 
 DATETIME_FORMAT = '%Y-%m-%d'
 
@@ -715,8 +715,8 @@ class Command(BaseCommand):
 
         ## Siterecs_samhsa_otp with r3 & otp
             for r3 in DictReader(open('./0717_siterecs_samshsa_otp.csv')):
-                if r3['site_id'] == row['site_id']:
-                    otp = Siterecs_samha_otp()
+                if r3['site_id'] == 'S' + str(row['oid']).zfill(5):
+                    otp = Siterecs_samhsa_otp()
                     otp.oid = r3['oid']
                     otp.program_name = r3['program_name']
                     if r3['dba'] != '':
@@ -752,7 +752,7 @@ class Command(BaseCommand):
 
         ## Siterecs_dbhids_tad with r4 & tad
             for r4 in DictReader(open('./0717_siterecs_dbhids_tad.csv')):
-                if r4['site_id'] == row['site_id']:
+                if r4['site_id'] == 'S' + str(row['oid']).zfill(5):
                     tad = Siterecs_dbhids_tad()
                     tad.oid = r4['oid']
                     tad.name1 = r4['name1']
@@ -845,7 +845,7 @@ class Command(BaseCommand):
                     
         ## Ba_dbhids_tad with r5 & ba
             for r5 in DictReader(open('./0717_ba_dbhids_tad.csv')):
-                if r5['site_id'] == row['site_id']:
+                if r5['site_id'] == 'S' + str(row['oid']).zfill(5):
                     ba = Ba_dbhids_tad()
                     ba.oid = r5['oid']
                     ba.name_ba = r5['name_ba']
@@ -881,8 +881,8 @@ class Command(BaseCommand):
                     ba.save()
 
         ## Siterecs_hfp_fqhc with r6 & hfp
-            for r6 in DictReader(open('./0717_siterecs_hfp_fqhc.csv')):
-                if r6['site_id'] == row['site_id']:
+            for r6 in DictReader(open('./0717_siterecs_hfp_fqhccsv.csv')):
+                if r6['site_id'] == 'S' + str(row['oid']).zfill(5):
                     hfp = Siterecs_hfp_fqhc()
                     hfp.oid = r6['oid']
                     hfp.archival_only = r6['archival_only']
@@ -927,7 +927,7 @@ class Command(BaseCommand):
 
         ## Siterecs_other_srcs with r7 & oth
             for r7 in DictReader(open('./0717_siterecs_other_srcs.csv')):
-                if r7['site_id'] == row['site_id']:
+                if r7['site_id'] == 'S' + str(row['oid']).zfill(5):
                     oth = Siterecs_other_srcs()
                     oth.oid = r7['oid']
                     oth.name1 = r7['name1']
@@ -1106,13 +1106,13 @@ class Command(BaseCommand):
             codes = Sitecodes_samhsa_ftloc()
             codes.service_code = sc['service_code']
             if sc['category_code'] != '':
-                codes.category_code = row['category_code']
+                codes.category_code = sc['category_code']
             if sc['category_name'] != '':
-                codes.category_name = row['category_name']
+                codes.category_name = sc['category_name']
             if sc['service_name'] != '':
-                codes.service_name = row['service_name']
+                codes.service_name = sc['service_name']
             if sc['service_description'] != '':
-                codes.service_description = row['service_description']
+                codes.service_description = sc['service_description']
             codes.sa_listings_match = sc['sa_listings_match']
 
             codes.save()

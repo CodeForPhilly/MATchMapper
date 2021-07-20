@@ -24,16 +24,16 @@ mappings = {
         "phone": "phone1", 
         "street" : "street1" 
         },
-    #"siterecs_dbhids_tad": {
-    #    "phone": "phone1"   ## Since July refresh this data has phone1, phone2
-    #    },
+    "siterecs_dbhids_tad": {
+        "phone": "phone1",   ## Since July refresh this data has phone1, phone2
+        },
     "siterecs_hfp_fqhc": {
         "name_system": "name1",
         "name_site": "name2",
         "name_short": "name3",
         "website": "website1"
         },
-    "siterecs_other_srcs": dict()
+    "siterecs_other_srcs": dict(),
 }
 
 class Sites_general_display: 
