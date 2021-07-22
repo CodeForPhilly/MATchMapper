@@ -85,7 +85,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
             query_pairs = excluded_values.split("&")
             for pair in query_pairs:
                 list_pair = pair.split("=")
-                list_pair[0] = filterKeyToLocalKey(list_pair[0])
+                list_pair[0] = filterKeyToLocalKey(list_pair[0], table_name)
                 if list_pair[1] == "None":
                     list_pair[1] = None
                 else:
