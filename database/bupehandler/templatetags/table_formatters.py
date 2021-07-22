@@ -2,6 +2,9 @@ from django import template
 from django.utils.safestring import mark_safe
 import phonenumbers
 from datetime import datetime
+import json
+from django.core import serializers
+
 
 register = template.Library()
 
@@ -15,14 +18,20 @@ def bu_options(context):
     return mark_safe(formattedDate)
 
 @register.filter("legal_url", is_safe=True)
-def phone_number(illegal):
+def legal_url(illegal):
     if illegal is None:
         return ""
     splitIllegal = illegal.split(":")
-    if splitIllegal[0] == "https://" or splitIllegal[0] == "http://":
+    if splitIllegal[0] == "https" or splitIllegal[0] == "http":
         return mark_safe(illegal)
     else:
         return "//" + illegal
+
+@register.filter("dict_to_json", is_safe=True)
+def dict_to_json(d):
+    d["_state"] = ""
+    d["update_recency"] = ""
+    return mark_safe(json.dumps(d))
 
 @register.filter("notArchiveOnly", is_safe=True)
 def phone_number(objs):
