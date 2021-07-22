@@ -121,12 +121,10 @@ def filtered_geodata(request, table_name, param_values=None, excluded_values=Non
             query_pairs = param_values.split("&")
             for pair in query_pairs:
                 list_pair = pair.split("=")
+                if list_pair[0] == "oid": 
+                    list_pair[1] = int(list_pair[1])
                 if list_pair[1] == "None":
                     list_pair[1] = None
-                if list_pair[1] == "True": 
-                    list_pair[1] = True 
-                if list_pair[1] == "False": 
-                    list_pair[1] = False
                 if list_pair[0] == "autofill" and list_pair[1] == "True":
                     autofill = True
                 elif list_pair[0] == "autocorrect" and list_pair[1] == "True":
@@ -204,7 +202,7 @@ def filtered_geodata(request, table_name, param_values=None, excluded_values=Non
     if request.GET.getlist('order'):
         order_by_list = request.GET.getlist('order')
         table_objects = table_objects.order_by(*order_by_list)
-    return JsonResponse({"loc": list(table_objects.values(naming_dict[table_name], "latitude","longitude"))},json_dumps_params = {"indent": 4})
+    return JsonResponse({"loc": list(table_objects.values(naming_dict[table_name], "latitude","longitude", "oid"))},json_dumps_params = {"indent": 4})
 
 # @api_view(["GET", "POST", "DELETE"])
 # @csrf_exempt

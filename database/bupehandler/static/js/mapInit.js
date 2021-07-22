@@ -10,6 +10,8 @@ $(document).ready(function() {
     var destination_name = mapParams.destination_name;
     var excluded_values = mapParams.excluded_values; 
     var keyword = mapParams.keyword;
+    param_values = param_values.replace("amp;", "")
+    excluded_values = excluded_values.replace("amp;", "")
     var get_url = "/api/geodata/";
     get_url += table_name + "/";
     if (param_values != "") { 
@@ -46,14 +48,11 @@ $(document).ready(function() {
                 var link_object; 
                 for (i = 0; i < data['loc'].length; i++) {
                     console.log([data['loc'][i]['latitude'], data['loc'][i]['longitude']])
+                    link_object = window.location.origin + "/table/" + table_name + "/oid=" + data['loc'][i]['oid'] + "/";
                     var marker = new mapboxgl.Marker()
                         .setLngLat([data['loc'][i]['longitude'], data['loc'][i]['latitude']])
-                        .setPopup(new mapboxgl.Popup().setHTML(data['loc'][i][destination_name]))
+                        .setPopup(new mapboxgl.Popup().setHTML("<a href=" + link_object + ">" + JSON.stringify(data['loc'][i][destination_name]) + "</a>" ))
                         .addTo(map);
-                        link_object = window.location.origin + "/table/" + table_name + "/name1=" + data['loc'][i][destination_name] + "/";
-                        marker.getElement().addEventListener('dblclick', event => {
-                        window.location.href = link_object;
-                        });
                 }
             }
         });
