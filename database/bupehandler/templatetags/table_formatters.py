@@ -33,19 +33,26 @@ def phone_number(objs):
 def phone_number(s):
     if s is None or s == "":
         return ""
-    parsed = phonenumbers.parse(s, "US")
-    autoFormatted = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.NATIONAL)
-    rawNoExt = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
-    ext = ""
-    splitNumber = autoFormatted.split(" ")
-    if len(splitNumber) == 4:
-        ext = "x" + splitNumber[3]
-    linkText = " "
-    linkText = linkText.join(splitNumber[0:2])
+    try:
+        parenthetical = ""
+        if len(s.split(" (")) > 1:
+            parenthetical = "(" + s.split(" (")[1]
+            s = s.split(" (")[0]
+        parsed = phonenumbers.parse(s, "US")
+        autoFormatted = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.NATIONAL)
+        rawNoExt = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
+        ext = ""
+        splitNumber = autoFormatted.split(" ")
+        if len(splitNumber) == 4:
+            ext = "x" + splitNumber[3]
+        linkText = " "
+        linkText = linkText.join(splitNumber[0:2])
 
-    html = f'<a target="_blank" href="tel:{rawNoExt}">{linkText}</a> {ext}'
+        html = f'<a target="_blank" href="tel:{rawNoExt}">{linkText}</a> {ext} {parenthetical}'
 
-    return mark_safe(html)
+        return mark_safe(html)
+    except:
+        return mark_safe(s)
 
 @register.simple_tag(name="bu_options", takes_context=True)
 def bu_options(context):
