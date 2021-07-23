@@ -1,78 +1,24 @@
-body {
-    margin: 0px;
-    font-family: "Montserrat", sans-serif;
-    font-weight: 500; 
-}
-
-#map {
-    width: 100vw;
-    height: calc(100vh - 100px);
-    z-index: 0;
-}
-
-#nav-logo {
-    width: 100px;
-    height: calc(100% - 30px);
-    background: url("/static/images/MM_infinity-logo_ghost-gray.png");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center center;
-    flex-grow: 0;
-    margin: 10px 55px;
-    cursor: pointer;
-  }
-  
-  nav {
-    background-color:#0f4d90;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    height: 100px;
-    -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.44); 
-    box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.44);  
-    z-index: 3;
-    position: relative;
-  }
-  
-  #nav-options {
-    list-style: none;
-    display: flex;
-    align-self: flex-end;
-    padding-left: 0px;
-    padding-bottom: 15px;
-  }
-  
-  #nav-options li {
-    margin: 5px 10px;
-    font-size: 16px;
-    text-transform: uppercase;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  
-  #nav-options li:hover {
-    text-decoration: underline;
-  }
-
-  #sidebar {
+#sidebar {
     width: 200px;
     background-color: #0f4d90;
     color: white;
     font-size: 14px;
     flex: 0 0 200px;
-    position: absolute;
-    margin: 50px;
     z-index: 3;
     -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.44); 
     box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.44);  
-
-    position: absolute;
-    margin: 50px;
+    padding: 20px 0px;
+    /* max-height: calc(100vh - 200px); */
+    /* overflow-y: scroll; */
   }
   
   #filterOptions {
     padding: 10px;
+  }
+
+  .filterGroup {
+    margin-top: 20px;
+    font-weight: 600;
   }
   
   #sortOptions label {
@@ -82,10 +28,14 @@ body {
   #sortOptions select {
     margin: 5px;
     border-radius: 0px;
-    background-color: transparent;
+    background-color: #2176d2;
     color: white;
-    border: 2px solid white;
+    border: 0px solid white;
     padding: 3px;
+  }
+
+  #sortOptions select:hover {
+    opacity: 0.8;
   }
   
   #applyFilters {
@@ -106,15 +56,16 @@ body {
   }
   
   .filterCriteria {
-    border: 2px solid white;
+    border: 0px solid white;
     margin: 10px 0px;
     font-weight: 400;
     display: flex;
     flex-direction: row;
+    background-color: #2176d2;
   }
   
   .filterCriteria, .filterCriteria label {
-    cursor: pointer;
+    /* cursor: pointer; */
   }
   
   .filterCriteria label {
@@ -125,12 +76,13 @@ body {
   
   .filterCriteria .specifier {
     width: 25px;
-    border-left: 2px solid white;
+    border-left: 1px solid #0f4d90;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
+    cursor: pointer;
   }
   .filterCriteria .specifier.equal.selected, .filterCriteria .specifier.equal:hover {
     background-color: #4caf50;
@@ -175,11 +127,12 @@ body {
   #clearFilters {
     border-width: 0px;
     padding: 5px;
-    margin: 10px 10px;
+    margin: 0 auto;
     width: 120px;
     font-weight: 400;
     color:white;
-    background-color: #0f4d90;
+    background-color: #2176d2;
+    display: block;
     cursor: pointer;
   }
   
@@ -188,9 +141,9 @@ body {
   }
 
   #filterOptions #searchBar {
-    background-color: #0f4d90;
-    border: 2px solid white;
-    color: white;
+    background-color: white;
+    border: 0px solid white;
+    color: black;
     padding: 5px;
     margin: 10px 0px;
     font-weight: 400;

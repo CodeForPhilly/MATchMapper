@@ -2,6 +2,9 @@ from django import template
 from django.utils.safestring import mark_safe
 import phonenumbers
 from datetime import datetime
+import json
+from django.core import serializers
+
 
 register = template.Library()
 
@@ -15,14 +18,20 @@ def bu_options(context):
     return mark_safe(formattedDate)
 
 @register.filter("legal_url", is_safe=True)
-def phone_number(illegal):
+def legal_url(illegal):
     if illegal is None:
         return ""
     splitIllegal = illegal.split(":")
-    if splitIllegal[0] == "https://" or splitIllegal[0] == "http://":
+    if splitIllegal[0] == "https" or splitIllegal[0] == "http":
         return mark_safe(illegal)
     else:
         return "//" + illegal
+
+@register.filter("dict_to_json", is_safe=True)
+def dict_to_json(d):
+    d["_state"] = ""
+    d["update_recency"] = ""
+    return mark_safe(json.dumps(d))
 
 @register.filter("notArchiveOnly", is_safe=True)
 def phone_number(objs):
@@ -33,19 +42,26 @@ def phone_number(objs):
 def phone_number(s):
     if s is None or s == "":
         return ""
-    parsed = phonenumbers.parse(s, "US")
-    autoFormatted = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.NATIONAL)
-    rawNoExt = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
-    ext = ""
-    splitNumber = autoFormatted.split(" ")
-    if len(splitNumber) == 4:
-        ext = "x" + splitNumber[3]
-    linkText = " "
-    linkText = linkText.join(splitNumber[0:2])
+    try:
+        parenthetical = ""
+        if len(s.split(" (")) > 1:
+            parenthetical = "(" + s.split(" (")[1]
+            s = s.split(" (")[0]
+        parsed = phonenumbers.parse(s, "US")
+        autoFormatted = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.NATIONAL)
+        rawNoExt = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
+        ext = ""
+        splitNumber = autoFormatted.split(" ")
+        if len(splitNumber) == 4:
+            ext = "x" + splitNumber[3]
+        linkText = " "
+        linkText = linkText.join(splitNumber[0:2])
 
-    html = f'<a target="_blank" href="tel:{rawNoExt}">{linkText}</a> {ext}'
+        html = f'<a target="_blank" href="tel:{rawNoExt}">{linkText}</a> {ext} {parenthetical}'
 
-    return mark_safe(html)
+        return mark_safe(html)
+    except:
+        return mark_safe(s)
 
 @register.simple_tag(name="bu_options", takes_context=True)
 def bu_options(context):

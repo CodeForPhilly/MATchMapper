@@ -12,7 +12,7 @@ function hideColumn(column_ID){
 
     let selector = `th:nth-child(${childNumber}), td:nth-child(${childNumber})`
     let rule = selector + "{ display: none; }"
-    console.log(rule)
+    // console.log(rule)
     var sheet = window.document.styleSheets[1]
     sheet.insertRule(rule, sheet.cssRules.length)
 }
@@ -25,7 +25,7 @@ function removeBlanks(array){
 }
 
 let tableID = removeBlanks(window.location.pathname.split("/"))[1]
-console.log(tableID)
+// console.log(tableID)
 
 // if(tableID == "siterecs_dbhids_tad"){
 //     hideColumn("Telehealth")
@@ -42,12 +42,12 @@ function autoHideEmpty(){
     let rows = Array.from(document.querySelectorAll("tr")).slice(1)
     var childNumber = 1
     for(var column of columns){
-        console.log("Reviewing column: " + column.textContent)
+        // console.log("Reviewing column: " + column.textContent)
         colEmpty = true
         for(var row of rows){
             const hasChar = new RegExp('[a-zA-Z]');
             if(hasChar.test(row.querySelectorAll("td, th")[childNumber - 1].textContent)){
-                console.log("Found text in column: " + row.querySelectorAll("td, th")[childNumber - 1].textContent)
+                // console.log("Found text in column: " + row.querySelectorAll("td, th")[childNumber - 1].textContent)
                 colEmpty = false
                 break
             }
@@ -55,7 +55,7 @@ function autoHideEmpty(){
         if(colEmpty){
             let selector = `th:nth-child(${childNumber}), td:nth-child(${childNumber})`
             let rule = selector + "{ display: none; }"
-            console.log(rule)
+            // console.log(rule)
             var sheet = window.document.styleSheets[1]
             sheet.insertRule(rule, sheet.cssRules.length)
         }

@@ -2,12 +2,14 @@
 <html>
   <head>
     <title>Filtered map</title>
+    {% include 'bupehandler/favicon.html' %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet'/>
     <link href='/static/styles/map.css' rel='stylesheet'/>
+    <link href='/static/styles/filterBar.css' rel='stylesheet'/>
     <script>
       const mapParams = {
         table_name: "{{table_name}}",
@@ -20,136 +22,9 @@
     <script src="/static/js/mapInit.js"></script>
   </head>
   <body>
-    <nav>
-      <div id="nav-logo"></div>
-      <ul id="nav-options">
-        <li>Map View</li>
-        <li>List View</li>
-      </ul>
-    </nav>
+    {% include 'bupehandler/navbar.html' %}
     <div id='map'>
-      <div id="sidebar">
-        <!-- TODO: get svg version of logo -->
-        <!-- <div id="logo"></div> -->
-        <div id="filterOptions">
-          <h2>Search:</h2>
-          <input id="searchBar" type="text" placeholder="Search..."/>
-          <h2>Filter:</h2>
-          <!-- <button id="applyFilters">Apply Filters</button> -->
-          <label>Filter your search with the following criteria:</label>
-          <div class="filterCriteria">
-            <label>Offers telehealth</label>
-            <div class="specifier equal"><p>&#10003;</p></div>
-            <div class="specifier notequal"><p>&#10007;</p></div>
-            <input type="checkbox" name="telehealth" value="telehealth=True"/>
-          </div>
-          <div class="filterCriteria">
-            <label>Prescribes buprenorphine</label>
-            <div class="specifier equal"><p>&#10003;</p></div>
-            <div class="specifier notequal"><p>&#10007;</p></div>
-            <input type="checkbox" name="prescribesBuprenorphine" value="bu=True"/>
-          </div>
-          <div id="bupFilters" class="subfilter" predicate="bu=True">
-            <label>Buprenorphine Options:</label>
-            <div class="filterCriteria">
-              <label>Prescribes buprenorphine with naloxone</label>
-              <div class="specifier equal"><p>&#10003;</p></div>
-              <div class="specifier notequal"><p>&#10007;</p></div>
-              <input type="checkbox" name="prescribesBuprenorphineWithNaloxone" value="bwn=True"/>
-            </div>
-            <div class="filterCriteria">
-              <label>Prescribes buprenorphine without naloxone</label>
-              <div class="specifier equal"><p>&#10003;</p></div>
-              <div class="specifier notequal"><p>&#10007;</p></div>
-              <input type="checkbox" name="prescribesBuprenorphineWithoutNaloxone" value="bwon=True"/>
-            </div>
-            <div class="filterCriteria">
-              <label>Prescribes buprenorphine as injectable extended-release</label>
-              <div class="specifier equal"><p>&#10003;</p></div>
-              <div class="specifier notequal"><p>&#10007;</p></div>
-              <input type="checkbox" name="prescribesBuprenorphineInjectable" value="beri=True"/>
-            </div>
-            <div class="filterCriteria">
-              <label>Prescribes buprenorphine as subdermal implant</label>
-              <div class="specifier equal"><p>&#10003;</p></div>
-              <div class="specifier notequal"><p>&#10007;</p></div>
-              <input type="checkbox" name="prescribesBuprenorphineImplant" value="bsdm=True"/>
-            </div>
-            <div class="filterCriteria">
-              <label>Offers buprenorphine maintenance therapy</label>
-              <div class="specifier equal"><p>&#10003;</p></div>
-              <div class="specifier notequal"><p>&#10007;</p></div>
-              <input type="checkbox" name="offersBuprenorphineMaintenance" value="bum=True"/>
-            </div>
-            <div class="filterCriteria">
-              <label>Offers buprenorphine maintenance therapy for predetermined time</label>
-              <div class="specifier equal"><p>&#10003;</p></div>
-              <div class="specifier notequal"><p>&#10007;</p></div>
-              <input type="checkbox" name="offersBuprenorphineMaintenancePredetermined" value="bmw=True"/>
-            </div>
-            <div class="filterCriteria">
-              <label>Offers buprenorphine detoxification</label>
-              <div class="specifier equal"><p>&#10003;</p></div>
-              <div class="specifier notequal"><p>&#10007;</p></div>
-              <input type="checkbox" name="offersBuprenorphineDetox" value="db_field=True"/>
-            </div>
-          </div>
-          <div class="filterCriteria">
-            <label>Prescribes methadone</label>
-            <div class="specifier equal"><p>&#10003;</p></div>
-            <div class="specifier notequal"><p>&#10007;</p></div>
-            <input type="checkbox" name="prescribesMethadone" value="mu=True"/>
-          </div>
-          <div id="methFilters" class="subfilter" predicate="mu=True">
-            <label>Methadone Options:</label>
-            <div class="filterCriteria">
-              <label>Offers methadone maintenance therapy</label>
-              <div class="specifier equal"><p>&#10003;</p></div>
-              <div class="specifier notequal"><p>&#10007;</p></div>
-              <input type="checkbox" name="offersMethadoneMaintenance" value="mm=True"/>
-            </div>
-            <div class="filterCriteria">
-              <label>Offers methadone maintenance therapy for predetermined time</label>
-              <div class="specifier equal"><p>&#10003;</p></div>
-              <div class="specifier notequal"><p>&#10007;</p></div>
-              <input type="checkbox" name="offersMethadoneMaintenancePredetermined" value="mmw=True"/>
-            </div>
-            <div class="filterCriteria">
-              <label>Offers methadone detoxification</label>
-              <div class="specifier equal"><p>&#10003;</p></div>
-              <div class="specifier notequal"><p>&#10007;</p></div>
-              <input type="checkbox" name="offersMethadoneDetox" value="dm=True"/>
-            </div>
-          </div>
-          <div class="filterCriteria">
-            <label>Prescribes naltrexone</label>
-            <div class="specifier equal"><p>&#10003;</p></div>
-            <div class="specifier notequal"><p>&#10007;</p></div>
-            <input type="checkbox" name="prescribesNaltrexone" value="nu=True"/>
-          </div>
-          <div id="nalFilters" class="subfilter" predicate="nu=True">
-            <label>Naltrexone Options:</label>
-            <div class="filterCriteria">
-              <label>Offers Vivitrol (injectable)</label>
-              <div class="specifier equal"><p>&#10003;</p></div>
-              <div class="specifier notequal"><p>&#10007;</p></div>
-              <input type="checkbox" name="offersVivitrol" value="vtrl=True"/>
-            </div>
-            <div class="filterCriteria">
-              <label>Offers oral naltrexone</label>
-              <div class="specifier equal"><p>&#10003;</p></div>
-              <div class="specifier notequal"><p>&#10007;</p></div>
-              <input type="checkbox" name="offersOralNaltrexone" value="nxn=True"/>
-            </div>
-            <div class="filterCriteria">
-              <label>Offers naltrexone for relapse prevention</label>
-              <div class="specifier equal"><p>&#10003;</p></div>
-              <div class="specifier notequal"><p>&#10007;</p></div>
-              <input type="checkbox" name="offersNaltrexoneRelapsePrevention" value="rpn=True"/>
-            </div>
-          </div>
-        </div>
-      </div>
+      {% include 'bupehandler/filterBar.html' with showSort=False %}
     </div>
   <script src="/static/js/filter.js"></script>
   </body>
