@@ -66,6 +66,9 @@ body {
     z-index: 3;
     -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.44); 
     box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.44);  
+
+    position: absolute;
+    margin: 50px;
   }
   
   #filterOptions {

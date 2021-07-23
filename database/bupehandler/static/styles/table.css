@@ -226,7 +226,7 @@ a:hover {
 }
 
 .filterCriteria, .filterCriteria label {
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 .filterCriteria label {

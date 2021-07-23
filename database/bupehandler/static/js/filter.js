@@ -141,29 +141,33 @@ $(document).ready(function() {
 // $(".filterCriteria").click(function(e){
 //   toggleFilter(e.currentTarget.querySelector("input").value)
 // })
-
-$(".equal").click(function(e){
-  console.log("hello")
-  toggleFilter(e.currentTarget.parentElement.querySelector("input").value)
-})
-$(".notequal").click(function(e){
-  toggleFilter(e.currentTarget.parentElement.querySelector("input").value.replace("=","=!"))
-})
-
-$("#clearFilters").click(function(e){
-  clearFilters()
-})
-
-$("#searchBar").on('keypress',function(e) {
-  if(e.which == 13) {
-      search(e.currentTarget.value)
-  }
-})
-
-$("#sortOptions, #orderingOptions").change(function(e){
-  orderString = document.querySelector("#orderingOptions").value + document.querySelector("#sortBy").value
-  applyQueryString()
-})
+function setFilterEventListeners(){
+  $(".equal").click(function(e){
+    console.log("hello")
+    toggleFilter(e.currentTarget.parentElement.querySelector("input").value)
+  })
+  $(".notequal").click(function(e){
+    toggleFilter(e.currentTarget.parentElement.querySelector("input").value.replace("=","=!"))
+  })
+  
+  $("#clearFilters").click(function(e){
+    clearFilters()
+  })
+  
+  $("#searchBar").on('keypress',function(e) {
+    if(e.which == 13) {
+        search(e.currentTarget.value)
+    }
+  })
+  
+  $("#sortOptions, #orderingOptions").change(function(e){
+    if(document.querySelector("#orderingOptions").value != '' && document.querySelector("#sortBy").value != ''){
+      orderString = document.querySelector("#orderingOptions").value + document.querySelector("#sortBy").value
+      applyQueryString()
+    }
+  })
+}
+setFilterEventListeners()
 
 function toggleFilter(filterValue){
   var isNegative = (filterValue.split("=")[1].charAt(0) == "!")
