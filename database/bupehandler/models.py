@@ -72,7 +72,7 @@ class Siterecs_samhsa_ftloc(models.Model):
     oi = models.BooleanField(blank=True, null=True) ## For 'Other insurance' (besides Medicaid and Medicare: private, state, military)
     dvh = models.BooleanField(blank=True, null=True) ## For 'Domestic violence help' (dvfp = safety assistance, dv = program/group for people who experienced domestic violence)
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Deleted default
+    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     date_firstfind = models.DateField()
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
     date_update = models.DateTimeField(default=timezone.now)
@@ -345,7 +345,7 @@ class Siterecs_samhsa_otp(models.Model):
     full_certification = models.DateField(blank=True, null=True)
   ## MATchMapper additions: 
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Deleted default
+    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     date_firstfind = models.DateField()
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
     data_review = models.CharField(max_length=250, blank=True) # Notes from manual review, e.g. "ZIP typo: corrected 19007 to 19107..."
@@ -409,7 +409,7 @@ class Siterecs_dbhids_tad(models.Model):
     f17 = models.BooleanField(blank=True, null=True)
     f44 = models.BooleanField(blank=True, null=True)
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Deleted default
+    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     date_firstfind = models.DateField()
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
     data_review = models.CharField(max_length=250, blank=True) ## Max LEN so far = 161 char.  
@@ -438,19 +438,18 @@ class Ba_dbhids_tad(models.Model):   ## Added as bridge to link sites_all to 3x/
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
     date_update = models.DateTimeField(default=timezone.now)
     archival_only = models.BooleanField(blank=False)
-    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Deleted default
+    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     data_review = models.CharField(max_length=250, blank=True)
 
     def __str__(self): ##// Added July 23 for admin clarity (forgot to create July 17)
         return ', '.join([self.site_id, self.oid, self.name_ba])
-        ##// WAS: return str(self.name_short)
     
     
 class Siterecs_hfp_fqhc(models.Model):   ## TODO: Reload in July 2021 prototype to save time -- may nix in next major iteration
     oid = models.IntegerField(primary_key=True)
     site_id = models.ManyToManyField('Sites_all', through = 'Lookup_siterecs_hfp_fqhc')
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Deleted default
+    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     name_system = models.CharField(max_length=120, blank=True)
     name_site = models.CharField(max_length=120)
     name_short = models.CharField(max_length=50, blank=True)
@@ -467,7 +466,7 @@ class Siterecs_hfp_fqhc(models.Model):   ## TODO: Reload in July 2021 prototype 
     phone2 = models.CharField(max_length=20, blank=True) # Format: ###-###-#### (with optional x####)
     date_firstfind = models.DateField()
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
-    data_review = models.CharField(max_length=250, blank=True) ##// Added blank=True
+    data_review = models.CharField(max_length=250, blank=True) ##// Specified blank=True
     date_update = models.DateTimeField(default=timezone.now) ##// Added July 23 for data admin
 
     def __str__(self): ##// Updated July 23 for admin clarity
@@ -536,8 +535,8 @@ class Siterecs_other_srcs(models.Model): ## What is this: Central table for dire
     fem = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Women (included to mark non-coed facilities)
     male = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Men (included to mark non-coed facilities)
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Deleted default
-    data_review = models.CharField(max_length=1000, blank=True) ## Added in case: For EDITOR use ##// Added blank=True
+    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
+    data_review = models.CharField(max_length=1000, blank=True) ## Added in case: For EDITOR use ##// Specified blank=True
     date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -611,7 +610,7 @@ class Sites_all(models.Model):
     fem = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Women (included to mark non-coed facilities)
     male = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Men (included to mark non-coed facilities)
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Deleted default
+    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     data_review = models.CharField(max_length=499, blank=True) ## Notes for admin/data management (EDITOR)
     date_update = models.DateTimeField(default=timezone.now)
 
@@ -639,7 +638,7 @@ class Table_info(models.Model):
     hide_cols = models.CharField(max_length=500, blank=True)
     annual_updates = models.IntegerField()
 
-    def __str__(self): ##// Updated July 23 for admin clarity
+    def __str__(self): ##// Updated July 24 for admin clarity
         return ', '.join([self.table_name, self.display_name])
         ##// WAS: return str(self.display_name)
 
