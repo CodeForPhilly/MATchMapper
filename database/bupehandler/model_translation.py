@@ -1,13 +1,16 @@
 standardOutput = {"name1": None, "name2": None, "name3": None, 
                 "website1": None, "website2": None, "telehealth": None, 
                 "phone1": None, "phone2": None, "phone3": None, 
-                "street1": None, "street2": None, "city": None,
+                "street1": None, "street2": None, "city": None, 
                 "state_usa": None, "zipcode": None, 
-                "table_url_source": None, ## What is this?
+                "bu": None, "bui": None, "bwn": None, "bwon": None, "beri" : None, "bsdm": None, "bum" : None, "bmw": None, "db_field": None, ##*
+                "mu": None, "meth": None, "mm": None, "mmw": None, "dm": None, 
+                "nu": None, "nxn": None, "vti": None, "vtrl": None, "rpn": None, 
+                "table_url_source": None, 
                 "latitude": None, "longitude": None
                 } 
-              ## No translation needed = "bu": None, "bui": None, "bwn": None, "bwon": None, "beri" : None, "bsdm": None, "bum" : None, "bmw": None, "db_field": None, "mu": None, "meth": None, "mm": None, "mmw": None, "dm": None, "nu": None, "nxn": None, "vti": None, "vtrl": None, "rpn": None, 
-              ## Removed from specs (July 2021) = "buu": None, "vtm": None, "mdi" [mui]: None, 
+              ##* = No translation needed, but restored on analog with Tung's recent DBHIDS fix
+              ## Permanently removed from specs (July 2021) = "buu": None, "vtm": None, "mdi" [mui]: None, 
 mappings = {
     "siterecs_samhsa_ftloc": {
         "website": "website1", 
