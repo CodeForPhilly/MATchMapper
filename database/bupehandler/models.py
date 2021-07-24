@@ -18,7 +18,7 @@ Multi_Choices_EnumWhyHide = [ ## TODO: Fine-tune this list to fit use cases
 ('Other','Other'), ## Why final comma?
 ]
 
-##// New Enum list for map_icon field added in sites_all and siterecs_other_srcs:
+##// New Enum list for map_marker field added in sites_all and siterecs_other_srcs:
 Multi_Choices_EnumMap = [
 ('ba_weekly','ba_weekly'),
 ('ba_monthly','ba_monthly'),
@@ -29,6 +29,8 @@ Multi_Choices_EnumMap = [
 ('samhsa_else','samhsa_else'),
 ('fqhc_else','fqhc_else'),
 ('other_mat','other_mat'),
+('tbd_unclear','tbd_unclear'),
+('xx_unlikely','xx_unlikely'),
 ]
 
 """ TODO: Review def __str__(self) references for which field(s) work best as foreign key in intermediaries for many-to-many relationships 
@@ -481,7 +483,7 @@ class Siterecs_other_srcs(models.Model): ## What is this: Central table for dire
     #id_hfp_fqhc = models.ManyToManyField('Siterecs_hfp_fqhc',blank=True, null=True)
     #id_hrsa_fqhc = models.ManyToManyField('Siterecs_hrsa_fqhc',blank=True, null=True) ## Class not yet created
     #id_bploc = models.ManyToManyField('Bplocs_samhsa_npi_etc',blank=True, null=True) ## Class not yet created
-    map_marker = models.CharField(max_length=25, default = 'other_mat', choices = Multi_Choices_EnumMap) ##// Added July 23 for mapping
+    map_marker = models.CharField(max_length=25, default = 'tbd_unclear', choices = Multi_Choices_EnumMap) ##// Added July 23 for mapping
     name1 = models.CharField(max_length=120)
     name2 = models.CharField(max_length=120, blank=True)
     name3 = models.CharField(max_length=120, blank=True)
@@ -555,7 +557,7 @@ class Sites_all(models.Model):
     id_samhsa_otp = models.ManyToManyField('Siterecs_samhsa_otp', blank=True, null=True)
     id_hfp_fqhc = models.ManyToManyField('Siterecs_hfp_fqhc', blank=True, null=True)
     id_other_srcs = models.ManyToManyField('Siterecs_other_srcs', blank=True, null=True)
-    map_marker = models.CharField(max_length=25, default = 'other_mat', choices = Multi_Choices_EnumMap) ##// Added July 23 for mapping
+    map_marker = models.CharField(max_length=25, default = 'tbd_unclear', choices = Multi_Choices_EnumMap) ##// Added July 23 for mapping
     name1 = models.CharField(max_length=120) ## WAS name_program
     name2 = models.CharField(max_length=120, blank=True) ## WAS name_site
     name3 = models.CharField(max_length=120, blank=True)
@@ -637,8 +639,9 @@ class Table_info(models.Model):
     hide_cols = models.CharField(max_length=500, blank=True)
     annual_updates = models.IntegerField()
 
-    def __str__(self):
-        return str(self.display_name)
+    def __str__(self): ##// Updated July 23 for admin clarity
+        return ', '.join([self.table_name, self.display_name])
+        ##// WAS: return str(self.display_name)
 
 
 ##/ Renamed the below for consistency and resequenced to match sequence above.
