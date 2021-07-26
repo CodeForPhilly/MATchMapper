@@ -90,10 +90,10 @@
     cursor: pointer;
   }
   .filterCriteria .specifier.equal.selected, .filterCriteria .specifier.equal:hover {
-    background-color: #4caf50;
+    background-color: #96c9ff; /* changed green #4caf50 to (Philly) light-ben-franklin blue #96c9ff */
   }
   .filterCriteria .specifier.notequal.selected, .filterCriteria .specifier.notequal:hover {
-    background-color: #f44336;
+    background-color: #444444; /* changed red #f44336 to (Philly) dark-gray #444 */
   }
   .filterCriteria .specifier p {
     font-size: 16px;
