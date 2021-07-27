@@ -50,6 +50,8 @@ Onload
         fillSearchBar()
 */
 
+window.onunload = function(){}
+
 
 function removeBlanks(array){
   var filtered = array.filter(function (el) {
@@ -61,9 +63,11 @@ function removeBlanks(array){
 var enabledIsFilters = []
 var enabledNotFilters = []
 var searchTerm = "None"
-var orderString = ""
+var orderAbsoluteValue = ""
+var orderPolarity = ""
 
 function readFilters(){
+  console.log(enabledIsFilters)
   if(window.location.pathname.split("/").length > 3){
     var filterPathElements = window.location.pathname.split("/").splice(3)
     var enabledIsFilterString = filterPathElements[0]
@@ -88,13 +92,40 @@ function readFilters(){
     }
   }
   if(window.location.search != ""){
-    orderString = window.location.search.split("=")[1]
-    if(orderString.charAt(0) == "-"){
-      document.querySelector("#orderingOptions").value = "-"
-      document.querySelector("#sortBy").value = orderString.substring(1)
+    orderString = window.location.search
+    if(orderString.includes("=-")){
+      orderPolarity = "-"
+      orderAbsoluteValue = orderString.replace(/=-/g,"=").replace("?","")
     }
     else {
-      document.querySelector("#sortBy").value = orderString
+      orderAbsoluteValue = orderString.replace("?","")
+    }
+    document.querySelector("#sortBy").value = orderAbsoluteValue
+    if(orderPolarity == "-"){
+      document.querySelector("#orderingOptions").value = "-"
+    }
+    else {
+      document.querySelector("#orderingOptions").value = ""
+    }
+  }
+  for(var highlightable of document.querySelectorAll(".specifier")){
+    var value = highlightable.getAttribute("value")
+    var criteria = value.split("&")
+    var shouldHighlight = true
+    for(var criterion of criteria){
+      if(criterion[0] == "!"){
+        if(!enabledNotFilters.includes(criterion.substring(1))){
+          shouldHighlight = false
+        }
+      }
+      else {
+        if(!enabledIsFilters.includes(criterion)){
+          shouldHighlight = false
+        }
+      }
+    }
+    if(shouldHighlight){
+      highlight(highlightable)
     }
   }
 }
@@ -136,20 +167,23 @@ function fillSearchBar(){
 
 $(document).ready(function() {
   readFilters()
+  // setTimeout(readFilters, 1000)
 })
 
 // $(".filterCriteria").click(function(e){
 //   toggleFilter(e.currentTarget.querySelector("input").value)
 // })
 function setFilterEventListeners(){
-  $(".equal").click(function(e){
-    console.log("hello")
-    toggleFilter(e.currentTarget.parentElement.querySelector("input").value)
+  $(".equal, .notequal").click(function(e){
+    var newFilters = e.currentTarget.getAttribute("value").split("&")
+
+    for(var i in newFilters){
+      if(newFilters[i][0] == "!"){
+        newFilters[i] = newFilters[i].substring(1).replace("=","=!")
+      }
+    }
+    toggleFilter(newFilters)
   })
-  $(".notequal").click(function(e){
-    toggleFilter(e.currentTarget.parentElement.querySelector("input").value.replace("=","=!"))
-  })
-  
   $("#clearFilters").click(function(e){
     clearFilters()
   })
@@ -161,33 +195,44 @@ function setFilterEventListeners(){
   })
   
   $("#sortOptions, #orderingOptions").change(function(e){
-    if(document.querySelector("#orderingOptions").value != '' && document.querySelector("#sortBy").value != ''){
-      orderString = document.querySelector("#orderingOptions").value + document.querySelector("#sortBy").value
+    if(document.querySelector("#sortBy").value != ''){
+      if(document.querySelector("#orderingOptions").value == "None"){
+        document.querySelector("#orderingOptions").value = ""
+      }
+
+      orderAbsoluteValue = document.querySelector("#sortBy").value
+      orderPolarity = document.querySelector("#orderingOptions").value
+
       applyQueryString()
     }
   })
 }
 setFilterEventListeners()
 
-function toggleFilter(filterValue){
-  var isNegative = (filterValue.split("=")[1].charAt(0) == "!")
-  var absoluteValue = filterValue.replace("!","")
-  if(isNegative){
-    if(enabledNotFilters.includes(absoluteValue)){
-      disableFilter(absoluteValue, isNegative)
-    } else {
-      enableFilter(absoluteValue, isNegative)
-      if(enabledIsFilters.includes(absoluteValue)){
-        disableFilter(absoluteValue, !(isNegative))
-      }
-    }
-  } else {
-    if(enabledIsFilters.includes(absoluteValue)){
-      disableFilter(absoluteValue, isNegative)
-    } else {
-      enableFilter(absoluteValue, isNegative)
+function toggleFilter(filterValues){
+  if(typeof filterValues === 'string' || filterValues instanceof String){
+    filterValues = [filterValues]
+  }
+  for(var filterValue of filterValues){
+    var isNegative = (filterValue.split("=")[1].charAt(0) == "!")
+    var absoluteValue = filterValue.replace("!","")
+    if(isNegative){
       if(enabledNotFilters.includes(absoluteValue)){
-        disableFilter(absoluteValue, !(isNegative))
+        disableFilter(absoluteValue, isNegative)
+      } else {
+        enableFilter(absoluteValue, isNegative)
+        if(enabledIsFilters.includes(absoluteValue)){
+          disableFilter(absoluteValue, !(isNegative))
+        }
+      }
+    } else {
+      if(enabledIsFilters.includes(absoluteValue)){
+        disableFilter(absoluteValue, isNegative)
+      } else {
+        enableFilter(absoluteValue, isNegative)
+        if(enabledNotFilters.includes(absoluteValue)){
+          disableFilter(absoluteValue, !(isNegative))
+        }
       }
     }
   }
@@ -195,7 +240,7 @@ function toggleFilter(filterValue){
 }
 
 function enableFilter(absoluteValue, isNegative){
-  highlight(absoluteValue, isNegative)
+  // highlight(absoluteValue, isNegative)
   if(isNegative){
     enabledNotFilters.push(absoluteValue)
   } else {
@@ -204,7 +249,7 @@ function enableFilter(absoluteValue, isNegative){
 }
 
 function disableFilter(absoluteValue, isNegative){
-  unhighlight(absoluteValue, isNegative)
+  // unhighlight(absoluteValue, isNegative)
   disablePredicated(absoluteValue, isNegative)
   if(isNegative){
     enabledNotFilters = excludeFromArray(enabledNotFilters, absoluteValue)
@@ -226,14 +271,12 @@ function getElementByFilter(absoluteValue, isNegative){
   return null
 }
 
-function highlight(absoluteValue, isNegative){
-  var el = getElementByFilter(absoluteValue, isNegative)
+function highlight(el){
   el.classList.add("selected")
 }
 
-function unhighlight(absoluteValue, isNegative){
-  var el = getElementByFilter(absoluteValue, isNegative)
-  el.classList.remove("selected")
+function unhighlight(el){
+  el.classList.add("selected")
 }
 
 function unhighlightAll(){
@@ -258,8 +301,15 @@ function search(term){
 }
 
 function applyQueryString(){
-  if(orderString != ""){
-    window.location.search = "order=" + orderString
+  if(orderAbsoluteValue != ""){
+    var orderString = ""
+    if(orderPolarity == "-"){
+      orderString = orderAbsoluteValue.replace(/=/g,"=-")
+    }
+    else {
+      orderString = orderAbsoluteValue
+    }
+    window.location.search = orderString
   }
 }
 
@@ -281,8 +331,9 @@ function applyFilters(){
   console.log(searchTerm)
   var fullPath = fullPathElements.join("/")
 
-  window.location.pathname = fullPath
+
   console.log(fullPath)
+  window.location.pathname = fullPath
 }
 
 function clearFilters(){

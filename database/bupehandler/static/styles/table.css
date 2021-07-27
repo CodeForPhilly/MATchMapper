@@ -24,6 +24,10 @@ body {
   color: #0f4d90;
 }
 
+#resultsDescription h3, #resultsDescription h5 {
+  display: inline;
+}
+
 #dataSource {
   margin: 15px 0px;
 }
@@ -80,9 +84,13 @@ table {
 
 #resultDescription {
   font-weight: 400;
-  margin: 10px 0px;
+  padding: 10px 0px;
+  margin: 0px;
   position: sticky;
   left: 0px;
+  top: 0px;
+  background-color: white;
+  z-index: 15;
 }
 
 th {
@@ -94,7 +102,7 @@ th {
   vertical-align: center;
   white-space: nowrap;
   height: 40px;
-  top: 0px;
+  top: 69px;
   z-index: 1;
   border-width: 0px;
   border-bottom-width: 2px;
@@ -178,4 +186,12 @@ a {
 
 a:hover {
   opacity: 0.8;
+}
+
+#dataSource {
+  font-size: 1.17em;
+}
+
+#lastUpdatedNotice {
+  font-size: 0.83em;
 }

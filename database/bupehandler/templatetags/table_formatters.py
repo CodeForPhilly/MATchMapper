@@ -29,9 +29,23 @@ def legal_url(illegal):
 
 @register.filter("dict_to_json", is_safe=True)
 def dict_to_json(d):
-    d["_state"] = ""
-    d["update_recency"] = ""
+    for key in d.keys():
+        if not (isinstance(d[key], str) or isinstance(d[key], int) or isinstance(d[key], float)):
+            d[key] = ""
+    # d["_state"] = ""
+    # d["update_recency"] = ""
     return mark_safe(json.dumps(d))
+
+@register.filter("list_to_json", is_safe=True)
+def list_to_json(l):
+    jsonList = []
+    for o in l:
+        for key in o.keys():
+            if not (isinstance(o[key], str) or isinstance(o[key], int) or isinstance(o[key], float)):
+                o[key] = ""
+        jsonList.append(json.dumps(l))
+    jsonArray = "[" + ",".join(jsonList) + "]"
+    return mark_safe(jsonArray)
 
 @register.filter("notArchiveOnly", is_safe=True)
 def phone_number(objs):
