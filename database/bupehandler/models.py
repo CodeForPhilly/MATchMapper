@@ -323,7 +323,7 @@ class Siterecs_samhsa_ftloc(models.Model):
         db_table = 'siterecs_samhsa_ftloc'
 
     def __str__(self): ##// Updated July 23 for admin clarity
-        return ', '.join([self.site_id, self.oid, self.name1, self.name2, self.street1, self.street2, self.zip5])
+        return ', '.join([','.join(str(v) for v in self.site_id.all()), self.name1, self.name2, self.street1, self.street2, self.zip5])
         ##// WAS: return ', '.join([self.street1, self.street2, self.city, self.state_usa, self.zip5]) ## Reverted zipcode to zip5 (disambiguate from zip4)
 
 
@@ -356,7 +356,7 @@ class Siterecs_samhsa_otp(models.Model):
         db_table = 'siterecs_samhsa_otp'
 
     def __str__(self): ##// Updated July 23 for admin clarity
-        return ', '.join([self.site_id, self.oid, self.program_name, self.dba, self.street1, self.street2, self.zipcode])
+        return ', '.join([','.join(str(v) for v in self.site_id.all()), self.program_name, self.dba, self.street, self.city, self.zipcode])
         ##// WAS: return self.program_name ## Renamed to match source more closely
 
 
@@ -420,7 +420,7 @@ class Siterecs_dbhids_tad(models.Model):
         db_table = 'siterecs_dbhids_tad'
 
     def __str__(self): ##// Updated July 23 for admin clarity
-        return ', '.join([self.site_id, self.oid, self.name1, self.ref_address, self.phone1])
+        return ', '.join([','.join(str(v) for v in self.site_id.all()), self.name1, self.ref_address, self.phone1])
         ##// WAS: return str(self.oid)
 
 
@@ -442,7 +442,7 @@ class Ba_dbhids_tad(models.Model):   ## Added as bridge to link sites_all to 3x/
     data_review = models.CharField(max_length=250, blank=True)
 
     def __str__(self): ##// Added July 23 for admin clarity (forgot to create July 17)
-        return ', '.join([self.site_id, self.oid, self.name_ba])
+        return ', '.join([','.join(str(v) for v in self.site_id.all()), self.name_ba])
     
     
 class Siterecs_hfp_fqhc(models.Model):   ## TODO: Reload in July 2021 prototype to save time -- may nix in next major iteration
@@ -470,7 +470,7 @@ class Siterecs_hfp_fqhc(models.Model):   ## TODO: Reload in July 2021 prototype 
     date_update = models.DateTimeField(default=timezone.now) ##// Added July 23 for data admin
 
     def __str__(self): ##// Updated July 23 for admin clarity
-        return ', '.join([self.site_id, self.oid, self.name_short, self.street1, self.street2, self.zipcode])
+        return ', '.join([','.join(str(v) for v in self.site_id.all()), self.name_short, self.street1, self.street2, self.zipcode])
         ##// WAS: return str(self.name_short)
 
 ## This class seems superfluous for FINDER (substantially similar to sites_all), but might help EDITOR.
@@ -544,7 +544,7 @@ class Siterecs_other_srcs(models.Model): ## What is this: Central table for dire
         db_table = 'siterecs_other_srcs'
 
     def __str__(self): ##// Updated July 23 for admin clarity
-        return ', '.join([self.site_id, self.oid, self.name1, self.name2, self.street1, self.street2, self.zipcode])
+        return ', '.join([','.join(str(v) for v in self.site_id.all()), self.name1, self.name2, self.street1, self.street2, self.zipcode])
         ##// WAS: return self.name1
 
 
