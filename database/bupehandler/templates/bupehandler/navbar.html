@@ -2,11 +2,11 @@
     #nav-logo {
     width: 100px;
     height: 70px;
-    background: url("/static/images/MM_infinity-logo_ghost-gray.png"); /* Update this to captioned version (MM__infinity-logo_luxwhite_labeled.png): https://drive.google.com/file/d/1Ruf6b2Aj7GuWsuVLTsZ6Egtq0xlxjcvb/view?usp=sharing */
+    background: url("/static/images/MM_infinity-logo_luxwhite_labeled.png"); /* Update this to captioned version (MM__infinity-logo_luxwhite_labeled.png): https://drive.google.com/file/d/1Ruf6b2Aj7GuWsuVLTsZ6Egtq0xlxjcvb/view?usp=sharing */
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
-    flex-grow: 0;
+    flex-grow: 1;
     flex-shrink: 0;
     margin: 10px 55px;
     cursor: pointer;
@@ -17,13 +17,26 @@
   }
   
   nav {
+    /* background-color:#0f4d90;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-basis: 100px;
+    -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.44); 
+    box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.44);  
+    flex-wrap: wrap; */
+    
     background-color:#0f4d90;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    min-height: 100px;
+    flex-basis: 100px;
     -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.44); 
     box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.44);  
+    z-index: 3;
+    position: relative;
+    flex-shrink: 0;
+    flex-grow: 1;
   }
   
   #nav-options {
@@ -32,6 +45,7 @@
     align-self: center;
     padding-left: 0px;
     flex-wrap: wrap;
+    flex-grow: 10;
   }
   
   #nav-options li {
