@@ -48,17 +48,43 @@ for(var filterGroup of sortedFilterGroups){
 }
 
 function getGroupLeader(group){
+    var uiLevel = null
+    var allSameLevel = true
     var withLowestUISeq = null
     for(var filter of group){
         if(withLowestUISeq == null || parseInt(filter.ui_seq) < parseInt(withLowestUISeq.ui_seq)){
             withLowestUISeq = filter
         }
+        if(uiLevel == null){
+            uiLevel = filter.ui_level
+        }
+        if(filter.ui_level != uiLevel){
+            allSameLevel = false
+        }
     }
-    return withLowestUISeq
+    if(allSameLevel && group.length > 1){
+        var groupHeader = {
+            affirmative: "",
+            iff_field: "",
+            negative: "",
+            options: "",
+            ui_group: group[0].ui_group,
+            ui_label: group[0].ui_group,
+            ui_level: "1",
+            ui_seq: "1"
+        }
+        for(var filter of group){
+            filter.ui_level = (parseInt(uiLevel) + 1).toString()
+        }
+        return groupHeader
+    }
+    else {
+        return withLowestUISeq
+    }
 }
 
 function getLeaderType(leader){
-    if(leader.this_field == ""){
+    if(leader.affirmative == "" && leader.negative == "" || leader.affirmative == undefined && leader.negative == undefined){
         return "header"
     }
     else {
@@ -90,9 +116,8 @@ function filterPredicateHTML(leader){
     HeaderElement.classList.add("filterCriteria")
     HeaderElement.innerHTML = `
             <label>${leader.ui_label}</label>
-            <div class="specifier equal"><p>&#10003;</p></div>
-            <div class="specifier notequal"><p>&#10007;</p></div>
-            <input type="checkbox" name="${leader.this_field}" value="${leader.this_field}=True"/>
+            <div class="specifier equal" value="${leader.affirmative}"><p>&#10003;</p></div>
+            <div class="specifier notequal" value="${leader.negative}"><p>&#10007;</p></div>
             `
     return HeaderElement
 }
@@ -110,9 +135,8 @@ function filterSectionHTML(filters, predicate){
         criteriaElement.classList.add("filterCriteria")
         criteriaElement.innerHTML = `
             <label>${filter.ui_label}</label>
-            <div class="specifier equal"><p>&#10003;</p></div>
-            <div class="specifier notequal"><p>&#10007;</p></div>
-            <input type="checkbox" name="${filter.this_field}" value="${filter.this_field}=True"/>
+            <div class="specifier equal" value="${filter.affirmative}"><p>&#10003;</p></div>
+            <div class="specifier notequal" value="${filter.negative}"><p>&#10007;</p></div>
             `
         sectionHTML.appendChild(criteriaElement)
     }

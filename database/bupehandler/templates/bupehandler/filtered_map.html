@@ -1,3 +1,4 @@
+{% load table_formatters %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -10,6 +11,8 @@
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet'/>
     <link href='/static/styles/map.css' rel='stylesheet'/>
     <link href='/static/styles/filterBar.css' rel='stylesheet'/>
+    <script>const table_info = {{ table_info|dict_to_json }}</script>
+    <script src='/static/js/filterSettings.js'></script>
     <script>
       const mapParams = {
         table_name: "{{table_name}}",
@@ -25,6 +28,9 @@
     {% include 'bupehandler/navbar.html' %}
     <div id='map'>
       {% include 'bupehandler/filterBar.html' with showSort=False %}
+      <div id="results-info">
+        <span class="bold">{{ objects|length }}</span> of <span class="bold">{{ table_info.records_count }}</span> records for <span class="bold">{{ table_info.facility_type }}</span> {{ table_info.source_range }}
+      </div>
     </div>
   <script src="/static/js/filter.js"></script>
   </body>

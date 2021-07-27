@@ -18,6 +18,21 @@ Multi_Choices_EnumWhyHide = [ ## TODO: Fine-tune this list to fit use cases
 ('Other','Other'), ## Why final comma?
 ]
 
+##// New Enum list for map_marker field added in sites_all and siterecs_other_srcs:
+Multi_Choices_EnumMap = [
+('ba_weekly','ba_weekly'),
+('ba_monthly','ba_monthly'),
+('dbhids_assessment','dbhids_assessment'),
+('dbhids_coe','dbhids_coe'),
+('dbhids_else','dbhids_else'),
+('samhsa_otp','samhsa_otp'),
+('samhsa_else','samhsa_else'),
+('fqhc_else','fqhc_else'),
+('other_mat','other_mat'),
+('tbd_unclear','tbd_unclear'),
+('xx_unlikely','xx_unlikely'),
+]
+
 """ TODO: Review def __str__(self) references for which field(s) work best as foreign key in intermediaries for many-to-many relationships 
     (https://docs.djangoproject.com/en/3.2/topics/db/models/#extra-fields-on-many-to-many-relationships)
     Sites_all data load references oid from other classes in id_classname fields as integer or list of integers
@@ -42,8 +57,9 @@ class Sitecodes_samhsa_ftloc(models.Model):
         managed = True
         db_table = 'sitecodes_samhsa_ftloc'
 
-    def __str__(self):
-        return self.service_name
+    def __str__(self): ##// Updated July 23 for admin clarity
+        return ', '.join([self.service_code, self.service_name])
+        ##// WAS: return self.service_name
 
 # Gave all Siterecs_ classes an oid (object id for ease of abstraction for backend)
 
@@ -56,7 +72,7 @@ class Siterecs_samhsa_ftloc(models.Model):
     oi = models.BooleanField(blank=True, null=True) ## For 'Other insurance' (besides Medicaid and Medicare: private, state, military)
     dvh = models.BooleanField(blank=True, null=True) ## For 'Domestic violence help' (dvfp = safety assistance, dv = program/group for people who experienced domestic violence)
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
+    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     date_firstfind = models.DateField()
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
     date_update = models.DateTimeField(default=timezone.now)
@@ -306,8 +322,9 @@ class Siterecs_samhsa_ftloc(models.Model):
         managed = True
         db_table = 'siterecs_samhsa_ftloc'
 
-    def __str__(self):
-        return ', '.join([self.street1, self.street2, self.city, self.state_usa, self.zip5]) ## Reverted zipcode to zip5 (disambiguate from zip4)
+    def __str__(self): ##// Updated July 23 for admin clarity
+        return ', '.join([self.site_id, self.oid, self.name1, self.name2, self.street1, self.street2, self.zip5])
+        ##// WAS: return ', '.join([self.street1, self.street2, self.city, self.state_usa, self.zip5]) ## Reverted zipcode to zip5 (disambiguate from zip4)
 
 
 class Siterecs_samhsa_otp(models.Model):
@@ -321,12 +338,14 @@ class Siterecs_samhsa_otp(models.Model):
     city = models.CharField(max_length=30)
     state_usa = models.CharField(max_length=30) # TODO change to Enum??? ## Match above class; downloaded data again uses abbrev (not full names)
     zipcode = models.CharField(max_length=10)
+    latitude = models.FloatField() ##// Added July 23 for mapping
+    longitude = models.FloatField() ##// Added July 23 for mapping
     phone = models.CharField(max_length=20, blank=True) # Format: ###-###-#### (with optional x####) -- extended max_length to 20 to accommodate occasional extensions
     certification = models.CharField(max_length=120)
     full_certification = models.DateField(blank=True, null=True)
   ## MATchMapper additions: 
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
+    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     date_firstfind = models.DateField()
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
     data_review = models.CharField(max_length=250, blank=True) # Notes from manual review, e.g. "ZIP typo: corrected 19007 to 19107..."
@@ -336,8 +355,9 @@ class Siterecs_samhsa_otp(models.Model):
         managed = True
         db_table = 'siterecs_samhsa_otp'
 
-    def __str__(self):
-        return self.program_name ## Renamed to match source more closely
+    def __str__(self): ##// Updated July 23 for admin clarity
+        return ', '.join([self.site_id, self.oid, self.program_name, self.dba, self.street1, self.street2, self.zipcode])
+        ##// WAS: return self.program_name ## Renamed to match source more closely
 
 
 class Siterecs_dbhids_tad(models.Model):
@@ -352,6 +372,8 @@ class Siterecs_dbhids_tad(models.Model):
     city = models.CharField(max_length=30, default='Philadelphia') # Added Philadelphia as default city BY SAM
     state_usa = models.CharField(max_length=30, default='PA') ## Can replace with Enum to match above classes BY SAM
     zipcode = models.CharField(max_length=5)
+    latitude = models.FloatField() ##// Added July 23 for mapping
+    longitude = models.FloatField() ##// Added July 23 for mapping
     phone1 = models.CharField(max_length=20) #[DCS] but reformatted: ###-###-#### (with optional x####)
     asm = models.BooleanField(blank=True, null=True) ## Added to make page 2 entries filterable (Assessment directory)
     ba = models.BooleanField(blank=True, null=True) ## Added to make page 5 entries link-and-filterable (Bed availability! = top ask in March 2020 hackathon response)
@@ -387,17 +409,19 @@ class Siterecs_dbhids_tad(models.Model):
     f17 = models.BooleanField(blank=True, null=True)
     f44 = models.BooleanField(blank=True, null=True)
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
+    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     date_firstfind = models.DateField()
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
     data_review = models.CharField(max_length=250, blank=True) ## Max LEN so far = 161 char.  
+    date_update = models.DateTimeField(default=timezone.now) ##// Added July 23 for data admin
 
     class Meta:
         managed = True
         db_table = 'siterecs_dbhids_tad'
 
-    def __str__(self):
-        return str(self.oid)
+    def __str__(self): ##// Updated July 23 for admin clarity
+        return ', '.join([self.site_id, self.oid, self.name1, self.ref_address, self.phone1])
+        ##// WAS: return str(self.oid)
 
 
 class Ba_dbhids_tad(models.Model):   ## Added as bridge to link sites_all to 3x/weekly DBHIDS updates
@@ -414,15 +438,18 @@ class Ba_dbhids_tad(models.Model):   ## Added as bridge to link sites_all to 3x/
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
     date_update = models.DateTimeField(default=timezone.now)
     archival_only = models.BooleanField(blank=False)
-    why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
+    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     data_review = models.CharField(max_length=250, blank=True)
 
+    def __str__(self): ##// Added July 23 for admin clarity (forgot to create July 17)
+        return ', '.join([self.site_id, self.oid, self.name_ba])
+    
     
 class Siterecs_hfp_fqhc(models.Model):   ## TODO: Reload in July 2021 prototype to save time -- may nix in next major iteration
     oid = models.IntegerField(primary_key=True)
     site_id = models.ManyToManyField('Sites_all', through = 'Lookup_siterecs_hfp_fqhc')
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
+    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     name_system = models.CharField(max_length=120, blank=True)
     name_site = models.CharField(max_length=120)
     name_short = models.CharField(max_length=50, blank=True)
@@ -432,15 +459,19 @@ class Siterecs_hfp_fqhc(models.Model):   ## TODO: Reload in July 2021 prototype 
     city = models.CharField(max_length=30)
     state_usa = models.CharField(max_length=30, default='PA') ## Can replace with Enum to match above classes
     zipcode = models.CharField(max_length=5)
+    latitude = models.FloatField() ##// Added July 23 for mapping
+    longitude = models.FloatField() ##// Added July 23 for mapping
     website = models.URLField(blank=True, null=True)
     phone1 = models.CharField(max_length=20) # Format: ###-###-#### (with optional x####)
     phone2 = models.CharField(max_length=20, blank=True) # Format: ###-###-#### (with optional x####)
     date_firstfind = models.DateField()
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
-    data_review = models.CharField(max_length=250)
+    data_review = models.CharField(max_length=250, blank=True) ##// Specified blank=True
+    date_update = models.DateTimeField(default=timezone.now) ##// Added July 23 for data admin
 
-    def __str__(self):
-        return str(self.name_short)
+    def __str__(self): ##// Updated July 23 for admin clarity
+        return ', '.join([self.site_id, self.oid, self.name_short, self.street1, self.street2, self.zipcode])
+        ##// WAS: return str(self.name_short)
 
 ## This class seems superfluous for FINDER (substantially similar to sites_all), but might help EDITOR.
 class Siterecs_other_srcs(models.Model): ## What is this: Central table for direct research on FQHCs and other BP Locs (incl. 2020 work, integration underway)
@@ -451,6 +482,7 @@ class Siterecs_other_srcs(models.Model): ## What is this: Central table for dire
     #id_hfp_fqhc = models.ManyToManyField('Siterecs_hfp_fqhc',blank=True, null=True)
     #id_hrsa_fqhc = models.ManyToManyField('Siterecs_hrsa_fqhc',blank=True, null=True) ## Class not yet created
     #id_bploc = models.ManyToManyField('Bplocs_samhsa_npi_etc',blank=True, null=True) ## Class not yet created
+    map_marker = models.CharField(max_length=25, default = 'tbd_unclear', choices = Multi_Choices_EnumMap) ##// Added July 23 for mapping
     name1 = models.CharField(max_length=120)
     name2 = models.CharField(max_length=120, blank=True)
     name3 = models.CharField(max_length=120, blank=True)
@@ -503,16 +535,17 @@ class Siterecs_other_srcs(models.Model): ## What is this: Central table for dire
     fem = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Women (included to mark non-coed facilities)
     male = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Men (included to mark non-coed facilities)
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
-    data_review = models.CharField(max_length=1000) ## Added in case: For EDITOR use
+    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
+    data_review = models.CharField(max_length=1000, blank=True) ## Added in case: For EDITOR use ##// Specified blank=True
     date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
         managed = True
         db_table = 'siterecs_other_srcs'
 
-    def __str__(self):
-        return self.name1
+    def __str__(self): ##// Updated July 23 for admin clarity
+        return ', '.join([self.site_id, self.oid, self.name1, self.name2, self.street1, self.street2, self.zipcode])
+        ##// WAS: return self.name1
 
 
 class Sites_all(models.Model):
@@ -523,6 +556,7 @@ class Sites_all(models.Model):
     id_samhsa_otp = models.ManyToManyField('Siterecs_samhsa_otp', blank=True, null=True)
     id_hfp_fqhc = models.ManyToManyField('Siterecs_hfp_fqhc', blank=True, null=True)
     id_other_srcs = models.ManyToManyField('Siterecs_other_srcs', blank=True, null=True)
+    map_marker = models.CharField(max_length=25, default = 'tbd_unclear', choices = Multi_Choices_EnumMap) ##// Added July 23 for mapping
     name1 = models.CharField(max_length=120) ## WAS name_program
     name2 = models.CharField(max_length=120, blank=True) ## WAS name_site
     name3 = models.CharField(max_length=120, blank=True)
@@ -576,16 +610,17 @@ class Sites_all(models.Model):
     fem = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Women (included to mark non-coed facilities)
     male = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Men (included to mark non-coed facilities)
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
-    why_hidden = models.CharField(max_length=150, blank=True, default="Data needs review", choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True
-    data_review = models.CharField(max_length=499, null=True, blank=True) ## Notes for admin/data management (EDITOR)
+    why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
+    data_review = models.CharField(max_length=499, blank=True) ## Notes for admin/data management (EDITOR)
     date_update = models.DateTimeField(default=timezone.now)
 
     class Meta:
         managed = True
         db_table = 'sites_all'
 
-    def __str__(self):
-        return ', '.join([self.oid, self.name1, self.name2]) ## Updated to match renaming consistency
+    def __str__(self): ##// Updated July 23 for admin clarity
+        return ', '.join([self.oid, self.name1, self.name2, self.street1, self.street2, self.zipcode])
+        ##// WAS: return ', '.join([self.oid, self.name1, self.name2]) ## Updated to match renaming consistency
 
     
 class Table_info(models.Model):
@@ -603,8 +638,9 @@ class Table_info(models.Model):
     hide_cols = models.CharField(max_length=500, blank=True)
     annual_updates = models.IntegerField()
 
-    def __str__(self):
-        return str(self.display_name)
+    def __str__(self): ##// Updated July 24 for admin clarity
+        return ', '.join([self.table_name, self.display_name])
+        ##// WAS: return str(self.display_name)
 
 
 ##/ Renamed the below for consistency and resequenced to match sequence above.

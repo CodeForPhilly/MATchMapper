@@ -20,6 +20,7 @@ from django.forms.models import model_to_dict
 from django.db.models import CharField
 from django.db.models import  Q
 from .tableCaching import fetchCachedIfRecent
+import re
 
 
 @api_view(["GET", "POST", "DELETE"])
@@ -64,7 +65,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
     print(excluded_values)
     autofill = False
     autocorrect=False
-    filter_params = {}
+    filter_params = {"archival_only":False}
     excluded_params = {}
     if param_values:
         if param_values != "None":
@@ -176,20 +177,21 @@ def filtered_map(request, table_name, param_values="", excluded_values="", keywo
         "Siterecs_dbhids_tads": "name1"
     }
     mapbox_access_token = 'pk.my_mapbox_access_token'
+    table_info = Table_info.objects.get(table_name=table_name).__dict__
     if param_values: 
-        paramList = [paramString.split("=") for paramString in param_values.split("&")]
+        paramList = [paramString.split("=") for paramString in re.split("&amp;|&", param_values)]
         for param in paramList:
             param[0] = filterKeyToLocalKey(param[0], table_name)
         param_values = "&".join(["=".join(param) for param in paramList])
 
-        exclusionList = [exclusionString.split("=") for exclusionString in excluded_values.split("&")]
+        exclusionList = [exclusionString.split("=") for exclusionString in re.split("&amp;|&", param_values)]
         for exclusion in exclusionList:
             exclusion[0] = filterKeyToLocalKey(exclusion[0], table_name)
         excluded_values = "&".join(["=".join(exclusion) for exclusion in exclusionList])
 
-        return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "param_values": param_values, "excluded_values": excluded_values, "destination_name": naming_dict[table_name], "keyword": keyword})
+        return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "table_info": table_info, "param_values": param_values, "excluded_values": excluded_values, "destination_name": naming_dict[table_name], "keyword": keyword})
     else: 
-        return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "destination_name": naming_dict[table_name], "keyword": keyword})
+        return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "table_info": table_info, "destination_name": naming_dict[table_name], "keyword": keyword})
 
 # @api_view(["GET", "POST", "DELETE"])
 # @csrf_exempt

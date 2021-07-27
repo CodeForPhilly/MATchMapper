@@ -1,15 +1,13 @@
 #sidebar {
-    width: 200px;
     background-color: #0f4d90;
     color: white;
     font-size: 14px;
-    flex: 0 0 200px;
+    flex: 0 0 210px;
     z-index: 3;
     -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.44); 
     box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.44);  
     padding: 20px 0px;
-    /* max-height: calc(100vh - 200px); */
-    /* overflow-y: scroll; */
+    overflow-y: scroll;
   }
   
   #filterOptions {
@@ -19,6 +17,11 @@
   .filterGroup {
     margin-top: 20px;
     font-weight: 600;
+  }
+
+  #sortOptions {
+    display: flex;
+    flex-direction: column;
   }
   
   #sortOptions label {
@@ -72,6 +75,8 @@
     flex-shrink: 1;
     margin: 5px;
     flex-grow: 1;
+    /* font-size: 12px; */
+    overflow:hidden;
   }
   
   .filterCriteria .specifier {
@@ -85,10 +90,10 @@
     cursor: pointer;
   }
   .filterCriteria .specifier.equal.selected, .filterCriteria .specifier.equal:hover {
-    background-color: #4caf50;
+    background-color: #96c9ff; /* changed green #4caf50 to (Philly) light-ben-franklin blue #96c9ff */
   }
   .filterCriteria .specifier.notequal.selected, .filterCriteria .specifier.notequal:hover {
-    background-color: #f44336;
+    background-color: #444444; /* changed red #f44336 to (Philly) dark-gray #444 */
   }
   .filterCriteria .specifier p {
     font-size: 16px;
