@@ -67,11 +67,13 @@ class Sites_general_display:
             mapping = mappings["siterecs_hfp_fqhc"]
         elif self.table_name == "siterecs_other_srcs": 
             mapping = mappings["siterecs_other_srcs"]
-        for key in source_object: 
+        for key in source_object:
             if key in self.output: 
                 self.output[key] = source_object[key] 
             elif key in mapping: 
                 self.output[mapping[key]] = source_object[key] 
+            elif isinstance(source_object[key], str) or isinstance(source_object[key], int):
+                self.output[key] = source_object[key] 
 
 def filterKeyToLocalKey(key, table_name):
     try:

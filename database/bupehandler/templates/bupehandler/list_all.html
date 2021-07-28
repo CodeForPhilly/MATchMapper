@@ -99,7 +99,7 @@
                   <p class="cellText bold">{{site.mat_info}}</p>
                 </td>
                 <td class="nowrap col-WHICHMAT">
-                  <p class="cellText bold">
+                  <p class="cellText">
                     {% if site.mat_avail == "Unclear" %}
                       None confirmed<br/>
                     {% endif %}
@@ -126,13 +126,6 @@
                           <br/>
                         {% endif %}
                       </span>
-                      <span>
-                        Induction:
-                        <span class="bold">
-                          {% if site.bui %} Yes {% else %} No {% endif %}
-                        </span>
-                      </span>
-                      <br/>
                       <span showOnlyFor="siterecs_samhsa_ftloc siterecs_dbhids_tad">
                         Maintenance:
                         <span class="bold">
@@ -167,16 +160,6 @@
                       <span class="bold">{% nu_options %}</span>
                       <br/>
                     {% endif %}
-                    Vivitrol Induction:
-                    <span class="bold">
-                      {% if site.vti %} Yes {% else %} No {% endif %}
-                    </span>
-                    <br/>
-                    Vivitrol Maintenance:
-                    <span class="bold">
-                      {% if site.vtm %} Yes {% else %} No {% endif %}
-                    </span>
-                    <br/>
                     Used for relapse prevention:
                     <span class="bold">
                       {% if site.rpn %} Yes {% else %} No {% endif %}
