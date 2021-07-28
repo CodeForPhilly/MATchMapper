@@ -64,8 +64,7 @@ body {
   /* flex-shrink: 2; */
   flex: 1 1 auto;
   overflow: scroll;
-  height: 100vh;
-  max-height: 100vh;
+  max-height: 100%;
 }
 
 /* #extraContainer {
@@ -84,7 +83,7 @@ table {
 
 #resultDescription {
   font-weight: 400;
-  padding: 10px 0px;
+  padding: 11px 0px;
   margin: 0px;
   position: sticky;
   left: 0px;

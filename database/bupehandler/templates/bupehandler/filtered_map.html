@@ -29,7 +29,7 @@
     <div id='map'>
       {% include 'bupehandler/filterBar.html' with showSort=False %}
       <div id="results-info">
-        <span class="bold">{{ objects|length }}</span> of <span class="bold">{{ table_info.records_count }}</span> records for <span class="bold">{{ table_info.facility_type }}</span> {{ table_info.source_range }}
+        <span class="bold" id="sitecount">0</span> of <span class="bold">{{ table_info.records_count }}</span> records for <span class="bold">{{ table_info.facility_type }}</span> {{ table_info.source_range }}
       </div>
     </div>
   <script src="/static/js/filter.js"></script>

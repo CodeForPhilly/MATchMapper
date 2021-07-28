@@ -45,6 +45,7 @@ $(document).ready(function() {
                     center: [-75.158924, 39.9629223],
                     zoom: 11
                 });
+                document.querySelector("#sitecount").textContent = data['loc'].length
                 var link_object; 
                 for (i = 0; i < data['loc'].length; i++) {
                     console.log([data['loc'][i]['latitude'], data['loc'][i]['longitude']])
