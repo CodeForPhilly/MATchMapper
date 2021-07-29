@@ -12,16 +12,21 @@ $(document).ready(function() {
     var keyword = mapParams.keyword;
     param_values = param_values.replace("amp;", "")
     excluded_values = excluded_values.replace("amp;", "")
+    console.log(table_name)
+    console.log(param_values)
+    console.log(excluded_values)
     var get_url = "/api/geodata/";
     get_url += table_name + "/";
     if (param_values != "") { 
         get_url += param_values + "/";
+        console.log(get_url)
     }
     if (excluded_values != "") { 
         if (param_values == "") { 
         get_url += "None/";
         }
         get_url += excluded_values + "/";
+        console.log(get_url)
     }
     if (keyword != "") { 
         if (param_values == "" && excluded_values == "") { 
