@@ -180,15 +180,15 @@ def filtered_map(request, table_name, param_values="", excluded_values="", keywo
     mapbox_access_token = 'pk.my_mapbox_access_token'
     table_info = Table_info.objects.get(table_name=table_name).__dict__
     if param_values: 
-        paramList = [paramString.split("=") for paramString in re.split("&amp;|&", param_values)]
-        for param in paramList:
-            param[0] = filterKeyToLocalKey(param[0], table_name)
-        param_values = "&".join(["=".join(param) for param in paramList])
+        #paramList = [paramString.split("=") for paramString in re.split("&amp;|&", param_values)]
+        #for param in paramList:
+        #    param[0] = filterKeyToLocalKey(param[0], table_name)
+        #param_values = "&".join(["=".join(param) for param in paramList])
 
-        exclusionList = [exclusionString.split("=") for exclusionString in re.split("&amp;|&", param_values)]
-        for exclusion in exclusionList:
-            exclusion[0] = filterKeyToLocalKey(exclusion[0], table_name)
-        excluded_values = "&".join(["=".join(exclusion) for exclusion in exclusionList])
+        #exclusionList = [exclusionString.split("=") for exclusionString in re.split("&amp;|&", param_values)]
+        #for exclusion in exclusionList:
+        #    exclusion[0] = filterKeyToLocalKey(exclusion[0], table_name)
+        #excluded_values = "&".join(["=".join(exclusion) for exclusion in exclusionList])
 
         return render(request, 'bupehandler/filtered_map.html', { 'mapbox_access_token': mapbox_access_token, "table_name": table_name, "table_info": table_info, "param_values": param_values, "excluded_values": excluded_values, "destination_name": naming_dict[table_name], "keyword": keyword})
     else: 
