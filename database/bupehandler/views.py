@@ -150,6 +150,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
     for table_object in table_objects:
         dicted = table_object.__dict__
         generalDisplayed = Sites_general_display(table_name, dicted)
+        # print(generalDisplayed.output["full_certification"])
         general_display_list.append(generalDisplayed.output)
     table_info = Table_info.objects.get(table_name=table_name).__dict__
     #table_serializer = serializer_dict[table_name](table_objects, many=True)

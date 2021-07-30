@@ -113,7 +113,7 @@ th {
 
 .facilityName {
   position: sticky;
-  left: 1px;
+  left: 0px;
   border-width: 0px;
   border-right-width: 2px;
   border-style: solid;
