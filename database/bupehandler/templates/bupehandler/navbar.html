@@ -62,6 +62,15 @@
     border-radius: 5px;
   }
 
+  #nav-options li.selected {
+    color: #0f4d90;
+    background-color: #f0f0f0;
+  }
+
+  #nav-options li.selected a {
+    color: #0f4d90;
+  }
+
   #nav-options li:not(.bold) {
     margin: 5px 10px;
     font-size: 12px;
@@ -93,4 +102,15 @@
         <li><a href="/table/siterecs_samhsa_ftloc">National Find Treatment Programs (SAMHSA)</a></li>
         <li><a href="/table/siterecs_samhsa_otp">Opioid Treatment Programs (SAMHSA)</a></li>
     </ul>
+    <script>
+      const page_type = window.location.pathname.split("/").filter(e => e != "")[0]
+      const table_name = window.location.pathname.split("/").filter(e => e != "")[1]
+      for(var navItem of document.querySelectorAll("#nav-options li")){
+        var linkUrl = navItem.querySelector("a").getAttribute("href")
+        var pathnameWithoutFilters = "/" + page_type + "/" + table_name
+        if(linkUrl == pathnameWithoutFilters){
+          navItem.classList.add("selected")
+        }
+      }
+    </script>
 </nav>

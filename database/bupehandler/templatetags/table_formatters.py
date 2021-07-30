@@ -30,6 +30,8 @@ def legal_url(illegal):
 @register.filter("dict_to_json", is_safe=True)
 def dict_to_json(d):
     for key in d.keys():
+        if key == "update_recency":
+            d[key] = d[key].strftime('%m/%d/%Y')
         if not (isinstance(d[key], str) or isinstance(d[key], int) or isinstance(d[key], float)):
             d[key] = ""
     # d["_state"] = ""

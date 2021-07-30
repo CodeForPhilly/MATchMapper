@@ -10,10 +10,10 @@ $(document).ready(function() {
     var destination_name = mapParams.destination_name;
     var excluded_values = mapParams.excluded_values; 
     var keyword = mapParams.keyword;
-    param_values = param_values.replace("amp;", "")
-    excluded_values = excluded_values.replace("amp;", "")
-    console.log(table_name)
     console.log(param_values)
+    param_values = param_values.replaceAll("amp;", "")
+    console.log(param_values)
+    excluded_values = excluded_values.replaceAll("amp;", "")
     console.log(excluded_values)
     var get_url = "/api/geodata/";
     get_url += table_name + "/";

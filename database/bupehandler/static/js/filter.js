@@ -65,6 +65,7 @@ var enabledNotFilters = []
 var searchTerm = "None"
 var orderAbsoluteValue = ""
 var orderPolarity = ""
+var selectedIDs = []
 
 function readFilters(){
   console.log(enabledIsFilters)
@@ -92,13 +93,20 @@ function readFilters(){
     }
   }
   if(window.location.search != ""){
-    orderString = window.location.search
+    var queryStringElements = window.location.search.replace("?","").split("&")
+    var orderStringElements = []
+    for(var element of queryStringElements){
+      if(element.split("=")[0] == "order"){
+        orderStringElements.push(element)
+      }
+    }
+    var orderString = orderStringElements.join("&")
     if(orderString.includes("=-")){
       orderPolarity = "-"
-      orderAbsoluteValue = orderString.replace(/=-/g,"=").replace("?","")
+      orderAbsoluteValue = orderString.replace(/=-/g,"=")
     }
     else {
-      orderAbsoluteValue = orderString.replace("?","")
+      orderAbsoluteValue = orderString
     }
     document.querySelector("#sortBy").value = orderAbsoluteValue
     if(orderPolarity == "-"){
@@ -107,27 +115,36 @@ function readFilters(){
     else {
       document.querySelector("#orderingOptions").value = ""
     }
-  }
-  for(var highlightable of document.querySelectorAll(".specifier")){
-    var value = highlightable.getAttribute("value")
-    var criteria = value.split("&")
-    var shouldHighlight = true
-    for(var criterion of criteria){
-      if(criterion[0] == "!"){
-        if(!enabledNotFilters.includes(criterion.substring(1))){
-          shouldHighlight = false
-        }
-      }
-      else {
-        if(!enabledIsFilters.includes(criterion)){
-          shouldHighlight = false
+    for(var element of queryStringElements){
+      if(element.split("=")[0] == "selected"){
+        selectedIDs = element.split("=")[1].split(",")
+        for(var id of selectedIDs){
+          document.querySelector("#" + id).classList.add("selected")
         }
       }
     }
-    if(shouldHighlight){
-      highlight(highlightable)
-    }
   }
+
+  // for(var highlightable of document.querySelectorAll(".specifier")){
+  //   var value = highlightable.getAttribute("value")
+  //   var criteria = value.split("&")
+  //   var shouldHighlight = true
+  //   for(var criterion of criteria){
+  //     if(criterion[0] == "!"){
+  //       if(!enabledNotFilters.includes(criterion.substring(1))){
+  //         shouldHighlight = false
+  //       }
+  //     }
+  //     else {
+  //       if(!enabledIsFilters.includes(criterion)){
+  //         shouldHighlight = false
+  //       }
+  //     }
+  //   }
+  //   if(shouldHighlight){
+  //     highlight(highlightable)
+  //   }
+  // }
 }
 
 function revealPredicated(absoluteValue, isNegative){
@@ -182,6 +199,12 @@ function setFilterEventListeners(){
         newFilters[i] = newFilters[i].substring(1).replace("=","=!")
       }
     }
+    if(selectedIDs.includes(e.currentTarget.id)){
+      selectedIDs = selectedIDs.filter(d => d != e.currentTarget.id)
+    }
+    else {
+      selectedIDs.push(e.currentTarget.id)
+    }
     toggleFilter(newFilters)
   })
   $("#clearFilters").click(function(e){
@@ -203,7 +226,7 @@ function setFilterEventListeners(){
       orderAbsoluteValue = document.querySelector("#sortBy").value
       orderPolarity = document.querySelector("#orderingOptions").value
 
-      applyQueryString()
+      applyFilters()
     }
   })
 }
@@ -300,7 +323,8 @@ function search(term){
   applyFilters()
 }
 
-function applyQueryString(){
+function getNewQueryString(){
+  var q = "?"
   if(orderAbsoluteValue != ""){
     var orderString = ""
     if(orderPolarity == "-"){
@@ -309,8 +333,12 @@ function applyQueryString(){
     else {
       orderString = orderAbsoluteValue
     }
-    window.location.search = orderString
+    q = q + orderString
   }
+  if(removeBlanks(selectedIDs).length != 0){
+    q = q + "&selected=" + removeBlanks(selectedIDs).join(",")
+  }
+  return q
 }
 
 function applyFilters(){
@@ -331,9 +359,9 @@ function applyFilters(){
   console.log(searchTerm)
   var fullPath = fullPathElements.join("/")
 
-
-  console.log(fullPath)
-  window.location.pathname = fullPath
+  var newQueryString = getNewQueryString()
+  console.log(window.location.origin + "/" + fullPath + newQueryString)
+  window.location.href = window.location.origin + "/" + fullPath + newQueryString
 }
 
 function clearFilters(){

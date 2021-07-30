@@ -1,3 +1,5 @@
+import datetime
+
 standardOutput = {"name1": None, "name2": None, "name3": None, 
                 "website1": None, "website2": None, "telehealth": None, 
                 "phone1": None, "phone2": None, "phone3": None, 
@@ -72,8 +74,11 @@ class Sites_general_display:
                 self.output[key] = source_object[key] 
             elif key in mapping: 
                 self.output[mapping[key]] = source_object[key] 
+            elif isinstance(source_object[key], datetime.datetime):
+                self.output[key] = source_object[key].strftime('%m/%d/%Y')
             elif isinstance(source_object[key], str) or isinstance(source_object[key], int):
                 self.output[key] = source_object[key] 
+            
 
 def filterKeyToLocalKey(key, table_name):
     try:
