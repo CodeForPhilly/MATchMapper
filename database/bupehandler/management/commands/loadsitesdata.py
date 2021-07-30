@@ -231,10 +231,10 @@ class Command(BaseCommand):
                         ftl.why_hidden = r2['why_hidden']
                     if r2['date_firstfind'] != '':
                         fdate = r2['date_firstfind']
-                        ftl.date_firstfind = datetime.strptime(fdate,'%d-%m-%y')
+                        ftl.date_firstfind = datetime.strptime(fdate,'%Y-%m-%d')
                     if r2['date_lastfind'] != '':
                         ldate = r2['date_lastfind']
-                        ftl.date_lastfind = datetime.strptime(ldate,'%d-%m-%y')
+                        ftl.date_lastfind = datetime.strptime(ldate,'%Y-%m-%d')
                     ftl.name1 = r2['name1']
                     if r2['name2'] != '':
                         ftl.name2 = r2['name2']
