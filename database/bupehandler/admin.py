@@ -1,7 +1,7 @@
 # from django.contrib import admin
 # from .models import Address, Affiliate, Email, Licence, Npi, Phone, ProvSiteRef, Provider, Site, Xwaiver
 from django.contrib import admin
-from .models import Sites_all, Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Ba_dbhids_tad, Siterecs_other_srcs, Siterecs_hfp_fqhc
+from .models import Sites_all, Sitecodes_samhsa_ftloc, Siterecs_samhsa_ftloc, Siterecs_samhsa_otp, Siterecs_dbhids_tad, Ba_dbhids_tad, Siterecs_other_srcs, Siterecs_hfp_fqhc, Table_info
 
 
 
@@ -15,6 +15,7 @@ admin.site.register(Siterecs_dbhids_tad)
 admin.site.register(Ba_dbhids_tad)
 admin.site.register(Siterecs_other_srcs)
 admin.site.register(Siterecs_hfp_fqhc)
+admin.site.register(Table_info)
 
 # admin.site.register(Address)
 # admin.site.register(Affiliate)
