@@ -147,6 +147,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
         order_by_list = request.GET.getlist('order')
         table_objects = table_objects.order_by(*order_by_list)
     general_display_list = []
+    print("here")
     for table_object in table_objects:
         dicted = table_object.__dict__
         generalDisplayed = Sites_general_display(table_name, dicted)
@@ -155,6 +156,7 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
     table_info = Table_info.objects.get(table_name=table_name).__dict__
     #table_serializer = serializer_dict[table_name](table_objects, many=True)
     #print(general_display_list[0].keys())
+    print("now here")
     return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : general_display_list, "table_info": table_info})
 
 
