@@ -202,7 +202,7 @@ def filtered_geodata(request, table_name, param_values=None, excluded_values=Non
     if request.GET.getlist('order'):
         order_by_list = request.GET.getlist('order')
         table_objects = table_objects.order_by(*order_by_list)
-    return JsonResponse({"loc": list(table_objects.values(naming_dict[table_name], "latitude","longitude", "oid"))},json_dumps_params = {"indent": 4})
+    return JsonResponse({"loc": list(table_objects.values(naming_dict[table_name], "latitude","longitude", "oid", "website1", "phone1"))},json_dumps_params = {"indent": 4})
 
 # @api_view(["GET", "POST", "DELETE"])
 # @csrf_exempt

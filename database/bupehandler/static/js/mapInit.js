@@ -91,9 +91,10 @@ $(document).ready(function() {
 
                     // Load popup of closest location
                     link_object = window.location.origin + "/table/" + table_name + "/oid=" + closest.oid + "/";
+                    console.log(closest)
                     const popup = new mapboxgl.Popup()
                         .setLngLat([closest.longitude, closest.latitude])
-                        .setHTML("<a href=" + link_object + ">" + JSON.stringify(closest.name1) + "</a>" )
+                        .setHTML("<a href=" + link_object + ">" + JSON.stringify(closest.name1) + "</a><br><a href='" + closest.website1 + "'>Website</a><br>Phone: " + closest.phone1 )
                         .addTo(map);
                 });
 
@@ -103,7 +104,7 @@ $(document).ready(function() {
                     link_object = window.location.origin + "/table/" + table_name + "/oid=" + data['loc'][i]['oid'] + "/";
                     var marker = new mapboxgl.Marker()
                         .setLngLat([data['loc'][i]['longitude'], data['loc'][i]['latitude']])
-                        .setPopup(new mapboxgl.Popup().setHTML("<a href=" + link_object + ">" + JSON.stringify(data['loc'][i][destination_name]) + "</a>" ))
+                        .setPopup(new mapboxgl.Popup().setHTML("<a href=" + link_object + ">" + JSON.stringify(data['loc'][i][destination_name]) + "</a><br><a href='" + data['loc'][i].website1 + "'>Website</a><br>Phone: " + data['loc'][i].phone1))
                         .addTo(map);
                 }
             }
