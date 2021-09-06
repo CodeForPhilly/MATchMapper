@@ -50,10 +50,56 @@ $(document).ready(function() {
                     center: [-75.158924, 39.9629223],
                     zoom: 11
                 });
+
+                // Load Mapbox Geocoder
+                const geocoder = new MapboxGeocoder({
+                    accessToken: mapboxgl.accessToken,
+                    mapboxgl: mapboxgl, // Set the mapbox-gl instance
+                    marker: true, // Use the geocoder's default marker style
+                  });
+          
+                // Add Geocoder to map
+                map.addControl(geocoder, 'top-right');
+
+                // Event listener for geocoder completion
+                geocoder.on('result', ({ result }) => {
+                    const searchResult = result.geometry;
+                    const options = { units: 'miles' };
+                    
+                    // Loop through sites and calculate distance to geocoder address
+                    for (const loc of data.loc) {
+                        loc.distance = turf.distance(
+                            searchResult,
+                            [loc.longitude, loc.latitude],
+                            options
+                        );
+                    }
+
+                    // find site with min distance
+                    const closest = data.loc.sort((a, b) => {
+                        if (a.distance > b.distance) {
+                          return 1;
+                        }
+                        if (a.distance < b.distance) {
+                          return -1;
+                        }
+                        return 0; // a must be equal to b
+                    })[0];
+
+                    // fit the map on the entered location and the closest site
+                    map.fitBounds([searchResult.coordinates, [closest.longitude, closest.latitude]], {padding: 200});
+
+                    // Load popup of closest location
+                    link_object = window.location.origin + "/table/" + table_name + "/oid=" + closest.oid + "/";
+                    const popup = new mapboxgl.Popup()
+                        .setLngLat([closest.longitude, closest.latitude])
+                        .setHTML("<a href=" + link_object + ">" + JSON.stringify(closest.name1) + "</a>" )
+                        .addTo(map);
+                });
+
                 document.querySelector("#sitecount").textContent = data['loc'].length
                 var link_object; 
                 for (i = 0; i < data['loc'].length; i++) {
-                    console.log([data['loc'][i]['latitude'], data['loc'][i]['longitude']])
                     link_object = window.location.origin + "/table/" + table_name + "/oid=" + data['loc'][i]['oid'] + "/";
                     var marker = new mapboxgl.Marker()
                         .setLngLat([data['loc'][i]['longitude'], data['loc'][i]['latitude']])

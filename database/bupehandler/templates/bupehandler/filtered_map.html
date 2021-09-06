@@ -13,6 +13,12 @@
     <link href='/static/styles/filterBar.css' rel='stylesheet'/>
     <script>const table_info = {{ table_info|dict_to_json }}</script>
     <script src='/static/js/filterSettings.js'></script>
+    <!-- Geocoder plugin -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css' type='text/css' />
+
+    <!-- Turf.js plugin -->
+    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
     <script>
       const mapParams = {
         table_name: "{{table_name}}",
