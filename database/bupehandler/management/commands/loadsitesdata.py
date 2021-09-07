@@ -80,31 +80,31 @@ class Command(BaseCommand):
             if row['bu'] != '':
                 sites.bu = row['bu']
             else:
-                sites.bu = 'Unclear'
+                sites.bu = None
             if row['nu'] != '':
                 sites.nu = row['nu']
             else:
-                sites.nu = 'Unclear'
+                sites.nu = None
             if row['mu'] != '':
                 sites.mu = row['mu']
-            else:
-                sites.mu = 'No'
+            # else:
+            #     sites.mu = None
             if row['otp'] != '':
                 sites.otp = row['otp']
-            else:
-                sites.otp = 'No'
+            # else:
+            #     sites.otp = None
             if row['mat_avail'] != '':
                 sites.mat_avail = row['mat_avail']
             else:
-                sites.mat_avail = 'Unclear'
+                sites.mat_avail = None
             if row['asm'] != '':
                 sites.asm = row['asm']
             else:
-                sites.asm = 'Unclear'
+                sites.asm = None
             if row['ba'] != '':
                 sites.ba = row['ba']
-            else:
-                sites.ba = 'No'
+            # else:
+            #     sites.ba = None
             if row['ref_notes'] != '':
                 sites.ref_notes = row['ref_notes']
             if row['hh'] != '':
@@ -121,92 +121,92 @@ class Command(BaseCommand):
                 sites.uo = row['uo']
             if row['fqhc'] != '':  ## Update default from Unclear to No in models.py (2x)
                 sites.fqhc = row['fqhc']
-            else:
-                sites.fqhc = 'No'
+            # else:
+            #     sites.fqhc = None
             if row['prim_care'] != '':
                 sites.prim_care = row['prim_care']
             else:
-                sites.prim_care = 'Unclear'
+                sites.prim_care = None
             if row['telehealth'] != '':
                 sites.telehealth = row['telehealth']
             else:
-                sites.telehealth = 'Unclear'
+                sites.telehealth = None
             if row['md'] != '':
                 sites.md = row['md']
             else:
-                sites.md = 'Unclear'
+                sites.md = None
             if row['mc'] != '':
                 sites.mc = row['mc']
             else:
-                sites.mc = 'Unclear'
+                sites.mc = None
             if row['oi'] != '':
                 sites.oi = row['oi']
             else:
-                sites.oi ='Unclear' 
+                sites.oi =None 
             if row['pa'] != '':
                 sites.pa = row['pa']
             else:
-                sites.pa = 'Unclear'
+                sites.pa = None
             if row['oit'] != '':
                 sites.oit = row['oit']
             else:
-                sites.oit = 'Unclear'
+                sites.oit = None
             if row['op'] != '':
                 sites.op = row['op']
             else:
-                sites.op = 'Unclear'
+                sites.op = None
             if row['ta'] != '':
                 sites.ta = row['ta']
             else:
-                sites.ta = 'Unclear'
+                sites.ta = None
             if row['hs'] != '':
                 sites.hs = row['hs']
             else:
-                sites.hs = 'Unclear'
+                sites.hs = None
             if row['mhs'] != '':
                 sites.mhs = row['mhs']
             else:
-                sites.mhs = 'Unclear'
+                sites.mhs = None
             if row['ccc'] != '':
                 sites.ccc = row['ccc']
             else:
-                sites.ccc = 'Unclear'
+                sites.ccc = None
             if row['dvh'] != '':
                 sites.dvh = row['dvh']
             else:
-                sites.dvh = 'Unclear'
+                sites.dvh = None
             if row['pw'] != '':
                 sites.pw = row['pw']
             else:
-                sites.pw = 'Unclear'
+                sites.pw = None
             if row['ad'] != '':
                 sites.ad = row['ad']
             else:
-                sites.ad = 'Unclear'
+                sites.ad = None
             if row['se'] != '':
                 sites.se = row['se']
             else:
-                sites.se = 'Unclear'
+                sites.se = None
             if row['gl'] != '':
                 sites.gl = row['gl']
             else:
-                sites.gl = 'Unclear'
+                sites.gl = None
             if row['sp'] != '':
                 sites.sp = row['sp']
             else:
-                sites.sp = 'Unclear'
+                sites.sp = None
             if row['ah'] != '':
                 sites.ah = row['ah']
             else:
-                sites.ah = 'Unclear'
+                sites.ah = None
             if row['fem'] != '':
                 sites.fem = row['fem']
-            else:
-                sites.fem = 'Yes'
+            # else:
+            #     sites.fem = 'Yes'
             if row['male'] != '':
                 sites.male = row['male']
-            else:
-                sites.male = 'Yes'
+            # else:
+            #     sites.male = 'Yes'
             sites.archival_only = row['archival_only']
             if row['why_hidden'] != '':
                 sites.why_hidden = row['why_hidden']
@@ -966,31 +966,31 @@ class Command(BaseCommand):
                     if r7['bu'] != '':
                         oth.bu = r7['bu']
                     else:
-                        oth.bu = 'Unclear'
+                        oth.bu = None
                     if r7['nu'] != '':
                         oth.nu = r7['nu']
                     else:
-                        oth.nu = 'Unclear'
+                        oth.nu = None
                     if r7['mu'] != '':
                         oth.mu = r7['mu']
-                    else:
-                        oth.mu = 'No'
+                    # else:
+                    #     oth.mu = None
                     if r7['otp'] != '':
                         oth.otp = r7['otp']
-                    else:
-                        oth.otp = 'No'
+                    # else:
+                    #     oth.otp = None
                     if r7['mat_avail'] != '':
                         oth.mat_avail = r7['mat_avail']
                     else:
-                        oth.mat_avail = 'Unclear'
+                        oth.mat_avail = None
                     if r7['asm'] != '':
                         oth.asm = r7['asm']
                     else:
-                        oth.asm = 'Unclear'
+                        oth.asm = None
                     if r7['ba'] != '':
                         oth.ba = r7['ba']
-                    else:
-                        oth.ba = 'No'
+                    # else:
+                    #     oth.ba = None
                     if r7['ref_notes'] != '':
                         oth.ref_notes = r7['ref_notes']
                     if r7['hh'] != '':
@@ -1007,92 +1007,92 @@ class Command(BaseCommand):
                         oth.uo = r7['uo']
                     if r7['fqhc'] != '':  ## Update default from Unclear to No in models.py (2x)
                         oth.fqhc = r7['fqhc']
-                    else:
-                        oth.fqhc = 'No'
+                    # else:
+                    #     oth.fqhc = None
                     if r7['prim_care'] != '':
                         oth.prim_care = r7['prim_care']
                     else:
-                        oth.prim_care = 'Unclear'
+                        oth.prim_care = None
                     if r7['telehealth'] != '':
                         oth.telehealth = r7['telehealth']
                     else:
-                        oth.telehealth = 'Unclear'
+                        oth.telehealth = None
                     if r7['md'] != '':
                         oth.md = r7['md']
                     else:
-                        oth.md = 'Unclear'
+                        oth.md = None
                     if r7['mc'] != '':
                         oth.mc = r7['mc']
                     else:
-                        oth.mc = 'Unclear'
+                        oth.mc = None
                     if r7['oi'] != '':
                         oth.oi = r7['oi']
                     else:
-                        oth.oi = 'Unclear'
+                        oth.oi = None
                     if r7['pa'] != '':
                         oth.pa = r7['pa']
                     else:
-                        oth.pa = 'Unclear'
+                        oth.pa = None
                     if r7['oit'] != '':
                         oth.oit = r7['oit']
                     else:
-                        oth.oit = 'Unclear'
+                        oth.oit = None
                     if r7['op'] != '':
                         oth.op = r7['op']
                     else:
-                        oth.op = 'Unclear'
+                        oth.op = None
                     if r7['ta'] != '':
                         oth.ta = r7['ta']
                     else:
-                        oth.ta = 'Unclear'
+                        oth.ta = None
                     if r7['hs'] != '':
                         oth.hs = r7['hs']
                     else:
-                        oth.hs = 'Unclear'
+                        oth.hs = None
                     if r7['mhs'] != '':
                         oth.mhs = r7['mhs']
                     else:
-                        oth.mhs = 'Unclear'
+                        oth.mhs = None
                     if r7['ccc'] != '':
                         oth.ccc = r7['ccc']
                     else:
-                        oth.ccc = 'Unclear'
+                        oth.ccc = None
                     if r7['dvh'] != '':
                         oth.dvh = r7['dvh']
                     else:
-                        oth.dvh = 'Unclear'
+                        oth.dvh = None
                     if r7['pw'] != '':
                         oth.pw = r7['pw']
                     else:
-                        oth.pw = 'Unclear'
+                        oth.pw = None
                     if r7['ad'] != '':
                         oth.ad = r7['ad']
                     else:
-                        oth.ad = 'Unclear'
+                        oth.ad = None
                     if r7['se'] != '':
                         oth.se = r7['se']
                     else:
-                        oth.se = 'Unclear'
+                        oth.se = None
                     if r7['gl'] != '':
                         oth.gl = r7['gl']
                     else:
-                        oth.gl = 'Unclear'
+                        oth.gl = None
                     if r7['sp'] != '':
                         oth.sp = r7['sp']
                     else:
-                        oth.sp = 'Unclear'
+                        oth.sp = None
                     if r7['ah'] != '':
                         oth.ah = r7['ah']
                     else:
-                        oth.ah = 'Unclear'
+                        oth.ah = None
                     if r7['fem'] != '':
                         oth.fem = r7['fem']
-                    else:
-                        oth.fem = 'Yes'
+                    # else:
+                    #     oth.fem = 'Yes'
                     if r7['male'] != '':
                         oth.male = r7['male']
-                    else:
-                        oth.male = 'Yes'
+                    # else:
+                    #     oth.male = 'Yes'
                     oth.archival_only = r7['archival_only']
                     if r7['why_hidden'] != '':
                         oth.why_hidden = r7['why_hidden']
