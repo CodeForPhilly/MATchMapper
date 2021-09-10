@@ -34,4 +34,8 @@ urlpatterns = [
     url(r'^map/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)$', views.filtered_map, name="filtered_map"),
     url(r'^map/(?P<table_name>.+)/(?P<param_values>.+)/$', views.filtered_map, name="filtered_map"),
     url(r'^map/(?P<table_name>.+)/$', views.filtered_map, name="filtered_map"), 
+    url(r'^headless/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)/(?P<keyword>.+)$', views.headless_query, name="headless"),
+    url(r'^headless/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)$', views.headless_query, name="headless"),
+    url(r'^headless/(?P<table_name>.+)/(?P<param_values>.+)/$', views.headless_query, name="headless"),
+    url(r'^headless/(?P<table_name>.+)/$',views.headless_query, name = "headless"),
 ]

@@ -147,7 +147,6 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
         order_by_list = request.GET.getlist('order')
         table_objects = table_objects.order_by(*order_by_list)
     general_display_list = []
-    print("here")
     for table_object in table_objects:
         dicted = table_object.__dict__
         generalDisplayed = Sites_general_display(table_name, dicted)
@@ -156,9 +155,132 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
     table_info = Table_info.objects.get(table_name=table_name).__dict__
     #table_serializer = serializer_dict[table_name](table_objects, many=True)
     #print(general_display_list[0].keys())
-    print("now here")
     return render(request,"bupehandler/list_all.html", {"title": table_name, "objects" : general_display_list, "table_info": table_info})
 
+@api_view(["GET", "POST", "DELETE"])
+@csrf_exempt
+def headless_query(request, table_name, param_values=None, excluded_values=None, keyword = None):
+    print(table_name)
+    print(param_values)
+    print(excluded_values)
+    autofill = False
+    autocorrect=False
+    filter_params = {"archival_only":False}
+    excluded_params = {}
+    if param_values:
+        if param_values != "None":
+            query_pairs = param_values.split("&")
+            for pair in query_pairs:
+                list_pair = pair.split("=")
+                list_pair[0] = filterKeyToLocalKey(list_pair[0], table_name)
+                if list_pair[1] == "None":
+                    list_pair[1] = None
+                if list_pair[0] == "autofill" and list_pair[1] == "True":
+                    autofill = True
+                elif list_pair[0] == "autocorrect" and list_pair[1] == "True":
+                    autocorrect = True  
+                else:
+                    filter_params['%s__iexact' % list_pair[0]] = list_pair[1]
+    if excluded_values:
+        if excluded_values != "None": 
+            query_pairs = excluded_values.split("&")
+            for pair in query_pairs:
+                list_pair = pair.split("=")
+                list_pair[0] = filterKeyToLocalKey(list_pair[0], table_name)
+                if list_pair[1] == "None":
+                    list_pair[1] = None
+                else:
+                    excluded_params[list_pair[0]] = list_pair[1]
+    #change query dictionary if autocorrect is on
+    if autocorrect:
+        spell = SpellChecker()
+        autocorrect_filter_params = {}
+        for key in filter_params:
+            if filter_params[key] == None:
+                autocorrect_filter_params[key] = None
+            else:
+                autocorrect_filter_params[key] = spell.correction(filter_params[key])
+        filter_params= autocorrect_filter_params
+    #change query dictionary if autofill is on
+    if autofill:
+        autofill_filter_params = {}
+        for key in filter_params:
+            if filter_params[key] == None:
+                autofill_filter_params[key] = None
+            else:
+                autofill_filter_params['%s__icontains' % key.split("__",1)[0]] = filter_params[key]
+        filter_params = autofill_filter_params
+    table_dict = {
+        "sitecodes_samhsa_ftloc": Sitecodes_samhsa_ftloc,
+        "siterecs_samhsa_ftloc": Siterecs_samhsa_ftloc,
+        "siterecs_hfp_fqhc": Siterecs_hfp_fqhc,
+        "siterecs_samhsa_otp": Siterecs_samhsa_otp ,
+        "siterecs_dbhids_tad": Siterecs_dbhids_tad,
+        "ba_dbhids_tad": Ba_dbhids_tad,
+        "siterecs_other_srcs" : Siterecs_other_srcs ,
+        "sites_all" : Sites_all,
+    }
+    serializer_dict = {
+        "sitecodes_samhsa_ftloc" : Sitecodes_samhsa_ftlocSerializer,
+        "siterecs_samhsa_ftloc" : Siterecs_samhsa_ftlocSerializer,
+        "siterecs_hfp_fqhc": Siterecs_hfp_fqhcSerializer,
+        "siterecs_samhsa_otp": Siterecs_samhsa_otpSerializer,
+        "siterecs_dbhids_tad": Siterecs_dbhids_tadSerializer,
+        "ba_dbhids_tad": Ba_dbhids_tadSerializer,
+        "siterecs_other_srcs" : Siterecs_other_srcsSerializer,
+        "sites_all" : Sites_allSerializer,
+    }
+    table_objects = table_dict[table_name].objects.all().filter(**filter_params)
+    # table_objects = fetchCachedIfRecent(table_name, ttl=300).filter(**filter_params)
+    for excluded_param in excluded_params:
+        current_excluded_param = {}
+        current_excluded_param[excluded_param] = excluded_params[excluded_param]
+        table_objects=table_objects.exclude(**current_excluded_param)
+    if keyword != None: 
+        fields = [f for f in table_dict[table_name]._meta.fields if isinstance(f, CharField)]
+        queries = [Q(**{f.name + "__icontains": keyword}) for f in fields]
+        qs = Q()
+        for query in queries:
+            qs = qs | query
+        table_objects = table_objects.filter(qs)
+    if request.GET.getlist('order'):
+        order_by_list = request.GET.getlist('order')
+        table_objects = table_objects.order_by(*order_by_list)
+    general_display_list = []
+    for table_object in table_objects:
+        dicted = table_object.__dict__
+        generalDisplayed = Sites_general_display(table_name, dicted)
+        # print(generalDisplayed.output["full_certification"])
+        general_display_list.append(generalDisplayed.output)
+    table_info = Table_info.objects.get(table_name=table_name).__dict__
+    #table_serializer = serializer_dict[table_name](table_objects, many=True)
+    #print(general_display_list[0].keys())
+    returnData = {"title": table_name, "objects" : general_display_list, "table_info": table_info}
+    def makeSerializable(data):
+        if isinstance(data, dict):
+            for key in data:
+                if isinstance(data[key], dict):
+                    makeSerializable(data[key])
+                elif isinstance(data[key], list):
+                    for item in data[key]:
+                        makeSerializable(item)
+                elif not (isinstance(data[key], str) or isinstance(data[key], int) or isinstance(data[key], float) or isinstance(data[key], bool) or data[key] == None):
+                    data[key] = "non-serializable data"
+                else:
+                    continue
+        elif isinstance(data, list):
+            for item in data:
+                if isinstance(item, dict):
+                    makeSerializable(item)
+                elif isinstance(item, list):
+                    for i in item:
+                        makeSerializable(i)
+                elif not (isinstance(item, str) or isinstance(item, int) or isinstance(item, float) or isinstance(item, bool) or item == None):
+                    item = "non-serializable data"
+                else:
+                    continue
+    makeSerializable(returnData)
+    return JsonResponse(returnData)
 
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
