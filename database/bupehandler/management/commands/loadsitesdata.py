@@ -50,6 +50,22 @@ class Command(BaseCommand):
                 sites.id_hfp_fqhc.sites_all_id = 'S' + str(row['oid']).zfill(5) 
             if row['id_other_srcs'] != '':
                 sites.id_other_srcs.sites_all_id = 'S' + str(row['oid']).zfill(5) 
+            if row['map_marker'] != '':
+                sites.map_marker = row['map_marker']
+            else:
+                sites.map_marker = 'tbd_unclear'
+            if row['src_samhsa_ftloc'] != '':
+                sites.src_samhsa_ftloc = row['src_samhsa_ftloc']
+            if row['src_samhsa_otp'] != '':
+                sites.src_samhsa_otp = row['src_samhsa_otp']
+            if row['src_dbhids_tad'] != '':
+                sites.src_dbhids_tad = row['src_dbhids_tad']
+            if row['src_ba_tad'] != '':
+                sites.src_ba_tad = row['src_ba_tad']
+            if row['src_fqhc'] != '':
+                sites.src_fqhc = row['src_fqhc']
+            if row['src_other_srcs'] != '':
+                sites.src_other_srcs = row['src_other_srcs']
             sites.name1 = row['name1']
             if row['name2'] != '':
                 sites.name2 = row['name2']
@@ -201,12 +217,50 @@ class Command(BaseCommand):
                 sites.ah = None
             if row['fem'] != '':
                 sites.fem = row['fem']
-            # else:
-            #     sites.fem = 'Yes'
+            else:
+                 sites.fem = True
             if row['male'] != '':
                 sites.male = row['male']
-            # else:
-            #     sites.male = 'Yes'
+            else:
+                 sites.male = True
+            if row['vet'] != '':
+                sites.vet = row['vet']
+            else:
+                sites.vet = None
+            if row['dental'] != '':
+                sites.dental = row['dental']
+            if row['wdc'] != '':
+                sites.wdc = row['wdc']
+            if row['hcv'] != '':
+                sites.hcv = row['hcv']
+            if row['ref1'] != '':
+                sites.ref1 = row['ref1']
+            else:
+                sites.ref1 = None
+            if row['ref2'] != '':
+                sites.ref2 = row['ref2']
+            else:
+                sites.ref2 = None
+            if row['ref3'] != '':
+                sites.ref3 = row['ref3']
+            else:
+                sites.ref3 = None
+            if row['ref4'] != '':
+                sites.ref4 = row['ref4']
+            else:
+                sites.ref4 = None
+            if row['ref5'] != '':
+                sites.ref5 = row['ref5']
+            else:
+                sites.ref5 = None
+            if row['ref6'] != '':
+                sites.ref6 = row['ref6']
+            else:
+                sites.ref6 = None
+            if row['ref7'] != '':
+                sites.ref7 = row['ref7']
+            else:
+                sites.ref7 = None
             sites.archival_only = row['archival_only']
             if row['why_hidden'] != '':
                 sites.why_hidden = row['why_hidden']
@@ -235,6 +289,8 @@ class Command(BaseCommand):
                     if r2['date_lastfind'] != '':
                         ldate = r2['date_lastfind']
                         ftl.date_lastfind = datetime.strptime(ldate,'%Y-%m-%d')
+                    if r2['data_review'] != '':
+                        ftl.data_review = r2['data_review']
                     ftl.name1 = r2['name1']
                     if r2['name2'] != '':
                         ftl.name2 = r2['name2']
@@ -828,6 +884,16 @@ class Command(BaseCommand):
                         tad.f17 = r4['f17']
                     if r4['f44'] != '':
                         tad.f44 = r4['f44']
+                    if r4['ai01'] != '':
+                        tad.ai01 = r4['ai01']
+                    if r4['ai02'] != '':
+                        tad.ai02 = r4['ai02']
+                    if r4['ai03'] != '':
+                        tad.ai03 = r4['ai03']
+                    if r4['ai04'] != '':
+                        tad.ai04 = r4['ai04']
+                    if r4['ai05'] != '':
+                        tad.ai05 = r4['ai05']
                     tad.archival_only = r4['archival_only']
                     if r4['why_hidden'] != '':
                         tad.why_hidden = r4['why_hidden']
@@ -1093,6 +1159,44 @@ class Command(BaseCommand):
                         oth.male = r7['male']
                     # else:
                     #     oth.male = 'Yes'
+                    if r7['vet'] != '':
+                        oth.vet = r7['vet']
+                    else:
+                        oth.vet = None
+                    if r7['dental'] != '':
+                        oth.dental = r7['dental']
+                    if r7['wdc'] != '':
+                        oth.wdc = r7['wdc']
+                    if r7['hcv'] != '':
+                        oth.hcv = r7['hcv']
+                    if r7['ref1'] != '':
+                        oth.ref1 = r7['ref1']
+                    else:
+                        oth.ref1 = None
+                    if r7['ref2'] != '':
+                        oth.ref2 = r7['ref2']
+                    else:
+                        oth.ref2 = None
+                    if r7['ref3'] != '':
+                        oth.ref3 = r7['ref3']
+                    else:
+                        oth.ref3 = None
+                    if r7['ref4'] != '':
+                        oth.ref4 = r7['ref4']
+                    else:
+                        oth.ref4 = None
+                    if r7['ref5'] != '':
+                        oth.ref5 = r7['ref5']
+                    else:
+                        oth.ref5 = None
+                    if r7['ref6'] != '':
+                        oth.ref6 = r7['ref6']
+                    else:
+                        oth.ref6 = None
+                    if r7['ref7'] != '':
+                        oth.ref7 = r7['ref7']
+                    else:
+                        oth.ref7 = None
                     oth.archival_only = r7['archival_only']
                     if r7['why_hidden'] != '':
                         oth.why_hidden = r7['why_hidden']
