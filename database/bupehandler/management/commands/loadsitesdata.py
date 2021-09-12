@@ -33,7 +33,7 @@ class Command(BaseCommand):
     
     def handle(self, *args, **options):
 
-        for row in DictReader(open('./0820_sites_all.csv', encoding='utf-8-sig')):
+        for row in DictReader(open('./0911mc_sites_all.csv', encoding='utf-8-sig')):
             sites = Sites_all()
             sites.oid = 'S' + str(row['oid']).zfill(5)
             # sites.id_dbhids_tad.sites_all_id = 'S' + str(row['oid']).zfill(5) 
@@ -268,7 +268,7 @@ class Command(BaseCommand):
                 sites.data_review = row['data_review']
 
         ## Siterecs_samhsa_ftloc with r2 & ftl
-            for r2 in DictReader(open('./0820_siterecs_samhsa_ftloc.csv', encoding='utf-8-sig')):
+            for r2 in DictReader(open('./0911mc_siterecs_samhsa_ftloc.csv', encoding='utf-8-sig')):
                 if r2['site_id'] == 'S' + str(row['oid']).zfill(5):
                     ftl = Siterecs_samhsa_ftloc()
                     ftl.oid = r2['oid']
@@ -770,7 +770,7 @@ class Command(BaseCommand):
                     ftl.save()
 
         ## Siterecs_samhsa_otp with r3 & otp
-            for r3 in DictReader(open('./0820_siterecs_samhsa_otp.csv', encoding='utf-8-sig')):
+            for r3 in DictReader(open('./0911nc_siterecs_samhsa_otp.csv', encoding='utf-8-sig')):
                 if r3['site_id'] == 'S' + str(row['oid']).zfill(5):
                     otp = Siterecs_samhsa_otp()
                     otp.oid = r3['oid']
@@ -809,7 +809,7 @@ class Command(BaseCommand):
                     otp.save()
 
         ## Siterecs_dbhids_tad with r4 & tad
-            for r4 in DictReader(open('./0820_siterecs_dbhids_tad.csv', encoding='utf-8-sig')):
+            for r4 in DictReader(open('./0911mc_siterecs_dbhids_tad.csv', encoding='utf-8-sig')):
                 if r4['site_id'] == 'S' + str(row['oid']).zfill(5):
                     tad = Siterecs_dbhids_tad()
                     tad.oid = r4['oid']
@@ -914,7 +914,7 @@ class Command(BaseCommand):
                     tad.save()
                     
         ## Ba_dbhids_tad with r5 & ba
-            for r5 in DictReader(open('./0820_ba_dbhids_tad.csv', encoding='utf-8-sig')):
+            for r5 in DictReader(open('./0911nc_ba_dbhids_tad.csv', encoding='utf-8-sig')):
                 if r5['site_id'] == 'S' + str(row['oid']).zfill(5):
                     ba = Ba_dbhids_tad()
                     ba.oid = r5['oid']
@@ -951,7 +951,7 @@ class Command(BaseCommand):
                     ba.save()
 
         ## Siterecs_hfp_fqhc with r6 & hfp
-            for r6 in DictReader(open('./0820_siterecs_hfp_fqhc.csv', encoding='utf-8-sig')):
+            for r6 in DictReader(open('./0911nc_siterecs_hfp_fqhc.csv', encoding='utf-8-sig')):
                 if r6['site_id'] == 'S' + str(row['oid']).zfill(5):
                     hfp = Siterecs_hfp_fqhc()
                     hfp.oid = r6['oid']
@@ -998,10 +998,14 @@ class Command(BaseCommand):
                     hfp.save()
 
         ## Siterecs_other_srcs with r7 & oth
-            for r7 in DictReader(open('./0820_siterecs_other_srcs.csv', encoding='utf-8-sig')):
+            for r7 in DictReader(open('./0911mc_siterecs_other_srcs.csv', encoding='utf-8-sig')):
                 if r7['site_id'] == 'S' + str(row['oid']).zfill(5):
                     oth = Siterecs_other_srcs()
                     oth.oid = r7['oid']
+                    if r7['map_marker'] != '':
+                        oth.map_marker = r7['map_marker']
+                    else:
+                        oth.map_marker = 'tbd_unclear'
                     oth.name1 = r7['name1']
                     if r7['name2'] != '': # Update models.py to make name2, name3, and website2 optional
                         oth.name2 = r7['name2']
@@ -1212,7 +1216,7 @@ class Command(BaseCommand):
                     
 
     #DIFFERENT ENTITY: Sitecodes_samhsa_ftloc with sc & codes
-        for sc in DictReader(open('./0820_sitecodes_samhsa_ftloc.csv', encoding='utf-8-sig')):
+        for sc in DictReader(open('./0911nc_sitecodes_samhsa_ftloc.csv', encoding='utf-8-sig')):
             codes = Sitecodes_samhsa_ftloc()
             codes.service_code = sc['service_code']
             if sc['category_code'] != '':
