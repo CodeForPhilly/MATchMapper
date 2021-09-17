@@ -26,7 +26,7 @@ SECRET_KEY = '&zyg&xjv8mm&lv(d#3^biq7hs@!j&o!ye8sx^7#hzftk0_0n8b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1','matchmapper-dev.herokuapp.com','dev.matchmapper.org']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1','matchmapper-dev.herokuapp.com','www.matchmapper.org','matchmapper.org']
 
 # Application definition
 
