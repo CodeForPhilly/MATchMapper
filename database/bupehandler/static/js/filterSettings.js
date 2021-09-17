@@ -116,8 +116,8 @@ function filterPredicateHTML(leader){
     HeaderElement.classList.add("filterCriteria")
     HeaderElement.innerHTML = `
             <label>${leader.ui_label}</label>
-            <div class="specifier equal" id="specifier-${filter.ui_seq}-affirmative" value="${leader.affirmative}"><p>&#10003;</p></div>
-            <div class="specifier notequal" id="specifier-${filter.ui_seq}-negative" value="${leader.negative}"><p>&#10007;</p></div>
+            <div class="specifier equal" id="specifier-${leader.ui_seq}-affirmative" value="${leader.affirmative}"><p>&#10003;</p></div>
+            <div class="specifier notequal" id="specifier-${leader.ui_seq}-negative" value="${leader.negative}"><p>&#10007;</p></div>
             `
     return HeaderElement
 }
