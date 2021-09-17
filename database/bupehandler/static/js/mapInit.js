@@ -8,7 +8,12 @@ $(document).ready(function() {
     var table_name = mapParams.table_name; 
     var param_values = mapParams.param_values;
     var destination_name = mapParams.destination_name;
-    var excluded_values = mapParams.excluded_values; 
+    var excluded_values = mapParams.excluded_values;
+    if(excluded_values == ""){
+        excluded_values = "archival_only=True"
+    } else {
+        excluded_values += "&archival_only=True"
+    }
     var keyword = mapParams.keyword;
     console.log(param_values)
     param_values = param_values.replaceAll("amp;", "")

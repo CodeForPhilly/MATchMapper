@@ -1,57 +1,4 @@
-/*
-Onclick/search
-  If search
-    searchTerm = input.value
-  If filter
-    Toggle locally
-      If negative
-        If enabling
-          Highlight filter
-          Strip "!" from value
-          Add to list of enabledNotFilters
-        If disabling
-          Unhighlight the filter
-          Toggle predicated filters
-            Strip "!" from value
-            Remove from enabledNotFilters
-      If positive
-        If enabling
-          Highlight filter
-          Add to list of enabledIsFilters
-        If disabling
-          Unhighlight the filter
-          Toggle predicated filters
-            Remove from enabledIsFilters
-
-  Change url
-    basePathElements = removeBlanks(window.location.pathname.split("/")).splice(0,2)
-    isFilterString = enabledIsFilters.join("&")
-    notFilterString = enabledNotFilters.join("&")
-    if isFilterString == ""
-      isFilterString = "None"
-    if notFilterString == ""
-      notFilterString = "None"
-    filterPathElements = [isFilterString, notFilterString, searchTerm]
-    fullPath = basePathElements.concat(filterPathElements)
-    window.location.pathname = fullPath
-
-Onload
-  if window.location.pathname.split("/").length > 3
-    filterPathElements = window.location.pathname.split("/").splice(3)
-    enabledIsFilterString = filterPathElements[0]
-    enabledIsFilters = [filter.replace("%3D","=") for filter in enabledIsFilterString.split("&")]
-    highlightEnabledIsFilters()
-    if window.location.pathname.split("/").length > 4
-      enabledNotFilterString = filterPathElements[1]
-      enabledNotFilters = [filter.replace("%3D","=") for filter in enabledNotFilterString.split("&")]
-      highlightEnabledNotFilters()
-      if window.location.pathname.split("/").length > 5
-        searchTerm = filterPathElements[2]
-        fillSearchBar()
-*/
-
 window.onunload = function(){}
-
 
 function removeBlanks(array){
   var filtered = array.filter(function (el) {
@@ -124,27 +71,6 @@ function readFilters(){
       }
     }
   }
-
-  // for(var highlightable of document.querySelectorAll(".specifier")){
-  //   var value = highlightable.getAttribute("value")
-  //   var criteria = value.split("&")
-  //   var shouldHighlight = true
-  //   for(var criterion of criteria){
-  //     if(criterion[0] == "!"){
-  //       if(!enabledNotFilters.includes(criterion.substring(1))){
-  //         shouldHighlight = false
-  //       }
-  //     }
-  //     else {
-  //       if(!enabledIsFilters.includes(criterion)){
-  //         shouldHighlight = false
-  //       }
-  //     }
-  //   }
-  //   if(shouldHighlight){
-  //     highlight(highlightable)
-  //   }
-  // }
 }
 
 function revealPredicated(absoluteValue, isNegative){
@@ -184,14 +110,13 @@ function fillSearchBar(){
 
 $(document).ready(function() {
   readFilters()
-  // setTimeout(readFilters, 1000)
 })
 
-// $(".filterCriteria").click(function(e){
-//   toggleFilter(e.currentTarget.querySelector("input").value)
-// })
 function setFilterEventListeners(){
-  $(".equal, .notequal").click(function(e){
+  function specifierClick(e, apply, toggleOpposite){
+    if(e.currentTarget == undefined){
+      e = {currentTarget: e}
+    }
     var newFilters = e.currentTarget.getAttribute("value").split("&")
 
     for(var i in newFilters){
@@ -205,8 +130,20 @@ function setFilterEventListeners(){
     else {
       selectedIDs.push(e.currentTarget.id)
     }
-    toggleFilter(newFilters)
-  })
+
+    if(e.currentTarget.classList.contains("equal")){
+      var oppositeSpecifier = e.currentTarget.parentElement.querySelector(".notequal")
+    } else {
+      var oppositeSpecifier = e.currentTarget.parentElement.querySelector(".equal")
+    }
+    
+    if(toggleOpposite != false && oppositeSpecifier.classList.contains("selected")){
+      specifierClick(oppositeSpecifier, false, false)
+    }
+    toggleFilter(newFilters, apply)
+  }
+  $(".equal, .notequal").click(specifierClick)
+
   $("#clearFilters").click(function(e){
     clearFilters()
   })
@@ -232,7 +169,7 @@ function setFilterEventListeners(){
 }
 setFilterEventListeners()
 
-function toggleFilter(filterValues){
+function toggleFilter(filterValues, apply){
   if(typeof filterValues === 'string' || filterValues instanceof String){
     filterValues = [filterValues]
   }
@@ -259,7 +196,9 @@ function toggleFilter(filterValues){
       }
     }
   }
-  applyFilters()
+  if(apply != false){
+    applyFilters()
+  }
 }
 
 function enableFilter(absoluteValue, isNegative){
@@ -371,5 +310,8 @@ function clearFilters(){
   orderString = ""
   unhighlightAll()
   window.history.replaceState( {} , "title", window.location.href.split("?")[0] );
+  orderPolarity = ""
+  orderAbsoluteValue = ""
+  selectedIDs = []
   applyFilters()
 }
