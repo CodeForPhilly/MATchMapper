@@ -11,6 +11,7 @@
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet'/>
     <link href='/static/styles/map.css' rel='stylesheet'/>
     <link href='/static/styles/filterBar.css' rel='stylesheet'/>
+    <link href='/static/styles/siteSearch.css' rel='stylesheet'/>
     <script>const table_info = {{ table_info|dict_to_json }}</script>
     <script src='/static/js/filterSettings.js'></script>
     <!-- Geocoder plugin -->
@@ -31,9 +32,11 @@
     <script src="/static/js/mapInit.js"></script>
   </head>
   <body>
-    {% include 'bupehandler/navbar.html' %}
+    {% include 'bupehandler/navbar.html' with map=True %}
+    {% include 'bupehandler/siteSearch.html' %}
     <div id='map'>
       {% include 'bupehandler/filterBar.html' with showSort=False %}
+      
       <div id="results-info">
         <span class="bold" id="sitecount">0</span> of <span class="bold">{{ table_info.records_count }}</span> records for <span class="bold">{{ table_info.facility_type }}</span> {{ table_info.source_range }}
       </div>

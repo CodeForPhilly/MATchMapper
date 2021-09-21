@@ -51,15 +51,18 @@ $(document).ready(function() {
                     zoom: 11
                 });
 
+
                 // Load Mapbox Geocoder
                 const geocoder = new MapboxGeocoder({
                     accessToken: mapboxgl.accessToken,
                     mapboxgl: mapboxgl, // Set the mapbox-gl instance
-                    marker: true, // Use the geocoder's default marker style
+                    marker: true, // Use the geocoder's default marker style,
+                    placeholder: "Search for Site by Address"
                   });
           
-                // Add Geocoder to map
-                map.addControl(geocoder, 'top-right');
+                // Add Geocoder to modal
+                //map.addControl(geocoder, 'top-right');
+                $('#geocodeWidget')[0].appendChild(geocoder.onAdd(map));
 
                 // Event listener for geocoder completion
                 geocoder.on('result', ({ result }) => {
@@ -87,7 +90,7 @@ $(document).ready(function() {
                     })[0];
 
                     // fit the map on the entered location and the closest site
-                    map.fitBounds([searchResult.coordinates, [closest.longitude, closest.latitude]], {padding: 200});
+                    map.fitBounds([searchResult.coordinates, [closest.longitude, closest.latitude]], {padding: 600});
 
                     // Load popup of closest location
                     link_object = window.location.origin + "/table/" + table_name + "/oid=" + closest.oid + "/";
@@ -97,6 +100,10 @@ $(document).ready(function() {
                         .setHTML("<a href=" + link_object + ">" + JSON.stringify(closest.name1) + "</a><br><a href='" + closest.website1 + "'>Website</a><br>Phone: " + closest.phone1 )
                         .addTo(map);
                 });
+
+                // Add zoom and rotation controls to the map.
+                map.addControl(new mapboxgl.NavigationControl());
+
 
                 document.querySelector("#sitecount").textContent = data['loc'].length
                 var link_object; 
@@ -110,3 +117,8 @@ $(document).ready(function() {
             }
         });
 });
+
+
+function toggleSearchModal() {
+    $("#siteSearch").toggle();
+}
