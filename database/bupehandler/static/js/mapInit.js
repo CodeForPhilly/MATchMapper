@@ -63,9 +63,20 @@ $(document).ready(function() {
                 // Add Geocoder to modal
                 $('#geocodeWidget')[0].appendChild(geocoder.onAdd(map));
 
+                const ref = window.location.href;
+                if (ref.indexOf('site_coord') > -1) {
+                    window.ref = ref
+                    
+                    const regex = /(.*?)[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)(.*?)$/;
+                    window.regex = regex;
+                    const c = ref.match(regex);
+                    console.log(c)
+
+                }
+
                 // Event listener for geocoder completion
                 geocoder.on('result', ({ result }) => {
-                    const searchResult = result.geometry;
+                    const searchResult = result.geometry //|| 
                     const options = { units: 'miles' };
                     
                     // Loop through sites and calculate distance to geocoder address
@@ -93,7 +104,6 @@ $(document).ready(function() {
 
                     // Load popup of closest location
                     link_object = window.location.origin + "/table/" + table_name + "/oid=" + closest.oid + "/";
-                    console.log(closest)
                     const popup = new mapboxgl.Popup()
                         .setLngLat([closest.longitude, closest.latitude])
                         .setHTML("<a href=" + link_object + ">" + JSON.stringify(closest.name1) + "</a><br><a href='" + closest.website1 + "'>Website</a><br>Phone: " + closest.phone1 )
