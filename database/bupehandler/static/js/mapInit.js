@@ -61,7 +61,6 @@ $(document).ready(function() {
                   });
           
                 // Add Geocoder to modal
-                //map.addControl(geocoder, 'top-right');
                 $('#geocodeWidget')[0].appendChild(geocoder.onAdd(map));
 
                 // Event listener for geocoder completion

@@ -187,6 +187,15 @@ def filtered_geodata(request, table_name, param_values=None, excluded_values=Non
         "siterecs_other_srcs" : "name1", 
         "sites_all" : "name1",
     }
+
+    # site_coord isn't used to filter the table
+    print(filter_params)
+    if "site_coord__iexact" in filter_params:
+        site_coord = filter_params["site_coord__iexact"]
+        filter_params.pop("site_coord__iexact")
+        print(filter_params)
+        print(site_coord)
+
     table_objects = table_dict[table_name].objects.all().filter(**filter_params)
     if keyword != None: 
         fields = [f for f in table_dict[table_name]._meta.fields if isinstance(f, CharField)]
