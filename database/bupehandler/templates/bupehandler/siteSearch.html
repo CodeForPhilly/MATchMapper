@@ -3,15 +3,18 @@
         markerList = clearMap(markerList); 
         plotMarkers(globalData, destination_name); 
         myCircle.remove();
+        geocoder.clear();
     }
 </script>
 
-<div id="siteSearch" style="display:none;">
-    <button onclick="toggleSearchModal()">close</button>
-    <label for="distance">Distance</label>
-    <input name="distance" id="distance" value="5" type="number"></input>
+<div id="siteSearch" style="display:none; overflow:visible;">
+    <button id="closeSearchModal" onclick="toggleSearchModal()">&#x2715;</button>
+    <h2>Search By Address:</h2>
+    <label for="distance">Radius (mi.):  </label>
+    <input name="distance" id="distance" value="5" type="number" style="width:40px;"></input>
+    <br><br>
+    <div id="geocodeWidget" style="width: calc(100% - 14px);"></div>
     <br>
-    <div id="geocodeWidget"></div>
-    <button onclick="reloadMap();">Reload</button>
+    <button id="clearSearch" onclick="reloadMap();">Start Over &#10005;</button>
 
 </div> 

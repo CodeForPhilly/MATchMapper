@@ -5,6 +5,7 @@ let globalData;
 let markerList = [];
 let myCircle;
 let destination_name;
+let geocoder;
 
 $(document).ready(function() {
     function outerHTML(node){
@@ -63,7 +64,7 @@ $(document).ready(function() {
 
 
                 // Load Mapbox Geocoder
-                const geocoder = new MapboxGeocoder({
+                geocoder = new MapboxGeocoder({
                     accessToken: mapboxgl.accessToken,
                     mapboxgl: mapboxgl, // Set the mapbox-gl instance
                     marker: false, // Use the geocoder's default marker style,
