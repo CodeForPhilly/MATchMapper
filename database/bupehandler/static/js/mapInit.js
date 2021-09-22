@@ -3,7 +3,7 @@
 // TODO: maybe change the center to the average of all the latitude and longitude, aka center of every location we have found. 
 $(document).ready(function() {
     function outerHTML(node){
-    return node.outerHTML || new XMLSerializer().serializeToString(node);
+        return node.outerHTML || new XMLSerializer().serializeToString(node);
     }
     var table_name = mapParams.table_name; 
     var param_values = mapParams.param_values;
@@ -37,6 +37,50 @@ $(document).ready(function() {
         }
         get_url += keyword 
     }
+
+    // function to plot the markers
+    // Optional argument countFocus to plot those sites in a different color
+    let map;
+    let markerList = [];
+    function plotMarkers(data, countFocus = data.length) {
+
+        // sort data
+        data = data.loc.sort((a, b) => {
+            if (a.distance > b.distance) {
+              return 1;
+            }
+            if (a.distance < b.distance) {
+              return -1;
+            }
+            return 0; // a must be equal to b
+        });
+        
+        var link_object; 
+        for (i = 0; i < data.length; i++) {
+            link_object = window.location.origin + "/table/" + table_name + "/oid=" + data[i]['oid'] + "/";
+
+            // set color based on countFocus
+            if (i < countFocus) {
+                _color = "#2A76D2"
+            } else {
+                _color = "#3FB1CE"
+            }
+            
+            var marker = new mapboxgl.Marker({color: _color})
+                .setLngLat([data[i]['longitude'], data[i]['latitude']])
+                .setPopup(new mapboxgl.Popup().setHTML("<a href=" + link_object + ">" + JSON.stringify(data[i][destination_name]) + "</a><br><a href='" + data[i].website1 + "'>Website</a><br>Phone: " + data[i].phone1))
+                .addTo(map);
+            markerList.push(marker);
+        }
+    }
+
+    // function to clear map
+    function clearMap() {
+        for (i = 0; i < markerList.length; i++ ) {
+            markerList[i].remove();
+        }
+    }
+
     $.ajax({
             type : "GET",
             url : window.location.origin + get_url, // need to adjust the params to dynamically filter our map
@@ -44,7 +88,7 @@ $(document).ready(function() {
             success: function(data) {
                 // Need to hide the access token 
                 mapboxgl.accessToken = 'pk.eyJ1IjoibWF0Y2htYXBwZXIiLCJhIjoiY2tvMWJmZW9wMGtjdzMxb2k0NWhpeW0xMSJ9.ChZtypQ-p77nXwERIAt3Iw';
-                var map = new mapboxgl.Map({
+                map = new mapboxgl.Map({
                     container: 'map',
                     style: 'mapbox://styles/matchmapper/ckog0go3v3k1417nn7gex8ebr',
                     center: [-75.158924, 39.9629223],
@@ -63,6 +107,7 @@ $(document).ready(function() {
                 // Add Geocoder to modal
                 $('#geocodeWidget')[0].appendChild(geocoder.onAdd(map));
 
+                /*
                 const ref = window.location.href;
                 if (ref.indexOf('site_coord') > -1) {
                     window.ref = ref
@@ -73,6 +118,7 @@ $(document).ready(function() {
                     console.log(c)
 
                 }
+                */
 
                 // Event listener for geocoder completion
                 geocoder.on('result', ({ result }) => {
@@ -88,8 +134,15 @@ $(document).ready(function() {
                         );
                     }
 
+                    // filter array by distance in field
+                    const dist = parseInt($("#distance")[0].value);     //get distance from text field
+                    const data_ = data.loc.filter(d => d.distance < dist);
+
+                    // get count of sites within radius
+                    const sitesInFocus = data_.length;
+
                     // find site with min distance
-                    const closest = data.loc.sort((a, b) => {
+                    const closest = data_.sort((a, b) => {
                         if (a.distance > b.distance) {
                           return 1;
                         }
@@ -100,7 +153,23 @@ $(document).ready(function() {
                     })[0];
 
                     // fit the map on the entered location and the closest site
-                    map.fitBounds([searchResult.coordinates, [closest.longitude, closest.latitude]], {padding: 600});
+                    // Create a bounding box using the dist variable and right triangle math
+                    // keep is simple by using 69 miles = 1 degree
+                    halfBound = 2 * dist/(69*Math.sqrt(2));
+                    const c = searchResult.coordinates;
+                    const bbox = [[c[0] - halfBound, c[1] - halfBound], [c[0] + halfBound, c[1] + halfBound]];
+                    map.fitBounds(bbox)//, {padding: 600});
+
+                    // Draw circle of radius
+                    var myCircle = new MapboxCircle({lat: closest.latitude, lng: closest.longitude}, dist * 1610, {
+                        fillOpacity: 0
+                    }).addTo(map);
+
+                    // Clear map and re-draw with different colors
+                    clearMap();
+                    plotMarkers(data, sitesInFocus)
+                    // Change record totals, increment to align with other filters
+                    document.querySelector("#sitecount").textContent -= sitesInFocus;
 
                     // Load popup of closest location
                     link_object = window.location.origin + "/table/" + table_name + "/oid=" + closest.oid + "/";
@@ -113,21 +182,17 @@ $(document).ready(function() {
                 // Add zoom and rotation controls to the map.
                 map.addControl(new mapboxgl.NavigationControl());
 
-
-                document.querySelector("#sitecount").textContent = data['loc'].length
-                var link_object; 
-                for (i = 0; i < data['loc'].length; i++) {
-                    link_object = window.location.origin + "/table/" + table_name + "/oid=" + data['loc'][i]['oid'] + "/";
-                    var marker = new mapboxgl.Marker()
-                        .setLngLat([data['loc'][i]['longitude'], data['loc'][i]['latitude']])
-                        .setPopup(new mapboxgl.Popup().setHTML("<a href=" + link_object + ">" + JSON.stringify(data['loc'][i][destination_name]) + "</a><br><a href='" + data['loc'][i].website1 + "'>Website</a><br>Phone: " + data['loc'][i].phone1))
-                        .addTo(map);
-                }
+                plotMarkers(data);
+                document.querySelector("#sitecount").textContent = data['loc'].length;
+                
             }
         });
 });
 
 
+// function to toggle the search modal on and off
 function toggleSearchModal() {
     $("#siteSearch").toggle();
 }
+
+
