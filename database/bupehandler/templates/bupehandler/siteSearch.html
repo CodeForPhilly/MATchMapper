@@ -1,8 +1,17 @@
+<script>
+    function reloadMap() {
+        markerList = clearMap(markerList); 
+        plotMarkers(globalData, destination_name); 
+        myCircle.remove();
+    }
+</script>
+
 <div id="siteSearch" style="display:none;">
     <button onclick="toggleSearchModal()">close</button>
     <label for="distance">Distance</label>
     <input name="distance" id="distance" value="5" type="number"></input>
     <br>
     <div id="geocodeWidget"></div>
+    <button onclick="reloadMap();">Reload</button>
 
 </div> 

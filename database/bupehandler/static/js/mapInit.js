@@ -1,13 +1,18 @@
 // if stuck, try this url : window.location.origin + "/api/geodata/siterecs_samhsa_ftloc/name1=Al-Assist
 // TODO: change url to get the filter values. 
 // TODO: maybe change the center to the average of all the latitude and longitude, aka center of every location we have found. 
+let globalData;
+let markerList = [];
+let myCircle;
+let destination_name;
+
 $(document).ready(function() {
     function outerHTML(node){
         return node.outerHTML || new XMLSerializer().serializeToString(node);
     }
     var table_name = mapParams.table_name; 
     var param_values = mapParams.param_values;
-    var destination_name = mapParams.destination_name;
+    destination_name = mapParams.destination_name;
     var excluded_values = mapParams.excluded_values; 
     var keyword = mapParams.keyword;
     console.log(param_values)
@@ -38,54 +43,15 @@ $(document).ready(function() {
         get_url += keyword 
     }
 
-    // function to plot the markers
-    // Optional argument countFocus to plot those sites in a different color
-    let map;
-    let markerList = [];
-    function plotMarkers(data, countFocus = data.length) {
+    
 
-        // sort data
-        data = data.loc.sort((a, b) => {
-            if (a.distance > b.distance) {
-              return 1;
-            }
-            if (a.distance < b.distance) {
-              return -1;
-            }
-            return 0; // a must be equal to b
-        });
-        
-        var link_object; 
-        for (i = 0; i < data.length; i++) {
-            link_object = window.location.origin + "/table/" + table_name + "/oid=" + data[i]['oid'] + "/";
-
-            // set color based on countFocus
-            if (i < countFocus) {
-                _color = "#2A76D2"
-            } else {
-                _color = "#3FB1CE"
-            }
-            
-            var marker = new mapboxgl.Marker({color: _color})
-                .setLngLat([data[i]['longitude'], data[i]['latitude']])
-                .setPopup(new mapboxgl.Popup().setHTML("<a href=" + link_object + ">" + JSON.stringify(data[i][destination_name]) + "</a><br><a href='" + data[i].website1 + "'>Website</a><br>Phone: " + data[i].phone1))
-                .addTo(map);
-            markerList.push(marker);
-        }
-    }
-
-    // function to clear map
-    function clearMap() {
-        for (i = 0; i < markerList.length; i++ ) {
-            markerList[i].remove();
-        }
-    }
 
     $.ajax({
             type : "GET",
             url : window.location.origin + get_url, // need to adjust the params to dynamically filter our map
             contentType: 'application/json;charset=UTF-8',
             success: function(data) {
+                globalData = data;
                 // Need to hide the access token 
                 mapboxgl.accessToken = 'pk.eyJ1IjoibWF0Y2htYXBwZXIiLCJhIjoiY2tvMWJmZW9wMGtjdzMxb2k0NWhpeW0xMSJ9.ChZtypQ-p77nXwERIAt3Iw';
                 map = new mapboxgl.Map({
@@ -161,13 +127,13 @@ $(document).ready(function() {
                     map.fitBounds(bbox)//, {padding: 600});
 
                     // Draw circle of radius
-                    var myCircle = new MapboxCircle({lat: closest.latitude, lng: closest.longitude}, dist * 1610, {
+                    myCircle = new MapboxCircle({lat: closest.latitude, lng: closest.longitude}, dist * 1610, {
                         fillOpacity: 0
                     }).addTo(map);
 
                     // Clear map and re-draw with different colors
-                    clearMap();
-                    plotMarkers(data, sitesInFocus)
+                    markerList = clearMap(markerList);
+                    plotMarkers(data, destination_name, sitesInFocus)
                     // Change record totals, increment to align with other filters
                     document.querySelector("#sitecount").textContent -= sitesInFocus;
 
@@ -182,7 +148,7 @@ $(document).ready(function() {
                 // Add zoom and rotation controls to the map.
                 map.addControl(new mapboxgl.NavigationControl());
 
-                plotMarkers(data);
+                plotMarkers(data, destination_name);
                 document.querySelector("#sitecount").textContent = data['loc'].length;
                 
             }
@@ -196,3 +162,47 @@ function toggleSearchModal() {
 }
 
 
+
+
+// function to clear map
+function clearMap(items) {
+    for (i = 0; i < items.length; i++ ) {
+        items[i].remove();
+    }
+    return [];
+}
+
+// function to plot the markers
+// Optional argument countFocus to plot those sites in a different color
+let map;
+function plotMarkers(data, dest_name, countFocus = data.length + 1) {
+
+    // sort data
+    data = data.loc.sort((a, b) => {
+        if (a.distance > b.distance) {
+            return 1;
+        }
+        if (a.distance < b.distance) {
+            return -1;
+        }
+        return 0; // a must be equal to b
+    });
+    
+    var link_object; 
+    for (i = 0; i < data.length; i++) {
+        link_object = window.location.origin + "/table/" + table_name + "/oid=" + data[i]['oid'] + "/";
+
+        // set color based on countFocus
+        if (i < countFocus) {
+            _color = "#2A76D2"
+        } else {
+            _color = "#3FB1CE"
+        }
+        
+        var marker = new mapboxgl.Marker({color: _color})
+            .setLngLat([data[i]['longitude'], data[i]['latitude']])
+            .setPopup(new mapboxgl.Popup().setHTML("<a href=" + link_object + ">" + JSON.stringify(data[i][dest_name]) + "</a><br><a href='" + data[i].website1 + "'>Website</a><br>Phone: " + data[i].phone1))
+            .addTo(map);
+        markerList.push(marker);
+    }
+}
