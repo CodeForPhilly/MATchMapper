@@ -66,7 +66,7 @@ $(document).ready(function() {
                 const geocoder = new MapboxGeocoder({
                     accessToken: mapboxgl.accessToken,
                     mapboxgl: mapboxgl, // Set the mapbox-gl instance
-                    marker: true, // Use the geocoder's default marker style,
+                    marker: false, // Use the geocoder's default marker style,
                     placeholder: "Search for Site by Address"
                   });
           
@@ -127,22 +127,22 @@ $(document).ready(function() {
                     map.fitBounds(bbox)//, {padding: 600});
 
                     // Draw circle of radius
-                    myCircle = new MapboxCircle({lat: closest.latitude, lng: closest.longitude}, dist * 1610, {
+                    myCircle = new MapboxCircle({lat: c[1], lng: c[0]}, dist * 1610, {
                         fillOpacity: 0
                     }).addTo(map);
 
                     // Clear map and re-draw with different colors
                     markerList = clearMap(markerList);
                     plotMarkers(data, destination_name, sitesInFocus)
-                    // Change record totals, increment to align with other filters
-                    document.querySelector("#sitecount").textContent -= sitesInFocus;
+                    // Change record totals
+                    document.querySelector("#sitecount").textContent = sitesInFocus;
 
                     // Load popup of closest location
-                    link_object = window.location.origin + "/table/" + table_name + "/oid=" + closest.oid + "/";
-                    const popup = new mapboxgl.Popup()
-                        .setLngLat([closest.longitude, closest.latitude])
-                        .setHTML("<a href=" + link_object + ">" + JSON.stringify(closest.name1) + "</a><br><a href='" + closest.website1 + "'>Website</a><br>Phone: " + closest.phone1 )
-                        .addTo(map);
+                    // link_object = window.location.origin + "/table/" + table_name + "/oid=" + closest.oid + "/";
+                    // const popup = new mapboxgl.Popup()
+                    //     .setLngLat([closest.longitude, closest.latitude])
+                    //     .setHTML("<a href=" + link_object + ">" + JSON.stringify(closest.name1) + "</a><br><a href='" + closest.website1 + "'>Website</a><br>Phone: " + closest.phone1 )
+                    //     .addTo(map);
                 });
 
                 // Add zoom and rotation controls to the map.
