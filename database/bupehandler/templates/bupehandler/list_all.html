@@ -13,7 +13,7 @@
     <title>{{ table_info.display_name }}</title>
   </head>
   <body>
-    {% include 'bupehandler/navbar.html' %}
+    {% include 'bupehandler/navbar.html' with map=False %}
     
     <div id="flexContainer">
       {% include 'bupehandler/filterBar.html' %}
