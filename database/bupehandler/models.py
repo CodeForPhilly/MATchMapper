@@ -1,11 +1,11 @@
 from django.db import models
 from django.utils import timezone
 
-Multi_Choices_Enum3 = [
-('Yes','Yes'),
-('No','No'),
-('Unclear','Unclear'), ## Why final comma?
-]
+# Multi_Choices_Enum3 = [ ## CONVERTING ALL TO BOOLEAN FIELDS: will use True/False in place of 'Yes'/'No' and None for 'Unclear'
+#('Yes','Yes'),
+#('No','No'),
+#('Unclear','Unclear'),
+#]
 
 Multi_Choices_EnumWhyHide = [ ## TODO: Fine-tune this list to fit use cases
 ('No MAT?','No MAT?'),
@@ -498,13 +498,13 @@ class Siterecs_other_srcs(models.Model): ## What is this: Central table for dire
     zipcode = models.CharField(max_length=5, blank=True)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
-    bu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    nu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    mu = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3)
-    otp = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3)
-    mat_avail = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    asm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Assessment site
-    ba = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3) ## Link to DBHIDS Bed Availability (BA) data, updated 2-3x weekly
+    bu = models.BooleanField(blank=True, null=True)
+    nu = models.BooleanField(blank=True, null=True)
+    mu = models.BooleanField(default=False) ## Assume No unless data says otherwise
+    otp = models.BooleanField(default=False) ## Assume No unless data says otherwise
+    mat_avail = models.BooleanField(blank=True, null=True)
+    asm = models.BooleanField(blank=True, null=True) ## Assessment site
+    ba = models.BooleanField(default=False) ## Assume No unless data says otherwise | ## Link to DBHIDS Bed Availability (BA) data, updated 2-3x weekly
     ref_notes = models.CharField(max_length=299, blank=True) ## Notes to display for users (FINDER)
     hh = models.BooleanField(blank=True, null=True) ## BA: Halfway house
     hwm = models.BooleanField(blank=True, null=True) ## BA: Hospital withdrawal management
@@ -512,28 +512,28 @@ class Siterecs_other_srcs(models.Model): ## What is this: Central table for dire
     rhs = models.BooleanField(blank=True, null=True) ## BA: Short-term rehab
     wm = models.BooleanField(blank=True, null=True) ##: BA: Withdrawal management
     uo = models.BooleanField(blank=True, null=True) ## BA: Unspecified type
-    fqhc = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3)
-    prim_care = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    telehealth = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    md = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Medicaid
-    mc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Medicare
-    oi = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Other insurance (for details, cross-ref SAMHSA FT Loc or Other Sources table(s))
-    pa = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Payment assistance
-    oit = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Intensive outpatient
-    op = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Outpatient
-    ta = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Transportation assistance
-    hs = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Housing services TODO: Clarify = help to find housing (vs. residential program)?
-    mhs = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Mental health services
-    ccc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Child care
-    dvh = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Domestic violence (safety assistance [25], group [15], or both [35])
-    pw = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Pregnant/postpartum women
-    ad = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Adolescents
-    se = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Program for older adults (seniors, 65+)
-    gl = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Program for LGBTQ+
-    sp = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Spanish
-    ah = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Deaf and hard of hearing assistance
-    fem = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Women (included to mark non-coed facilities)
-    male = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Men (included to mark non-coed facilities)
+    fqhc = models.BooleanField(default=False) ## Assume No unless data says otherwise
+    prim_care = models.BooleanField(blank=True, null=True)
+    telehealth = models.BooleanField(blank=True, null=True)
+    md = models.BooleanField(blank=True, null=True) ## Medicaid
+    mc = models.BooleanField(blank=True, null=True) ## Medicare
+    oi = models.BooleanField(blank=True, null=True) ## Other insurance (for details, cross-ref SAMHSA FT Loc or Other Sources table(s))
+    pa = models.BooleanField(blank=True, null=True) ## Payment assistance
+    oit = models.BooleanField(blank=True, null=True) ## Intensive outpatient
+    op = models.BooleanField(blank=True, null=True) ## Outpatient
+    ta = models.BooleanField(blank=True, null=True) ## Transportation assistance
+    hs = models.BooleanField(blank=True, null=True) ## Housing services TODO: Clarify = help to find housing (vs. residential program)?
+    mhs = models.BooleanField(blank=True, null=True) ## Mental health services
+    ccc = models.BooleanField(blank=True, null=True) ## Child care
+    dvh = models.BooleanField(blank=True, null=True) ## Domestic violence (safety assistance [25], group [15], or both [35])
+    pw = models.BooleanField(blank=True, null=True) ## Pregnant/postpartum women
+    ad = models.BooleanField(blank=True, null=True) ## Adolescents
+    se = models.BooleanField(blank=True, null=True) ## Program for older adults (seniors, 65+)
+    gl = models.BooleanField(blank=True, null=True) ## Program for LGBTQ+
+    sp = models.BooleanField(blank=True, null=True) ## Spanish
+    ah = models.BooleanField(blank=True, null=True) ## Deaf and hard of hearing assistance
+    fem = models.BooleanField(default=True) ## Assume Yes unless data says otherwise | ## Women (included to mark non-coed facilities)
+    male = models.BooleanField(default=True) ## Assume Yes unless data says otherwise | ## Men (included to mark non-coed facilities)
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
     why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     data_review = models.CharField(max_length=1000, blank=True) ## Added in case: For EDITOR use ##// Specified blank=True
@@ -557,6 +557,12 @@ class Sites_all(models.Model):
     id_hfp_fqhc = models.ManyToManyField('Siterecs_hfp_fqhc', blank=True, null=True)
     id_other_srcs = models.ManyToManyField('Siterecs_other_srcs', blank=True, null=True)
     map_marker = models.CharField(max_length=25, default = 'tbd_unclear', choices = Multi_Choices_EnumMap) ##// Added July 23 for mapping
+    src_samhsa_ftloc = models.BooleanField(default=False) #/ Data source filter
+    src_samhsa_otp = models.BooleanField(default=False) #/ Data source filter
+    src_dbhids_tad = models.BooleanField(default=False) #/ Data source filter
+    src_ba_tad = models.BooleanField(default=False) #/ Data source filter
+    src_fqhc = models.BooleanField(default=False) #/ Data source filter
+    src_other_srcs = models.BooleanField(default=False) #/ Data source filter
     name1 = models.CharField(max_length=120) ## WAS name_program
     name2 = models.CharField(max_length=120, blank=True) ## WAS name_site
     name3 = models.CharField(max_length=120, blank=True)
@@ -573,13 +579,13 @@ class Sites_all(models.Model):
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
   ## TODO: Documentation for connecting relevant fields from Audit tables to Enum fields below + records linkage for above
-    bu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    nu = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    mu = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3)
-    otp = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3)
-    mat_avail = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    asm = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Assessment site
-    ba = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3) ## Link to DBHIDS Bed Availability (BA) data, updated 2-3x weekly
+    bu = models.BooleanField(blank=True, null=True)
+    nu = models.BooleanField(blank=True, null=True)
+    mu = models.BooleanField(default=False) ## Assume No unless data says otherwise
+    otp = models.BooleanField(default=False) ## Assume No unless data says otherwise
+    mat_avail = models.BooleanField(blank=True, null=True)
+    asm = models.BooleanField(blank=True, null=True) ## Assessment site
+    ba = models.BooleanField(default=False) ## Assume No unless data says otherwise | ## Link to DBHIDS Bed Availability (BA) data, updated 2-3x weekly
     ref_notes = models.CharField(max_length=299, blank=True) ## Notes to display for users (FINDER)
     hh = models.BooleanField(blank=True, null=True) ## BA: Halfway house
     hwm = models.BooleanField(blank=True, null=True) ## BA: Hospital withdrawal management
@@ -587,28 +593,38 @@ class Sites_all(models.Model):
     rhs = models.BooleanField(blank=True, null=True) ## BA: Short-term rehab
     wm = models.BooleanField(blank=True, null=True) ##: BA: Withdrawal management
     uo = models.BooleanField(blank=True, null=True) ## BA: Unspecified type
-    fqhc = models.CharField(max_length=20, default = 'No', choices = Multi_Choices_Enum3)
-    prim_care = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    telehealth = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3)
-    md = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Medicaid
-    mc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Medicare
-    oi = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Other insurance (for details, cross-ref SAMHSA FT Loc or Other Sources table(s))
-    pa = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Payment assistance
-    oit = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Intensive outpatient
-    op = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Outpatient
-    ta = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Transportation assistance
-    hs = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Housing services TODO: Clarify = help to find housing (vs. residential program)?
-    mhs = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Mental health services
-    ccc = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Child care
-    dvh = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Domestic violence (safety assistance [25], group [15], or both [35])
-    pw = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Pregnant/postpartum women
-    ad = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Adolescents
-    se = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Program for older adults (seniors, 65+)
-    gl = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Program for LGBTQ+
-    sp = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Spanish
-    ah = models.CharField(max_length=20, default = 'Unclear', choices = Multi_Choices_Enum3) ## Deaf and hard of hearing assistance
-    fem = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Women (included to mark non-coed facilities)
-    male = models.CharField(max_length=20, default = 'Yes', choices = Multi_Choices_Enum3) ## Men (included to mark non-coed facilities)
+    fqhc = models.BooleanField(default=False) ## Assume No unless data says otherwise
+    prim_care = models.BooleanField(blank=True, null=True)
+    telehealth = models.BooleanField(blank=True, null=True)
+    md = models.BooleanField(blank=True, null=True) ## Medicaid
+    mc = models.BooleanField(blank=True, null=True) ## Medicare
+    oi = models.BooleanField(blank=True, null=True) ## Other insurance (for details, cross-ref SAMHSA FT Loc or Other Sources table(s))
+    pa = models.BooleanField(blank=True, null=True) ## Payment assistance
+    oit = models.BooleanField(blank=True, null=True) ## Intensive outpatient
+    op = models.BooleanField(blank=True, null=True) ## Outpatient
+    ta = models.BooleanField(blank=True, null=True) ## Transportation assistance
+    hs = models.BooleanField(blank=True, null=True) ## Housing services TODO: Clarify = help to find housing (vs. residential program)?
+    mhs = models.BooleanField(blank=True, null=True) ## Mental health services
+    ccc = models.BooleanField(blank=True, null=True) ## Child care
+    dvh = models.BooleanField(blank=True, null=True) ## Domestic violence (safety assistance [25], group [15], or both [35])
+    pw = models.BooleanField(blank=True, null=True) ## Pregnant/postpartum women
+    ad = models.BooleanField(blank=True, null=True) ## Adolescents
+    se = models.BooleanField(blank=True, null=True) ## Program for older adults (seniors, 65+)
+    gl = models.BooleanField(blank=True, null=True) ## Program for LGBTQ+
+    sp = models.BooleanField(blank=True, null=True) ## Spanish
+    ah = models.BooleanField(blank=True, null=True) ## Deaf and hard of hearing assistance
+    fem = models.BooleanField(default=True) ## Assume Yes unless data says otherwise | ## Women (included to mark non-coed facilities)
+    male = models.BooleanField(default=True) ## Assume Yes unless data says otherwise | ## Men (included to mark non-coed facilities)
+    dental = models.BooleanField(default=False)
+    wdc = models.BooleanField(default=False) ## Wound care
+    hcv = models.BooleanField(default=False)
+    ref1 = models.BooleanField(blank=True, null=True) ## for undefined future use
+    ref2 = models.BooleanField(blank=True, null=True) ## for undefined future use
+    ref3 = models.BooleanField(blank=True, null=True) ## for undefined future use
+    ref4 = models.BooleanField(blank=True, null=True) ## for undefined future use
+    ref5 = models.BooleanField(blank=True, null=True) ## for undefined future use
+    ref6 = models.BooleanField(blank=True, null=True) ## for undefined future use
+    ref7 = models.BooleanField(blank=True, null=True) ## for undefined future use
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
     why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     data_review = models.CharField(max_length=499, blank=True) ## Notes for admin/data management (EDITOR)
