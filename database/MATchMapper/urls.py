@@ -23,6 +23,7 @@ from django.views.decorators.cache import cache_page
 cache_duration = 60
 
 urlpatterns = [
+    path('', views.about_page, name="about_page"),
     path('admin/', admin.site.urls),
     url('api-auth/', include('rest_framework.urls')),
     url('api/', include('bupehandler.urls')),
