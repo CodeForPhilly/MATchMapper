@@ -75,6 +75,7 @@ class Siterecs_samhsa_ftloc(models.Model):
     why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     date_firstfind = models.DateField()
     date_lastfind = models.DateField(blank=True, null=True) ## Blank unless or until source removes record
+    data_review = models.CharField(max_length=250, blank=True) ## added Sept 2021 to match other source tables (option for EDITOR/data curation notes)
     date_update = models.DateTimeField(default=timezone.now)
   ## Fields from source:
     name1 = models.CharField(max_length=120)
@@ -408,6 +409,11 @@ class Siterecs_dbhids_tad(models.Model):
     f92 = models.BooleanField(blank=True, null=True)
     f17 = models.BooleanField(blank=True, null=True)
     f44 = models.BooleanField(blank=True, null=True)
+    ai01 = models.BooleanField(blank=True, null=True) ## Sept 2021 addition to accommodate diverse Aug 2021 TAD updates
+    ai02 = models.BooleanField(blank=True, null=True) ## Sept 2021 addition to accommodate diverse Aug 2021 TAD updates
+    ai03 = models.BooleanField(blank=True, null=True) ## Sept 2021 addition to accommodate diverse Aug 2021 TAD updates
+    ai04 = models.BooleanField(blank=True, null=True) ## Sept 2021 addition to accommodate diverse Aug 2021 TAD updates
+    ai05 = models.BooleanField(blank=True, null=True) ## Sept 2021 addition to accommodate diverse Aug 2021 TAD updates
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
     why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     date_firstfind = models.DateField()
@@ -534,6 +540,17 @@ class Siterecs_other_srcs(models.Model): ## What is this: Central table for dire
     ah = models.BooleanField(blank=True, null=True) ## Deaf and hard of hearing assistance
     fem = models.BooleanField(default=True) ## Assume Yes unless data says otherwise | ## Women (included to mark non-coed facilities)
     male = models.BooleanField(default=True) ## Assume Yes unless data says otherwise | ## Men (included to mark non-coed facilities)
+    vet = models.BooleanField(blank=True, null=True) ## added Sept 2021 per Aug 2021 HFP conversation (matches SAMHSA sitecodes)
+    dental = models.BooleanField(default=False)
+    wdc = models.BooleanField(default=False) ## Wound care
+    hcv = models.BooleanField(default=False)
+    ref1 = models.BooleanField(blank=True, null=True) ## for undefined future use
+    ref2 = models.BooleanField(blank=True, null=True) ## for undefined future use
+    ref3 = models.BooleanField(blank=True, null=True) ## for undefined future use
+    ref4 = models.BooleanField(blank=True, null=True) ## for undefined future use
+    ref5 = models.BooleanField(blank=True, null=True) ## for undefined future use
+    ref6 = models.BooleanField(blank=True, null=True) ## for undefined future use
+    ref7 = models.BooleanField(blank=True, null=True) ## for undefined future use
     archival_only = models.BooleanField(blank=False) ## For admin (EDITOR) to mark records not approved for FINDER
     why_hidden = models.CharField(max_length=150, blank=True, choices=Multi_Choices_EnumWhyHide) # Require only if archival_only = True ##// Removed default
     data_review = models.CharField(max_length=1000, blank=True) ## Added in case: For EDITOR use ##// Specified blank=True
@@ -615,6 +632,7 @@ class Sites_all(models.Model):
     ah = models.BooleanField(blank=True, null=True) ## Deaf and hard of hearing assistance
     fem = models.BooleanField(default=True) ## Assume Yes unless data says otherwise | ## Women (included to mark non-coed facilities)
     male = models.BooleanField(default=True) ## Assume Yes unless data says otherwise | ## Men (included to mark non-coed facilities)
+    vet = models.BooleanField(blank=True, null=True) ## added Sept 2021 per Aug 2021 HFP conversation (matches SAMHSA sitecodes)
     dental = models.BooleanField(default=False)
     wdc = models.BooleanField(default=False) ## Wound care
     hcv = models.BooleanField(default=False)
