@@ -27,13 +27,13 @@ import re
 
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def about_page(request): 
     return render(request,"bupehandler/about_matchmapper.html")
 
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def siterecs_samhsa_otp_display(request, filter_params=None, order_by_params=None):
     order_param = ['program_name']
     filter_params={'program_name': 'Achievement Through Counseling and Treatment (ACT 1)'}
