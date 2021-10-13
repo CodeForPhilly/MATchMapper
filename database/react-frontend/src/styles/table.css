@@ -10,7 +10,7 @@ black: #000000
 [near white] [not in Philadelphia specs]: #fefefe
 white: #ffffff */
 
-body {
+#body {
   font-family: "Montserrat", sans-serif;
   font-weight: 500;
   margin: 0px;
@@ -54,7 +54,7 @@ body {
 #logo {
   width: 150px;
   height: 82px;
-  background: url("/static/images/MM_infinity-logo_ghost-gray.png");
+  /* background: url("/static/images/MM_infinity-logo_ghost-gray.png"); */
   background-size: contain;
   margin: 10px auto;
 }
@@ -110,6 +110,8 @@ th {
   border-color: rgba(0,0,0,0);
   transition: 0.1s;
   position: sticky;
+  border-color: transparent;
+  transition: border-color 0.5s;
 }
 
 .facilityName {
@@ -120,12 +122,15 @@ th {
   border-style: solid;
   border-color: rgba(0,0,0,0);
   transition: 0.1s;
+  border-color: transparent;
+  transition: border-color 0.5s;
 }
 
 th.facilityName {
   border-right-width: 0px;
   border-bottom-width: 2px;
   z-index: 5;
+  /* border-color: transparent; */
 }
 
 .stuck {
@@ -194,4 +199,8 @@ a:hover {
 
 #lastUpdatedNotice {
   font-size: 0.83em;
+}
+
+.block {
+  display: block;
 }

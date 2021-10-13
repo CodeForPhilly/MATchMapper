@@ -20,14 +20,8 @@ function App() {
         <meta name="msapplication-TileColor" content="#2b5797"/>
         <meta name="msapplication-config" content="/static/images/browserconfig.xml"/>
         <meta name="theme-color" content="#ffffff"/>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossOrigin="anonymous"></script>
         <link rel="preconnect" href="https://fonts.gstatic.com"/>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-        <link rel="stylesheet" href="/styles/table.css"/>
-        <link rel="stylesheet" href="/styles/filterBar.css"/>
-        <link rel="stylesheet" href="/styles/navBar.css"/>
-        <script src="/scripts/stickyObserver.js"></script>
-        <script src="/scripts/filterSettings.js"></script>
       </div>
       <Router>
       <Switch>

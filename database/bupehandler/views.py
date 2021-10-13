@@ -21,6 +21,8 @@ from django.db.models import CharField
 from django.db.models import  Q
 from .tableCaching import fetchCachedIfRecent
 import re
+import datetime
+import calendar
 
 
 @api_view(["GET", "POST", "DELETE"])
@@ -160,9 +162,6 @@ def filtered_table(request, table_name, param_values=None, excluded_values=None,
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
 def headless_query(request, table_name, param_values=None, excluded_values=None, keyword = None):
-    print(table_name)
-    print(param_values)
-    print(excluded_values)
     autofill = False
     autocorrect=False
     filter_params = {"archival_only":False}
@@ -250,7 +249,6 @@ def headless_query(request, table_name, param_values=None, excluded_values=None,
     for table_object in table_objects:
         dicted = table_object.__dict__
         generalDisplayed = Sites_general_display(table_name, dicted)
-        # print(generalDisplayed.output["full_certification"])
         general_display_list.append(generalDisplayed.output)
     table_info = Table_info.objects.get(table_name=table_name).__dict__
     #table_serializer = serializer_dict[table_name](table_objects, many=True)
@@ -264,6 +262,8 @@ def headless_query(request, table_name, param_values=None, excluded_values=None,
                 elif isinstance(data[key], list):
                     for item in data[key]:
                         makeSerializable(item)
+                elif isinstance(data[key], datetime.date):
+                    data[key] = calendar.timegm(data[key].timetuple())
                 elif not (isinstance(data[key], str) or isinstance(data[key], int) or isinstance(data[key], float) or isinstance(data[key], bool) or data[key] == None):
                     data[key] = "non-serializable data"
                 else:
@@ -280,6 +280,7 @@ def headless_query(request, table_name, param_values=None, excluded_values=None,
                 else:
                     continue
     makeSerializable(returnData)
+    print(returnData["objects"][0].keys());
     return JsonResponse(returnData)
 
 @api_view(["GET", "POST", "DELETE"])

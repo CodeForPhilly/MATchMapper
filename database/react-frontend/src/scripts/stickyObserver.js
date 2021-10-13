@@ -21,6 +21,4 @@ function handleScroll(){
   }
 }
 
-document.querySelector("table").addEventListener("scroll", handleScroll)
-
-// $("#table").onScroll(handleScroll)
+document.querySelector("#table").addEventListener("scroll", handleScroll)

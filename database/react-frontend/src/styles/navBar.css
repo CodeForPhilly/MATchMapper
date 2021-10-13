@@ -1,7 +1,7 @@
 #nav-logo {
     width: 100px;
     height: 70px;
-    background: url("/static/images/MM_infinity-logo_luxwhite_labeled.png"); /* Update this to captioned version (MM__infinity-logo_luxwhite_labeled.png): https://drive.google.com/file/d/1Ruf6b2Aj7GuWsuVLTsZ6Egtq0xlxjcvb/view?usp=sharing */
+    /* background: url("/static/images/MM_infinity-logo_luxwhite_labeled.png"); */
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
