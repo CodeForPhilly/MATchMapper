@@ -15,11 +15,7 @@ $(document).ready(function() {
     var param_values = mapParams.param_values;
     var destination_name = mapParams.destination_name;
     var excluded_values = mapParams.excluded_values;
-    if(excluded_values == ""){
-        excluded_values = "archival_only=True"
-    } else {
-        excluded_values += "&archival_only=True"
-    }
+
     var keyword = mapParams.keyword;
     console.log(param_values)
     param_values = param_values.replaceAll("amp;", "")
@@ -34,11 +30,18 @@ $(document).ready(function() {
     }
     if (excluded_values != "") { 
         if (param_values == "") { 
-        get_url += "None/";
+        get_url += "archival_only=True";
         }
         get_url += excluded_values + "/";
         console.log(get_url)
     }
+    //if(excluded_values == "None"){
+    //    excluded_values = "archival_only=True"
+    //    console.log("we are safe")
+    //} else {
+    //    excluded_values += "&archival_only=True"
+    //    console.log("we are not safe")
+    //}
     if (keyword != "") { 
         if (param_values == "" && excluded_values == "") { 
         get_url += "None/None/";
@@ -49,7 +52,6 @@ $(document).ready(function() {
         get_url += keyword 
     }
 
-    
 
 
     $.ajax({
