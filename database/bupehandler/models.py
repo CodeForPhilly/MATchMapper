@@ -392,7 +392,7 @@ class Siterecs_dbhids_tad(models.Model):
     mu = models.BooleanField(blank=True, null=True)
     #mui = models.BooleanField(blank=True, null=True)
     #mm = models.BooleanField(blank=True, null=True)
-    additional_info = models.CharField(max_length=150, blank=True) #[DCS] after separating Walk-in: Max LEN in data = 88 char. For line breaks, use pipe: |
+    additional_info = models.CharField(max_length=500, blank=True) #[DCS] after separating Walk-in: Max LEN in data = 88 char. For line breaks, use pipe: |
     phone2 = models.CharField(max_length=20, blank=True) ## Added for 3 entries with second phone from additional_info
     walk_in_hours = models.CharField(max_length=80, blank=True) #[DCS] for yellow records: List '[unspecified]' if no days & times available. Max LEN in data = 38 char, but increased limit from 50 to 80 just in case.
     wih_induction = models.BooleanField(blank=True, null=True) # True if PDF record is yellow (vs. blue or white)
