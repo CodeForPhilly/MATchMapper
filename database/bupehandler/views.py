@@ -23,14 +23,13 @@ from .tableCaching import fetchCachedIfRecent
 import re
 
 
+
+
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
 @permission_classes([IsAuthenticated])
-def sites_all_display(request): 
-    sites_all_objects = Sites_all.objects.all()
-    print(sites_all_objects)
-    sites_all_serializer = Sites_allSerializer(sites_all_objects, many=True)
-    return render(request,"bupehandler/list_all.html", {"title": 'sites_all', "sites_all" : sites_all_serializer.data})
+def about_page(request): 
+    return render(request,"bupehandler/about_matchmapper.html")
 
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
