@@ -166,6 +166,8 @@ def filtered_geodata(request, table_name, param_values=None, excluded_values=Non
         "siterecs_dbhids_tad": Siterecs_dbhids_tad, 
         "siterecs_other_srcs" : Siterecs_other_srcs , 
         "sites_all" : Sites_all,
+        "ba_dbhids_tad": Ba_dbhids_tad, 
+        "siterecs_hfp_fqhc": Siterecs_hfp_fqhc
     }
     serializer_dict = { 
         "sitecodes_samhsa_ftloc" : Sitecodes_samhsa_ftlocSerializer,
@@ -188,14 +190,29 @@ def filtered_geodata(request, table_name, param_values=None, excluded_values=Non
         "sites_all" : "name1",
     }
 
+    website_dict = { 
+        "sitecodes_samhsa_ftloc" : "website", 
+        "siterecs_samhsa_ftloc" : "website",
+        "ba_dbhids_tad": "website", 
+        "siterecs_hfp_fqhc" : "website", 
+        "siterecs_other_srcs" : "website1", 
+        "sites_all" : "website1",
+    }
+
+    phone_dict = {
+        "sitecodes_samhsa_ftloc" : "phone", 
+        "siterecs_samhsa_ftloc" : "phone",
+        "siterecs_samhsa_otp": "phone",
+        "siterecs_dbhids_tad": "phone1", 
+        "ba_dbhids_tad": "phone", 
+        "siterecs_hfp_fqhc" : "phone1", 
+        "siterecs_other_srcs" : "phone1", 
+        "sites_all" : "phone1",
+    }
     # site_coord isn't used to filter the table
-    print(filter_params)
     if "site_coord__iexact" in filter_params:
         site_coord = filter_params["site_coord__iexact"]
         filter_params.pop("site_coord__iexact")
-        print(filter_params)
-        print(site_coord)
-
     table_objects = table_dict[table_name].objects.all().filter(**filter_params)
     if keyword != None: 
         fields = [f for f in table_dict[table_name]._meta.fields if isinstance(f, CharField)]
@@ -211,7 +228,12 @@ def filtered_geodata(request, table_name, param_values=None, excluded_values=Non
     if request.GET.getlist('order'):
         order_by_list = request.GET.getlist('order')
         table_objects = table_objects.order_by(*order_by_list)
-    return JsonResponse({"loc": list(table_objects.values(naming_dict[table_name], "latitude","longitude", "oid", "website1", "phone1"))},json_dumps_params = {"indent": 4})
+    if table_name == "ba_dbhids_tad": 
+        return JsonResponse({"loc": list(table_objects.values(naming_dict[table_name], "oid"))},json_dumps_params = {"indent": 4})
+    if table_name in website_dict:
+        return JsonResponse({"loc": list(table_objects.values(naming_dict[table_name], "latitude","longitude", "oid", website_dict[table_name], phone_dict[table_name]))},json_dumps_params = {"indent": 4})
+    else: 
+        return JsonResponse({"loc": list(table_objects.values(naming_dict[table_name], "latitude","longitude", "oid", phone_dict[table_name]))},json_dumps_params = {"indent": 4})
 
 # @api_view(["GET", "POST", "DELETE"])
 # @csrf_exempt
