@@ -17,21 +17,24 @@ $(document).ready(function() {
     var excluded_values = mapParams.excluded_values;
 
     var keyword = mapParams.keyword;
-    console.log(param_values)
     param_values = param_values.replaceAll("amp;", "")
-    console.log(param_values)
     excluded_values = excluded_values.replaceAll("amp;", "")
-    console.log(excluded_values)
     var get_url = "/api/geodata/";
     get_url += table_name + "/";
-    if (param_values != "") { 
-        get_url += param_values + "/";
+    console.log(1)
+    console.log(get_url)
+    if (param_values != "" && param_values != "None") { 
+        console.log(1)
+        get_url += param_values + "&archival_only=False/";
         console.log(get_url)
     }
-    if (excluded_values != "") { 
-        if (param_values == "") { 
-        get_url += "archival_only=True";
-        }
+    else { 
+        console.log(2)
+        get_url += "archival_only=False/"
+        console.log(get_url)
+    }
+    if (excluded_values != "None" && excluded_values != "") { 
+        console.log(3)
         get_url += excluded_values + "/";
         console.log(get_url)
     }
@@ -43,13 +46,14 @@ $(document).ready(function() {
     //    console.log("we are not safe")
     //}
     if (keyword != "") { 
-        if (param_values == "" && excluded_values == "") { 
-        get_url += "None/None/";
-        }
-        else if (excluded_values == "") { 
+        if (excluded_values == "None" || excluded_values == "") { 
         get_url += "None/"
+        console.log(4)
+        console.log(get_url)
         }
         get_url += keyword 
+        console.log(5)
+        console.log(get_url)
     }
 
 
