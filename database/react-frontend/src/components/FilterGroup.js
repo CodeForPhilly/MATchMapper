@@ -23,10 +23,10 @@ class FilterGroup extends Component {
     render(){
         return(
             <div className="filterGroup">
-                <div class="filterGroupHeader">{this.props.name}:</div>
+                <div className="filterGroupHeader">{this.props.name}:</div>
                 <div className="subfilter visible">
                     {this.props.filters.map((filter) => 
-                        <FilterOption label={filter.label} affirmativeValue={filter.affirmativeValue} negativeValue={filter.negativeValue} ref={filter.ref} applyFilters={this.props.applyFilters}/>
+                        <FilterOption label={filter.label} key={filter.label} affirmativeValue={filter.affirmativeValue} negativeValue={filter.negativeValue} ref={filter.ref} applyFilters={this.props.applyFilters}/>
                     )}
                 </div>
             </div>

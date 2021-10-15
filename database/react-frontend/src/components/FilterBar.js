@@ -85,6 +85,7 @@ class FilterBar extends Component {
                 <div id="filterOptions">
                     <h2>Search:</h2>
                     <input id="searchBar" type="text" placeholder="Search..." onKeyDown={this.handleKeyDown}/>
+                    {this.props.children}
                     { this.props.showSort !== false ? (
                         <div>
                             <h2>Sort:</h2>
@@ -109,7 +110,7 @@ class FilterBar extends Component {
                     <h2>Filter:</h2>
                     <label>Filter your search with the following criteria:</label>
                     <div id="filterContainer">
-                        {this.state.filterGroups.map((group) => <FilterGroup applyFilters={this.applyFilters} name={group.name} filters={group.filters} ref={group.ref}/>)}
+                        {this.state.filterGroups.map((group) => <FilterGroup applyFilters={this.applyFilters} name={group.name} key={group.name} filters={group.filters} ref={group.ref}/>)}
                     </div>
                 </div>
             </div>

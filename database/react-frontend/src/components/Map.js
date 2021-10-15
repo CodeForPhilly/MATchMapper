@@ -5,7 +5,7 @@ import axios from 'axios'
 import turf from '@turf/turf'
 
 import mapboxgl from 'mapbox-gl'
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -18,8 +18,7 @@ class Map extends Component {
     this.state = {
       jqueryReady: false,
       mapboxReady: false,
-      geocoderElement: null,
-      maxDistance: "5"
+      geocoderElement: null
     }
 
     this.globalData = {}
@@ -27,7 +26,6 @@ class Map extends Component {
     this.myCircle = null
     this.geocoder = null
 
-    this.distanceChanged = this.distanceChanged.bind(this)
     this.plotMarkers = this.plotMarkers.bind(this)
     this.toggleSearchModal = this.toggleSearchModal.bind(this)
     this.clearMap = this.clearMap.bind(this)
@@ -109,7 +107,7 @@ class Map extends Component {
       })
 
       this.plotMarkers(data, this.props.destination_name);
-      // this.setState({siteCount: data['loc'].length})
+      this.setState({siteCount: data['loc'].length})
     })
   }
 
@@ -132,7 +130,7 @@ class Map extends Component {
     
     var link_object;
     for (var i = 0; i < data.length; i++) {
-        link_object = window.location.origin + "/table/" + this.props.table_name + "/oid=" + data[i]['oid'] + "/";
+        link_object = window.location.origin + "/table/" + this.props.tableInfo.table_name + "/oid=" + data[i]['oid'] + "/";
 
         // set color based on countFocus
         if (i < countFocus) {
@@ -155,7 +153,10 @@ class Map extends Component {
       center: [-75.158924, 39.9629223],
       zoom: 11
     })
-    this.map.addControl(new mapboxgl.NavigationControl());
+    this.map.addControl(new mapboxgl.NavigationControl())
+    this.map.on('render', function (e) {
+        e.target.resize()
+    })
     this.geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl, // Set the mapbox-gl instance
@@ -164,10 +165,8 @@ class Map extends Component {
     })
     this.state.geocoderElement = this.geocoder.onAdd(this.map).outerHTML
     this.requestGeoData()
-  }
 
-  distanceChanged(e){
-    this.setState({maxDistance: e.target.value})
+
   }
 
   // function to clear map
@@ -188,19 +187,21 @@ class Map extends Component {
   render(){
     return (
       <div id="mapContainer">
-        <div id="siteSearch" style={{display: "none", overflow: "visible"}}>
-            <button id="closeSearchModal" onClick={this.toggleSearchModal}>&#x2715;</button>
-            <h2>Search By Address:</h2>
-            <label for="distance">Radius (mi.):  </label>
-            <input name="distance" id="distance" value="5" type="number" onChange={this.distanceChanged} style={{width: 40}}></input>
-            <br/><br/>
-            <div id="geocodeWidget" style={{width: "calc(100% - 14px)"}}>{this.state.geocoderElement}</div>
-            <br/>
-            <button id="clearSearch" onClick={this.reloadMap}>Start Over &#10005;</button>
-        </div>
+        <div id="siteSearch" style={{display: this.props.showSearchByAddress ? "block" : "none", overflow: "visible"}}>
+          <button id="closeSearchModal" onClick={this.toggleSearchModal}>&#x2715;</button>
+          <h2>Search By Address:</h2>
+          <label for="distance">Radius (mi.):  </label>
+          <input name="distance" id="distance" value="5" type="number" style={{width: 40}}></input>
+          <br/><br/>
+          <div id="geocodeWidget" style={{width: "calc(100% - 14px)"}} dangerouslySetInnerHTML={{__html:this.state.geocoderElement}}></div>
+          <br/>
+          <button id="clearSearch" onClick={this.reloadMap}>Start Over &#10005;</button>
+        </div> 
         <div id="map" ref={el => this.mapContainer = el}>
           {this.props.children}
-          <p id="sitecount"></p>
+          <div id="results-info">
+            <span className="bold" id="sitecount">{this.state.siteCount}</span> of <span class="bold">{this.props.tableInfo.records_count}</span> records for <span class="bold">{this.props.tableInfo.facility_type}</span> {this.props.tableInfo.source_range}
+          </div>
         </div>
       </div>
     )

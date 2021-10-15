@@ -2,6 +2,8 @@ import React, { Component } from "react"
 import {withRouter} from 'react-router-dom'
 import axios from "axios"
 import ScriptTag from 'react-script-tag'
+import mapboxgl from 'mapbox-gl'
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 
 import FilterBar from "../components/FilterBar.js"
 import NavBar from "../components/NavBar.js"
@@ -9,6 +11,8 @@ import Map from "../components/Map.js"
 
 import "../styles/map.css"
 import 'mapbox-gl/dist/mapbox-gl.css'
+
+mapboxgl.accessToken = 'pk.eyJ1IjoibWF0Y2htYXBwZXIiLCJhIjoiY2tvMWJmZW9wMGtjdzMxb2k0NWhpeW0xMSJ9.ChZtypQ-p77nXwERIAt3Iw'
 
 class MapPage extends Component {
 
@@ -59,7 +63,9 @@ class MapPage extends Component {
                 keyword: "",
                 destination_name: "name1"
             },
-            mapKey: 0
+            mapKey: 0,
+            maxDistance: "5",
+            showSearchByAddress: false
         }
         this.naming_dict = { 
             sitecodes_samhsa_ftloc : "service_name",
@@ -78,6 +84,8 @@ class MapPage extends Component {
         this.makeRequest = this.makeRequest.bind(this)
         this.request_URL_from_params = this.request_URL_from_params.bind(this)
         this.applyFilters = this.applyFilters.bind(this)
+        this.distanceChanged = this.distanceChanged.bind(this)
+        this.toggleSearchByAddress = this.toggleSearchByAddress.bind(this)
     }
 
     componentDidMount(){
@@ -123,7 +131,7 @@ class MapPage extends Component {
         this.setState({current_request_elements: {keyword: keyword, included_values_string: included_values_strings, excluded_values_strings: excluded_values_strings}})
         axios.get(django_query).then(res => {
             const data = res.data
-            this.setState({ objects: data.objects, table_info: data.table_info})
+            this.setState({ objects: data.objects, table_info: data.table_info},()=>console.log(this.state.table_info))
             document.title = this.state.table_info.display_name
             this.setState({isLoaded: true})
             if(refresh){
@@ -206,13 +214,24 @@ class MapPage extends Component {
         })
     }
 
+    distanceChanged(e){
+        this.setState({maxDistance: e.target.value})
+    }
+
+    toggleSearchByAddress(){
+        this.setState({showSearchByAddress: !(this.state.showSearchByAddress)})
+    }
+
     render(){
         if(this.state.isLoaded){
+            console.log(this.map)
             return(
                 <div id="body">
                     <NavBar/>
-                    <Map mapParams={this.state.mapParams} ref={this.map}>
-                        <FilterBar applyFilters={this.applyFilters} table_filters_raw={this.state.table_info.filters} showSort={false}/>
+                    <Map mapParams={this.state.mapParams} tableInfo={this.state.table_info} ref={this.map} showSearchByAddress={this.state.showSearchByAddress}>
+                        <FilterBar applyFilters={this.applyFilters} table_filters_raw={this.state.table_info.filters} showSort={false}>
+                            {/* <button onClick={this.toggleSearchByAddress}>Show distance search</button> */}
+                        </FilterBar>
                     </Map>
                 </div>
             )
