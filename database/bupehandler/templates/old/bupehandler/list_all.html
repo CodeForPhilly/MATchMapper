@@ -1,0 +1,240 @@
+{% load table_formatters %}
+<html>
+  <head>
+    {% include 'bupehandler/favicon.html' %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles/table.css"/>
+    <link rel="stylesheet" href="/static/styles/filterBar.css"/>
+    <script src="/static/js/stickyObserver.js"></script>
+    <script>const table_info = {{ table_info|dict_to_json }}; const django_objects = {{ objects|list_to_json }};</script>
+    <script src="/static/js/filterSettings.js"></script>
+    <title>{{ table_info.display_name }}</title>
+  </head>
+  <body>
+    {% include 'bupehandler/navbar.html' with map=False %}
+    
+    <div id="flexContainer">
+      {% include 'bupehandler/filterBar.html' %}
+      <div id="table" onscroll="handleScroll(this.scrollTop, this.scrollLeft)">
+        <!-- <header id="header">
+          
+        </header> -->
+        <h5 id="resultDescription">
+          <span id="dataSource" class="bold">SOURCE: <a href="{{ table_info.source_url }}" target="_blank">{{ table_info.display_name }}</a></span><br/>
+          <span id="lastUpdatedNotice">Most recent download: <span class="bold">{{ table_info.update_recency }}</span></span><br/>
+          <span class="bold">{{ objects|length }}</span> of <span class="bold">{{ table_info.records_count }}</span> records for <span class="bold">{{ table_info.facility_type }}</span> {{ table_info.source_range }}
+        </h5>
+        <div id="extraContainer">
+          <table>
+              <tr>
+                <th class="facilityName col-FACILITY">Facility</th>
+                <th class="col-TELEHEALTH">Telehealth</th>
+                <th class="col-PHONE">Phone</th>
+                <th class="col-ADDRESS">Address</th>
+                <th class="col-ZIPCODE">Zip Code</th>
+                <th class="col-WALKINHOURS">Walk-In Hours</th>
+                <th class="col-MATINFO">MAT Info</th>
+                <th class="col-WHICHMAT">Which MAT</th>
+                <th class="col-BUPRENORPHINE">Buprenorphine</th>
+                <th class="col-NALTREXONE">Naltrexone</th>
+                <th class="col-METHADONE">Methadone</th>
+                <th class="col-PAYMENTOPTIONS">Payment Options</th>
+                <th class="col-SERVICES">Services</th>
+                <th class="col-ADDITIONALINFORMATION">Additional Information</th>
+                <th class="col-ADDITIONALNOTES">Additional Notes</th>
+                <th class="col-CERTIFICATIONDATE">Certification Date</th>
+                <th class="col-DATASOURCES">Data Source(s)</th>
+              </tr>
+              {% for site in objects %}
+              <tr>
+                <td class="facilityName wrap col-FACILITY">
+                  <p class="cellText bold">{{site.name1|default_if_none:""}}</p>
+                  <p class="cellText semibold">{{site.name2|default_if_none:""}}</p>
+                  <p class="cellText semibold">{{site.name3|default_if_none:""}}</p>
+                  <p class="cellText"><a target="_blank" href="{{site.website1|legal_url}}">{{site.website1|default_if_none:""}}</a></p>
+                  <p class="cellText"><a target="_blank" href="{{site.website2|legal_url}}">{{site.website2|default_if_none:""}}</a></p>
+                </td>
+                <td class="nowrap col-TELEHEALTH">
+                  <p class="cellText">
+                    {% if site.telehealth == True %}
+                    Yes
+                    {% elif site.telehealth == False %}
+                      No
+                    {% endif %}
+                  </p>
+                </td>
+                <td class="nowrap col-PHONE">
+                  <p class="cellText bold">
+                    {{site.phone1|format_phone}}
+                  </p>
+                  <p class="cellText semibold">
+                    {{site.phone2|format_phone}}
+                  </p>
+                  <p class="cellText semibold">
+                    {{site.phone3|format_phone}}
+                  </p>
+                </td>
+                <td class="nowrap col-ADDRESS">
+                  <p class="cellText bold">
+                    {{site.street1}}
+                  </p>
+                  {% if site.street2 %}
+                    <p class="cellText">
+                      {{site.street2}}
+                    </p>
+                  {% endif %}
+                  <p class="cellText">
+                    {{site.city}}, {{site.state_usa}}
+                  </p>
+                </td>
+                <td class="col-ZIPCODE">
+                  <p class="cellText bold">{{site.zipcode}}</p>
+                </td>
+                <td class="col-WALKINHOURS">
+                  <p class="cellText bold">{{site.walk_in_hours}}</p>
+                </td>
+                <td class="col-MATINFO">
+                  <p class="cellText bold">{{site.mat_info}}</p>
+                </td>
+                <td class="nowrap col-WHICHMAT">
+                  <p class="cellText">
+                    {% if site.mat_avail == "Unclear" %}
+                      None confirmed<br/>
+                    {% endif %}
+                    Buprenorphine: <b>{{ site.bu }}</b><br/>
+                    Naltrexone/Vivitrol: <b>{{ site.nu }}</b><br/>
+                    Methadone: <b>{{ site.mu }}</b>
+                  </p>
+                </td>
+                <td class="nowrap col-BUPRENORPHINE">
+                  {% if site.bu == True %}
+                    {% if site.bwn or site.bwon or site.beri or site.bsdm %}
+                      <p class="cellText">
+                        Prescribed: <br/>
+                        <span class="bold">{% bu_options %}</span>
+                      </p>
+                    {% endif %}
+                    <p>
+                      <span>
+                        {% if site.buu is True or site.buu is False %}
+                          Used in treatment:
+                          <span class="bold">
+                            {% if site.buu or site.bu %} Yes {% else %} No {% endif %}
+                          </span>
+                          <br/>
+                        {% endif %}
+                      </span>
+                      <span showOnlyFor="siterecs_samhsa_ftloc siterecs_dbhids_tad">
+                        Maintenance:
+                        <span class="bold">
+                          {% if site.bum %} Yes {% else %} No {% endif %}
+                        </span>
+                      </span>
+                      <br/>
+                      <span>
+                        Maintenance for predetermined time:
+                        <span class="bold">
+                          {% if site.bmw %} Yes {% else %} No {% endif %}
+                        </span>
+                      </span>
+                      <br/>
+                      <span>
+                        Detoxification:
+                        <span class="bold">
+                          {% if site.db_field %} Yes {% else %} No {% endif %}
+                        </span>
+                      </span>
+                      <br/>
+                    </p>
+                  {% else %}
+                    <p class="cellText">Not available at this facility</p>
+                  {% endif %}
+                </td>
+                <td class="nowrap col-NALTREXONE">
+                  {% if site.nu == True %}
+                  <p class="cellText">
+                    {% if site.vtrl or site.nxn %}
+                      Prescribed:
+                      <span class="bold">{% nu_options %}</span>
+                      <br/>
+                    {% endif %}
+                    Used for relapse prevention:
+                    <span class="bold">
+                      {% if site.rpn %} Yes {% else %} No {% endif %}
+                    </span>
+                  </p>
+                  {% else %}
+                  <p class="cellText">Not available at this facility</p>
+                  {% endif %}
+                </td>
+                <td class="nowrap col-METHADONE"> 
+                  {% if site.mu == True %}
+                  <p class="cellText">
+                    {% if site.meth is not None %}
+                    Prescribed:
+                    <span class="bold">{{site.meth}}</span>
+                    <br/>
+                  {% endif %}
+                    Induction:
+                    <span class="bold">
+                      {% if site.mui %} Yes {% else %} No {% endif %}
+                    </span>
+                    <br/>
+                    Maintenance:
+                    <span class="bold">
+                      {% if site.mm %} Yes {% else %} No {% endif %}
+                    </span>
+                    <br/>
+                    Maintenance for predetermined time:
+                    <span class="bold">
+                      {% if site.mmw %} Yes {% else %} No {% endif %}
+                    </span>
+                    <br/>
+                    Detoxification:
+                    <span class="bold">
+                      {% if site.dm %} Yes {% else %} No {% endif %}
+                    </span>
+                  </p>
+                  {% else %}
+                  <p class="cellText">Not available at this facility</p>
+                  {% endif %}
+                </td>
+                <td class="nowrap col-PAYMENTOPTIONS">
+                  Medicaid: <b>{% if site.md == True or site.md == "Yes" %}Yes{% endif %}{% if site.md == False or site.md == "No" %}No{% endif %}{% if site.md == "Unclear" %}Unclear{% endif %}</b><br/>
+                  Medicare: <b>{% if site.mc == True or site.mc == "Yes" %}Yes{% endif %}{% if site.mc == False or site.mc == "No" %}No{% endif %}{% if site.mc == "Unclear" %}Unclear{% endif %}</b><br/>
+                  Other insurance: <b>{% if site.oi == True %}({% if site.mi %}Military,{% endif %}{% if site.pi_field %}Private,{% endif %}{% if site.si %}State{% endif %}){% endif %}</b><br/>
+                  Payment assistance available: <b>{% if site.pa == True or site.pa == "Yes" %}Yes{% endif %}{% if site.pa == False or site.pa == "No" %}No{% endif %}{% if site.pa == "Unclear" %}Unclear{% endif %}</b>
+                </td>
+                <td class="nowrap col-SERVICES">
+                  Child care: <b>{% if site.ccc == True or site.ccc == "Yes" %}Yes{% endif %}{% if site.ccc == False or site.ccc == "No" %}No{% endif %}{% if site.ccc == "Unclear" %}Unclear{% endif %}</b><br/>
+                  Domestic violence services: <b>{% if site.dvh == True or site.dvh == "Yes" %}Yes{% endif %}{% if site.dvh == False or site.dvh == "No" %}No{% endif %}{% if site.dvh == "Unclear" %}Unclear{% endif %}</b><br/>
+                  Housing services: <b>{% if site.hs == True or site.hs == "Yes" %}Yes{% endif %}{% if site.hs == False or site.hs == "No" %}No{% endif %}{% if site.hs == "Unclear" %}Unclear{% endif %}</b><br/>
+                  Mental health services: <b>{% if site.mhs == True or site.mhs == "Yes" %}Yes{% endif %}{% if site.mhs == False or site.mhs == "No" %}No{% endif %}{% if site.mhs == "Unclear" %}Unclear{% endif %}</b><br/>
+                  Pregnancy care: <b>{% if site.pw == True or site.pw == "Yes" %}Yes{% endif %}{% if site.pw == False or site.pw == "No" %}No{% endif %}{% if site.pw == "Unclear" %}Unclear{% endif %}</b><br/>
+                  Transportation assistance: <b>{% if site.ta == True or site.ta == "Yes" %}Yes{% endif %}{% if site.ta == False or site.ta == "No" %}No{% endif %}{% if site.ta == "Unclear" %}Unclear{% endif %}</b>
+                </td>
+                <td class="col-ADDITIONALINFORMATION">{{ site.additional_info }}</td>
+                <td class="col-ADDITIONALNOTES">{{ site.ref_notes }}</td>
+                <td class="col-CERTIFICATIONDATE">{{ site.full_certification }}</td>
+                <td class="nowrap col-DATASOURCES">
+                  {% if site.id_dbhids_tad %}<a href="/table/siterecs_dbhids_tad">DBHIDS MAT Directory</a><br/>{% endif %}
+                  {% if site.ba_dbhids_tad %}Bed Availability Updates<br/>{% endif %}
+                  {% if site.id_samhsa_ftloc %}<a href="/table/siterecs_samhsa_ftloc">SAMHSA Find Treatment</a><br/>{% endif %}
+                  {% if site.id_samhsa_otp %}<a href="/table/siterecs_samhsa_otp">SAMHSA OTPs Directory</a><br/>{% endif %}
+                  {% if site.id_hfp_fqhc %}HRSA or HFP (FQHCs){% endif %}
+                </td>
+                </tr>
+                {%endfor%}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <script src="/static/js/filter.js"></script>
+    <script src="/static/js/hideColumns.js"></script>
+  </body>
+</html>
