@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "cc22c7134f34993582960aa294ad2203c39b695194cecc94b78012e5355d8130"
+            "sha256": "e633cb5fe7d429faa6482a813e1047620adbb0db0ba56ff73e1b0bb31b465548"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -10,19 +10,19 @@
         "sources": [
             {
                 "name": "pypi",
-                "url": "https://pypi.org/simple",
+                "url": "https://pypi.python.org/simple",
                 "verify_ssl": true
             }
         ]
     },
     "default": {
-        "phonenumbers": {
+        "whitenoise": {
             "hashes": [
-                "sha256:4b9d2f2165309613f32fe5057ff0604eb8e4bbb7be44f7ba77baef760d7d60e2",
-                "sha256:8b0cf3df6ab75d22717af91014ca690423a85e77abc7b199748d1b3598b49a37"
+                "sha256:d234b871b52271ae7ed6d9da47ffe857c76568f11dd30e28e18c5869dbd11e12",
+                "sha256:d963ef25639d1417e8a247be36e6aedd8c7c6f0a08adcb5a89146980a96b577c"
             ],
             "index": "pypi",
-            "version": "==8.12.23"
+            "version": "==5.3.0"
         }
     },
     "develop": {}

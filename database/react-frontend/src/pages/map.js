@@ -2,7 +2,8 @@ import React, { Component } from "react"
 import {withRouter} from 'react-router-dom'
 import axios from "axios"
 import ScriptTag from 'react-script-tag'
-import mapboxgl from 'mapbox-gl'
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import mapboxgl from '!mapbox-gl'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 
 import FilterBar from "../components/FilterBar.js"

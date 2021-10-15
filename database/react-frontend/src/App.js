@@ -7,6 +7,7 @@ import {
 
 import TablePage from "./pages/table.js"
 import MapPage from "./pages/map.js"
+import AboutPage from "./pages/about.js"
 
 function App() {
   return (
@@ -31,6 +32,9 @@ function App() {
         </Route>
         <Route path="/map/:table_name/:query?">
           <MapPage/>
+        </Route>
+        <Route path="/">
+          <AboutPage/>
         </Route>
       </Switch>
       </Router>

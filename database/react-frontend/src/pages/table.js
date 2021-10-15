@@ -57,19 +57,14 @@ class TablePage extends Component {
         this.handleScroll = this.handleScroll.bind(this)
         this.makeRequest = this.makeRequest.bind(this)
         this.applyFilters = this.applyFilters.bind(this)
-        this.getApiOrigin = this.getApiOrigin.bind(this)
-    }
-
-    getApiOrigin(){
-        // if(window.location.origin.includes("localhost") && !(window.location.origin.includes(":8000"))){
-            return ""
-        // }
-        // else {
-            // return window.location.origin
-        // }
     }
 
     componentDidMount(){
+        this.props.history.listen((location) => {
+            console.log(this.state.table_info.table_name)
+            console.log(location)
+            this.makeRequest(this.request_URL_from_params())
+        })
         this.makeRequest(this.request_URL_from_params())
     }
 
@@ -173,7 +168,7 @@ class TablePage extends Component {
         var excluded_values_strings = django_query.split("/")[django_query.split("/").length - 2]
         var included_values_strings = django_query.split("/")[django_query.split("/").length - 3]
         this.setState({current_request_elements: {keyword: keyword, included_values_string: included_values_strings, excluded_values_strings: excluded_values_strings}})
-        axios.get(this.getApiOrigin() + django_query).then(res => {
+        axios.get(django_query).then(res => {
             const data = res.data
             this.setState({ objects: data.objects, table_info: data.table_info})
             document.title = this.state.table_info.display_name
@@ -207,7 +202,6 @@ class TablePage extends Component {
     }
 
     render(){
-        console.log(this)
         var a = new Date(this.state.table_info.update_recency * 1000)
         var update_recency = (a.getMonth() + 1) + "/" + (a.getDate() + 1) + "/" + a.getFullYear()
         if (this.state.isLoaded) {

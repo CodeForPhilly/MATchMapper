@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && rm -rf ../bupehandler/templates/* && rm -rf ../bupehandler/static/* && cp -r build/* ../bupehandler/templates && mv ../bupehandler/templates/static/* ../bupehandler/static/ && cd ../ && pipenv run python manage.py collectstatic",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

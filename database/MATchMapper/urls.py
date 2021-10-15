@@ -15,26 +15,24 @@ Including another URLconf
 """
 import os
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf.urls import url
+from django.shortcuts import render
 from bupehandler import views
 
 from django.views.decorators.cache import cache_page
 cache_duration = 60
 
+def render_react(request):
+    return render(request, "index.html")
+
 urlpatterns = [
-    path('', views.about_page, name="about_page"),
+    path(r"", render_react),
     path('admin/', admin.site.urls),
     url('api-auth/', include('rest_framework.urls')),
     url('api/', include('bupehandler.urls')),
-    url(r'^table/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)/(?P<keyword>.+)$', views.filtered_table, name="filtered_table"),
-    url(r'^table/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)$', views.filtered_table, name="filtered_table"),
-    url(r'^table/(?P<table_name>.+)/(?P<param_values>.+)/$', views.filtered_table, name="filtered_table"),
-    url(r'^table/(?P<table_name>.+)/$',views.filtered_table, name = "filtered_table"),
-    url(r'^map/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)/(?P<keyword>.+)$', views.filtered_map, name="filtered_map"),
-    url(r'^map/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)$', views.filtered_map, name="filtered_map"),
-    url(r'^map/(?P<table_name>.+)/(?P<param_values>.+)/$', views.filtered_map, name="filtered_map"),
-    url(r'^map/(?P<table_name>.+)/$', views.filtered_map, name="filtered_map"), 
+    re_path(r"table\/", render_react),
+    re_path(r"map\/", render_react),
     url(r'^headless/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)/(?P<keyword>.+)$', views.headless_query, name="headless"),
     url(r'^headless/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)$', views.headless_query, name="headless"),
     url(r'^headless/(?P<table_name>.+)/(?P<param_values>.+)/$', views.headless_query, name="headless"),

@@ -1,5 +1,7 @@
 import { Component } from "react"
 
+import { Link } from "react-router-dom";
+
 import "../styles/navBar.css"
 import logo from "../images/MM_infinity-logo_luxwhite_labeled.png"
 
@@ -7,18 +9,6 @@ class NavBar extends Component {
     constructor(props){
         super(props)
         this.render = this.render.bind(this);
-    }
-
-    componentDidMount(){
-        // const page_type = window.location.pathname.split("/").filter(e => e != "")[0]
-        // const table_name = window.location.pathname.split("/").filter(e => e != "")[1]
-        // for(var navItem of document.querySelectorAll("#nav-options li")){
-        //     var linkUrl = navItem.querySelector("a").getAttribute("href")
-        //     var pathnameWithoutFilters = "/" + page_type + "/" + table_name
-        //     if(linkUrl == pathnameWithoutFilters){
-        //     navItem.classList.add("selected")
-        //     }
-        // }
     }
 
     render(){

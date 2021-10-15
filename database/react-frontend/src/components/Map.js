@@ -4,7 +4,8 @@ import $ from 'jquery'
 import axios from 'axios'
 import turf from '@turf/turf'
 
-import mapboxgl from 'mapbox-gl'
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import mapboxgl from '!mapbox-gl'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
