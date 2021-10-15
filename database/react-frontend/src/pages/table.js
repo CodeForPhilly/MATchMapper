@@ -1,8 +1,6 @@
 import { Component } from "react"
 import {withRouter} from 'react-router-dom'
 import axios from "axios"
-import $ from "jquery"
-import ScriptTag from 'react-script-tag'
 
 import FilterBar from "../components/FilterBar.js"
 import NavBar from "../components/NavBar.js"
@@ -45,26 +43,23 @@ class TablePage extends Component {
                 col_ADDITIONALNOTES: false,
                 col_CERTIFICATIONDATE: false,
                 col_DATASOURCES: false
+            },
+            current_request_elements: {
+                keyword: "",
+                included_values_string: "None",
+                excluded_values_strings: "None"
             }
         }
         this.render = this.render.bind(this)
         this.toLegalURL = this.toLegalURL.bind(this)
         this.enableColumns = this.enableColumns.bind(this)
         this.handleScroll = this.handleScroll.bind(this)
-        this.filter = this.filter.bind(this)
+        this.makeRequest = this.makeRequest.bind(this)
+        this.applyFilters = this.applyFilters.bind(this)
     }
 
     componentDidMount(){
-        var { table_name, included_values, excluded_values } = this.props.match.params
-        var searchParams = new URLSearchParams(this.props.location.search)
-        this.setState({ urlParams: this.props.match.params, searchParams: searchParams })
-        axios.get(`/headless/${table_name}/${included_values ? included_values : "None"}/${excluded_values ? excluded_values : "None"}`).then(res => {
-            const data = res.data
-            this.setState({ objects: data.objects, table_info: data.table_info})
-            document.title = this.state.table_info.display_name
-            this.enableColumns()
-            this.setState({isLoaded: true})
-        })
+        this.makeRequest(this.request_URL_from_params())
     }
 
     enableColumns(){
@@ -131,20 +126,84 @@ class TablePage extends Component {
         return options;
     }
 
-    filter(a){
-        return a
+    request_URL_from_params(){
+        var { table_name, query, keyword } = this.props.match.params
+        var included_values = []
+        var excluded_values = []
+        var keyword = ""
+        if(query){
+            for(var param of query.split("&")){
+                if(param.split("=")[0]=="keyword"){
+                    keyword = param.split("=")[1]
+                }
+                else if(param.includes("!=")){
+                    excluded_values.push({key: param.split("!=")[0], value: param.split("!=")[1]})
+                }
+                else {
+                    included_values.push({key: param.split("=")[0], value: param.split("=")[1]})
+                }
+            }
+        }
+        var included_values_strings = []
+        var excluded_values_strings = []
+        for(var pair of included_values){
+            included_values_strings.push(pair.key + "=" + pair.value)
+        }
+        for(var pair of excluded_values){
+            excluded_values_strings.push(pair.key + "=" + pair.value)
+        }
+        var django_query = `/headless/${table_name}/${included_values_strings.length > 0 ? included_values_strings.join("&") : "None"}/${excluded_values_strings.length > 0 ? excluded_values_strings.join("&") : "None"}${keyword.length > 0 ? "/"+keyword : ""}`
+        return django_query
+    }
+
+    makeRequest(django_query){
+        console.log("starting request")
+        var keyword = (django_query.split("/").length > 5 ? django_query.split("/")[django_query.split("/").length - 1] : "")
+        var excluded_values_strings = django_query.split("/")[django_query.split("/").length - 2]
+        var included_values_strings = django_query.split("/")[django_query.split("/").length - 3]
+        this.setState({current_request_elements: {keyword: keyword, included_values_string: included_values_strings, excluded_values_strings: excluded_values_strings}})
+        axios.get(django_query).then(res => {
+            const data = res.data
+            this.setState({ objects: data.objects, table_info: data.table_info})
+            document.title = this.state.table_info.display_name
+            this.enableColumns()
+            this.setState({isLoaded: true})
+            console.log("request completed")
+        })
+    }
+
+    applyFilters(groups, sortingInfo, keyword){
+        var included_values = []
+        var excluded_values = []
+        for(var group of groups){
+            for(var filter of group.ref.current.props.filters){
+                if(filter.ref.current.getValue() != null){
+                    for(var condition of filter.ref.current.getValue().split("&")){
+                        if(condition.includes("!=")){
+                            excluded_values.push(condition.replace("!=","="))
+                        }
+                        else {
+                            included_values.push(condition)
+                        }
+                    }
+                }
+            }
+        }
+        var sortingElement = (sortingInfo.direction == "-" ? sortingInfo.keys.replace("=","=-") : sortingInfo.keys)
+        var query_url = `/headless/${this.state.table_info.table_name}/${included_values.length > 0 ? included_values.join("&") : "None"}/${excluded_values.length > 0 ? excluded_values.join("&") : "None"}${keyword.length > 0 ? "/"+keyword : ""}${sortingInfo.keys.length > 0 ? "/?" + sortingElement : ""}`
+        console.log(query_url)
+        this.makeRequest(query_url)
     }
 
     render(){
         var a = new Date(this.state.table_info.update_recency * 1000)
         var update_recency = (a.getMonth() + 1) + "/" + (a.getDate() + 1) + "/" + a.getFullYear()
-        console.log(this.state)
         if (this.state.isLoaded) {
             return(
                 <div id="body">
                     <NavBar/>
                     <div id="flexContainer">
-                        <FilterBar filter={this.filter} table_filters_raw={this.state.table_info.filters}/>
+                        <FilterBar applyFilters={this.applyFilters} table_filters_raw={this.state.table_info.filters}/>
                         <div id="table" onScroll={this.handleScroll}>
                             <h5 id="resultDescription">
                                 <span id="dataSource" className="bold">SOURCE: <a href={this.state.table_info.source_url} target="_blank">{this.state.table_info.display_name}</a></span><br/>

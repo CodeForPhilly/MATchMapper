@@ -3,12 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mapbox/mapbox-gl-geocoder": "^4.7.4",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "@turf/turf": "^6.5.0",
     "jquery": "^3.6.0",
+    "mapbox-gl": "^2.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-map-gl": "^6.1.17",
     "react-script-tag": "^1.1.2",
     "react-scripts": "4.0.3",
     "web-vitals": "^1.1.2"

@@ -6,6 +6,7 @@ import {
 } from "react-router-dom"
 
 import TablePage from "./pages/table.js"
+import MapPage from "./pages/map.js"
 
 function App() {
   return (
@@ -25,12 +26,12 @@ function App() {
       </div>
       <Router>
       <Switch>
-        <Route path="/table/:table_name/:included_values?/:excluded_values?">
+        <Route path="/table/:table_name/:query?">
           <TablePage/>
         </Route>
-        {/* <Route path="/map">
+        <Route path="/map/:table_name/:query?">
           <MapPage/>
-        </Route> */}
+        </Route>
       </Switch>
       </Router>
     </div>
