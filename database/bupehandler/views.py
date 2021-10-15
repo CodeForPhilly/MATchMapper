@@ -29,13 +29,13 @@ import calendar
 
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def about_page(request): 
     return render(request,"bupehandler/about_matchmapper.html")
 
 @api_view(["GET", "POST", "DELETE"])
 @csrf_exempt
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def siterecs_samhsa_otp_display(request, filter_params=None, order_by_params=None):
     order_param = ['program_name']
     filter_params={'program_name': 'Achievement Through Counseling and Treatment (ACT 1)'}
@@ -305,10 +305,14 @@ def filtered_map(request, table_name, param_values="", excluded_values="", keywo
     mapbox_access_token = 'pk.my_mapbox_access_token'
     table_info = Table_info.objects.get(table_name=table_name).__dict__
     if param_values: 
-        #paramList = [paramString.split("=") for paramString in re.split("&amp;|&", param_values)]
-        #for param in paramList:
+        #print(param_values)
+        
+        # paramList = [paramString.split("=") for paramString in re.split("&amp;|&", param_values)]
+        # for param in paramList:
         #    param[0] = filterKeyToLocalKey(param[0], table_name)
-        #param_values = "&".join(["=".join(param) for param in paramList])
+        # param_values = "&".join(["=".join(param) for param in paramList])
+
+        # print(paramList)
 
         #exclusionList = [exclusionString.split("=") for exclusionString in re.split("&amp;|&", param_values)]
         #for exclusion in exclusionList:
