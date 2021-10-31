@@ -33,7 +33,7 @@ class Command(BaseCommand):
     
     def handle(self, *args, **options):
 
-        for row in DictReader(open('./0911mc_sites_all.csv', encoding='utf-8-sig')):
+        for row in DictReader(open('./1012_sites_all.csv', encoding='utf-8-sig')):
             sites = Sites_all()
             sites.oid = 'S' + str(row['oid']).zfill(5)
             # sites.id_dbhids_tad.sites_all_id = 'S' + str(row['oid']).zfill(5) 
@@ -809,7 +809,7 @@ class Command(BaseCommand):
                     otp.save()
 
         ## Siterecs_dbhids_tad with r4 & tad
-            for r4 in DictReader(open('./0911mc_siterecs_dbhids_tad.csv', encoding='utf-8-sig')):
+            for r4 in DictReader(open('./1012_siterecs_dbhids_tad.csv', encoding='utf-8-sig')):
                 if r4['site_id'] == 'S' + str(row['oid']).zfill(5):
                     tad = Siterecs_dbhids_tad()
                     tad.oid = r4['oid']
