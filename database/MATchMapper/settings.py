@@ -159,4 +159,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8081',
+    'http://localhost:3000',
 )

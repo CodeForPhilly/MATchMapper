@@ -19,6 +19,7 @@ class FilterBar extends Component {
         this.setDirection = this.setDirection.bind(this)
         this.setSorting = this.setSorting.bind(this)
         this.handleKeyDown = this.handleKeyDown.bind(this)
+        this.handleKeywordChange = this.handleKeywordChange.bind(this)
     }
 
     componentDidMount(){
@@ -54,6 +55,9 @@ class FilterBar extends Component {
         for(var group of this.state.filterGroups){
             group.ref.current.clear()
         }
+        this.state.keyword = ""
+        this.state.sortDirection = ""
+        this.state.sortKeys = ""
         this.applyFilters()
     }
 
@@ -67,15 +71,23 @@ class FilterBar extends Component {
     }
 
     setDirection(e){
-        this.state.sortKeys = e.target.value
+        this.state.sortDirection = e.target.value
+        if(this.state.sortKeys == ""){
+            this.state.sortKeys = "order=name1"
+        }
         this.applyFilters()
     }
 
     handleKeyDown(e){
-        this.state.keyword = e.target.value
         if(e.key === "Enter"){
             this.applyFilters()
         }
+        else {
+            console.log(e.key)
+        }
+    }
+    handleKeywordChange(e){
+        this.setState({keyword: e.target.value})
     }
 
     render(){
@@ -84,14 +96,14 @@ class FilterBar extends Component {
                 <button id="clearFilters" onClick={this.clear}>Start Over &#10005;</button>
                 <div id="filterOptions">
                     <h2>Search:</h2>
-                    <input id="searchBar" type="text" placeholder="Search..." onKeyDown={this.handleKeyDown}/>
+                    <input id="searchBar" type="text" placeholder="Search..." onKeyDown={this.handleKeyDown} onChange={this.handleKeywordChange} value={this.state.keyword}/>
                     {this.props.children}
                     { this.props.showSort !== false ? (
                         <div>
                             <h2>Sort:</h2>
                             <div id="sortOptions">
                                 <label>By:</label>
-                                <select id="sortBy" defaultValue="" onChange={this.setSorting}>
+                                <select id="sortBy" defaultValue="" onChange={this.setSorting} value={this.state.sortKeys}>
                                     <option disabled hidden value=""></option>
                                     <option value="order=name1">Facility Name</option>
                                     <option value="order=street1&order=street2">Address</option>
@@ -100,7 +112,7 @@ class FilterBar extends Component {
                                     <option value="order=zipcode">Zip Code</option>
                                 </select>
                                 <label>Order:</label>
-                                <select id="orderingOptions" defaultValue="" onChange={this.setDirection}>
+                                <select id="orderingOptions" defaultValue="" onChange={this.setDirection} value={this.state.sortDirection}>
                                     <option value="">Ascending</option>
                                     <option value="-">Descending</option>
                                 </select>

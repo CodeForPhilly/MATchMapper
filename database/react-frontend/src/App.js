@@ -33,7 +33,7 @@ function App() {
         <Route path="/map/:table_name/:query?">
           <MapPage/>
         </Route>
-        <Route path="/">
+        <Route exact path="/">
           <AboutPage/>
         </Route>
       </Switch>

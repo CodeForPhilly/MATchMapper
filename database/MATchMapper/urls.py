@@ -27,14 +27,15 @@ def render_react(request):
     return render(request, "index.html")
 
 urlpatterns = [
-    path(r"", render_react),
+    path("/", render_react),
     path('admin/', admin.site.urls),
     url('api-auth/', include('rest_framework.urls')),
     url('api/', include('bupehandler.urls')),
     re_path(r"table\/", render_react),
     re_path(r"map\/", render_react),
-    url(r'^headless/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)/(?P<keyword>.+)$', views.headless_query, name="headless"),
-    url(r'^headless/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)$', views.headless_query, name="headless"),
+    # url(r'^headless/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)/(?P<keyword>.+)/$', views.headless_query, name="headless"),
+    url(r'^headless/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)/(?P<keyword>.+)/$', views.headless_query, name="headless"),
+    url(r'^headless/(?P<table_name>.+)/(?P<param_values>.+)/(?P<excluded_values>.+)/$', views.headless_query, name="headless"),
     url(r'^headless/(?P<table_name>.+)/(?P<param_values>.+)/$', views.headless_query, name="headless"),
     url(r'^headless/(?P<table_name>.+)/$',views.headless_query, name = "headless"),
 ]

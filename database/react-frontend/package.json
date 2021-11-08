@@ -9,13 +9,15 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "@turf/turf": "^6.5.0",
+    "axios": "^0.24.0",
     "jquery": "^3.6.0",
     "mapbox-gl": "^2.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-map-gl": "^6.1.17",
+    "react-router-dom": "5.0.x",
     "react-script-tag": "^1.1.2",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^4.0.3",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
