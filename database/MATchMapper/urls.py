@@ -27,7 +27,7 @@ def render_react(request):
     return render(request, "index.html")
 
 urlpatterns = [
-    path("/", render_react),
+    path("", render_react),
     path('admin/', admin.site.urls),
     url('api-auth/', include('rest_framework.urls')),
     url('api/', include('bupehandler.urls')),
