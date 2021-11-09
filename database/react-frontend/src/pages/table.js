@@ -5,6 +5,7 @@ import axios from "axios"
 import FilterBar from "../components/FilterBar.js"
 import NavBar from "../components/NavBar.js"
 import TableCell from "../components/TableCell.js"
+import ProgressBar from "../components/ProgressBar.js"
 
 import "../styles/table.css"
 
@@ -49,7 +50,8 @@ class TablePage extends Component {
                 keyword: "",
                 included_values_string: "None",
                 excluded_values_strings: "None"
-            }
+            },
+            isLoading: false
         }
         this.render = this.render.bind(this)
         this.toLegalURL = this.toLegalURL.bind(this)
@@ -164,6 +166,7 @@ class TablePage extends Component {
 
     makeRequest(django_query){
         console.log("starting request")
+        this.setState({isLoading: true})
         var keyword = (django_query.split("/").length > 5 ? django_query.split("/")[django_query.split("/").length - 1] : "")
         var excluded_values_strings = django_query.split("/")[django_query.split("/").length - 2]
         var included_values_strings = django_query.split("/")[django_query.split("/").length - 3]
@@ -175,6 +178,7 @@ class TablePage extends Component {
             this.enableColumns()
             this.setState({isLoaded: true})
             console.log("request completed")
+            this.setState({isLoading: false})
         })
     }
 
@@ -207,6 +211,7 @@ class TablePage extends Component {
         if (this.state.isLoaded) {
             return(
                 <div id="body">
+                    <ProgressBar isLoading={this.state.isLoading}/>
                     <NavBar/>
                     <div id="flexContainer">
                         <FilterBar applyFilters={this.applyFilters} table_filters_raw={this.state.table_info.filters}/>

@@ -9,6 +9,7 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import FilterBar from "../components/FilterBar.js"
 import NavBar from "../components/NavBar.js"
 import Map from "../components/Map.js"
+import ProgressBar from "../components/ProgressBar.js"
 
 import "../styles/map.css"
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -66,7 +67,8 @@ class MapPage extends Component {
             },
             mapKey: 0,
             maxDistance: "5",
-            showSearchByAddress: false
+            showSearchByAddress: false,
+            isLoading: false
         }
         this.naming_dict = { 
             sitecodes_samhsa_ftloc : "service_name",
@@ -126,6 +128,7 @@ class MapPage extends Component {
 
     makeRequest(django_query, refresh){
         console.log("starting request")
+        this.setState({isLoading: true})
         var keyword = (django_query.split("/").length > 5 ? django_query.split("/")[django_query.split("/").length - 1] : "")
         var excluded_values_strings = django_query.split("/")[django_query.split("/").length - 2]
         var included_values_strings = django_query.split("/")[django_query.split("/").length - 3]
@@ -139,6 +142,7 @@ class MapPage extends Component {
                 this.setState({mapKey: this.state.mapKey + 1})
             }
             console.log("request completed")
+            this.setState({isLoading: false})
         })
     }
 
@@ -228,6 +232,7 @@ class MapPage extends Component {
             console.log(this.map)
             return(
                 <div id="body">
+                    <ProgressBar isLoading={this.state.isLoading}/>
                     <NavBar/>
                     <Map mapParams={this.state.mapParams} tableInfo={this.state.table_info} ref={this.map} showSearchByAddress={this.state.showSearchByAddress}>
                         <FilterBar applyFilters={this.applyFilters} table_filters_raw={this.state.table_info.filters} showSort={false}>

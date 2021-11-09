@@ -12,8 +12,8 @@ class NavBar extends Component {
     }
 
     componentDidMount(){
-        console.log("from navbar:")
-        console.log(window.location.pathname)
+        // console.log("from navbar:")
+        // console.log(window.location.pathname)
     }
 
     render(){
