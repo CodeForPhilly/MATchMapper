@@ -10,6 +10,7 @@ import skyline from "../images/PhillySkyline_ly_seeImageCreditsTXT.png"
 class AboutPage extends Component {
 
     render(){
+        document.title = "MATchMapper"
         return(
             <div id="body">
                 <NavBar/>
