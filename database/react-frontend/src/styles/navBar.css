@@ -73,7 +73,7 @@
   #nav-options li:not(.bold) {
     margin: 5px 10px;
     font-size: 12px;
-    /* height: 10px; */
+    padding-top: 7px;
   }
  
 

@@ -201,7 +201,7 @@ class MapPage extends Component {
             }
         }
         var sortingElement = (sortingInfo.direction == "-" ? sortingInfo.keys.replace("=","=-") : sortingInfo.keys)
-        var query_url = `/headless/${this.state.table_info.table_name}/${included_values.length > 0 ? included_values.join("&") : "None"}/${excluded_values.length > 0 ? excluded_values.join("&") : "None"}${keyword.length > 0 ? "/"+keyword : ""}${sortingInfo.keys.length > 0 ? "/?" + sortingElement : ""}`
+        var query_url = `/headless/${this.state.table_info.table_name}/${included_values.length > 0 ? included_values.join("&") : "None"}/${excluded_values.length > 0 ? excluded_values.join("&") : "None"}${keyword.length > 0 ? "/"+keyword : ""}${sortingInfo.keys.length > 0 ? "/?" + sortingElement : ""}`.replace("//","/")
         // console.log(query_url)
         this.makeRequest(query_url, true)
         this.setState({

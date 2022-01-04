@@ -59,6 +59,7 @@ class Map extends Component {
         }
         get_url += keyword
     }
+    get_url = get_url.replace("//","/")
     return get_url
   }
 

@@ -218,7 +218,7 @@ class TablePage extends Component {
                         <div id="table" onScroll={this.handleScroll}>
                             <h5 id="resultDescription">
                                 <span id="dataSource" className="bold">SOURCE: <a href={this.state.table_info.source_url} target="_blank">{this.state.table_info.display_name}</a></span><br/>
-                                <span id="lastUpdatedNotice">Most recent download: <span className="bold">{update_recency}</span></span><br/>
+                                <span id="lastUpdatedNotice">Last synced with source data: <span className="bold">{update_recency}</span></span><br/>
                                 <span className="bold">{this.state.objects.length}</span> of <span className="bold">{this.state.table_info.records_count}</span> records for <span className="bold">{this.state.table_info.facility_type}</span> {this.state.table_info.source_range}
                             </h5>
                             <div id="extraContainer">
