@@ -22,6 +22,8 @@ function App() {
         <meta name="msapplication-TileColor" content="#2b5797"/>
         <meta name="msapplication-config" content="/static/browserconfig.xml"/>
         <meta name="theme-color" content="#ffffff"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com"/>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
       </div>
       <Router>
       <Switch>
