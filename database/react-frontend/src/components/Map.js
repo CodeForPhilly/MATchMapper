@@ -142,7 +142,7 @@ class Map extends Component {
         }
         var marker = new mapboxgl.Marker({color: _color})
             .setLngLat([data[i]['longitude'], data[i]['latitude']])
-            .setPopup(new mapboxgl.Popup().setHTML("<a href=" + link_object + ">" + JSON.stringify(data[i][this.props.mapParams.destination_name]) + "</a><br><a href='" + data[i].website1 + "'>Website</a><br>Phone: " + data[i].phone1))
+            .setPopup(new mapboxgl.Popup().setHTML("<a href=" + link_object + ">" + JSON.stringify(data[i][this.props.mapParams.destination_name]) + "</a><br>Phone: <a href=tel:+1-" + data[i].phone1 + ">" + data[i].phone1 + '</a><br><a href=' + data[i].website1 + '>Website</a>'))
             .addTo(this.map);
         this.markerList.push(marker);
     }
