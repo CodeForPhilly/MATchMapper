@@ -232,6 +232,8 @@ class MapPage extends Component {
             console.log(this.map)
             return(
                 <div id="body">
+                    <link rel="preconnect" href="https://fonts.gstatic.com"/>
+                    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
                     <ProgressBar isLoading={this.state.isLoading}/>
                     <NavBar/>
                     <Map mapParams={this.state.mapParams} tableInfo={this.state.table_info} ref={this.map} showSearchByAddress={this.state.showSearchByAddress}>
