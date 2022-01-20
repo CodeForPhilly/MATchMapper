@@ -33,22 +33,19 @@ class AboutPage extends Component {
                         treatment resources. The original data sources can be found below:</p>
                     <h3 id="philadelphia-department-of-behavioral-health-and-intellectual-disability-services">Philadelphia Department
                         of Behavioral Health and Intellectual Disability Services</h3>
-                    <p><a href="https://dbhids.org/mat">Medication Assisted Treatment Directory</a></p>
-                    <p><a href="https://dbhids.org/wp-content/uploads/2021/07/TAD-7.28.2021.pdf">Bed Availability Reports</a></p>
+                    <p><a href="https://dbhids.org/mat">Medication Assisted Treatment Directory</a> including Bed Availability Updates (2&ndash;3x weekly)</p>
+                    <p>Scroll down to &ldquo;Treatment Availability Database&rdquo; heading and click link below for most current PDF</p>
                     <h3 id="substance-abuse-and-mental-health-services-administration">Substance Abuse and Mental Health Services
                         Administration</h3>
                     <p><a href="https://findtreatment.samhsa.gov">Behavioral Treatment Services Locator</a></p>
                     <p><a href="https://dpt2.samhsa.gov/treatment/directory.aspx">Opioid Treatment Program Directory</a></p>
                     <p><a
-                            href="https://www.samhsa.gov/medication-assisted-treatment/practitioner-program-data/treatment-practitioner-locator?field_bup_state_value=45">Buprenorphine
+                            href="https://www.samhsa.gov/medication-assisted-treatment/find-treatment/treatment-practitioner-locator">Buprenorphine
                             Practitioner Locator</a></p>
                     <h3 id="health-federation-of-philadelphia">Health Federation of Philadelphia</h3>
                     <p><a href="https://healthfederation.org/Members">Community Health Center Directory</a></p>
                     <h3 id="health-resources-and-services-administration">Health Resources and Services Administration</h3>
                     <p><a href="https://findahealthcenter.hrsa.gov">Federally Qualified Health Center Finder</a></p>
-                    <h3 id="pennsylvania-department-of-drug-and-alcohol-problems">Pennsylvania Department of Drug and Alcohol Problems
-                    </h3>
-                    <p><a href="https://apps.ddap.pa.gov/gethelpnow/SAISSearchDrop.aspx?county=Philadelphia">Get Help Tool</a></p>
                     <h2 id="the-team">The Team</h2>
                     <p><a href="https://codeforphilly.org/projects/matchmapper">MATchMapper</a> is a project of <a
                             href="https://codeforphilly.org">Code for Philly</a>, the local chapter of <a
@@ -60,7 +57,6 @@ class AboutPage extends Component {
                         professionals with skills in areas including web development, data science, product management and research.</p>
                     <h3 id="current-contributors">Current Contributors</h3>
                     <ul>
-                        <li>Bill Coll</li>
                         <li>Brandon Cohen</li>
                         <li>Caroline Smith</li>
                         <li>Chip Clofine</li>
@@ -80,7 +76,6 @@ class AboutPage extends Component {
                         <li>Holly Giang</li>
                         <li>Joey Logan</li>
                         <li>Luke Shi</li>
-                        <li>Yuxin Chen</li>
                     </ul>
                 </div>
             </div>
