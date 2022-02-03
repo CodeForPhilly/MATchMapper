@@ -140,9 +140,14 @@ class Map extends Component {
         } else {
             var _color = "#3FB1CE"
         }
+        let phone_number = (data[i].phone1 != null) ? data[i].phone1 : data[i].phone;
+        console.log(data[i])
+        if (phone_number.includes(' ')) {
+          phone_number = phone_number.slice(0, 12)
+        }
         var marker = new mapboxgl.Marker({color: _color})
             .setLngLat([data[i]['longitude'], data[i]['latitude']])
-            .setPopup(new mapboxgl.Popup().setHTML("<a href=" + link_object + ">" + JSON.stringify(data[i][this.props.mapParams.destination_name]) + "</a><br>Phone: <a href=tel:+1-" + data[i].phone1 + ">" + data[i].phone1 + '</a><br><a href=' + data[i].website1 + '>Website</a>'))
+            .setPopup(new mapboxgl.Popup().setHTML("<a href=" + link_object + ">" + JSON.stringify(data[i][this.props.mapParams.destination_name]) + "</a><br>Phone: <a href=tel:+1-" + phone_number + ">" + phone_number + '</a><br><a href=' + data[i].website1 + '>Website</a>'))
             .addTo(this.map);
         this.markerList.push(marker);
     }
