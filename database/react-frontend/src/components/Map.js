@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import ScriptTag from "react-script-tag";
 import $ from "jquery";
 import axios from "axios";
-import turf from "@turf/turf";
+import * as turf from "@turf/turf";
+import MapboxCircle from "mapbox-gl-circle";
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import mapboxgl from "!mapbox-gl";
@@ -27,11 +28,13 @@ class Map extends Component {
     this.markerList = [];
     this.myCircle = null;
     this.geocoder = null;
+    this.maxDistance = 5;
 
     this.plotMarkers = this.plotMarkers.bind(this);
     this.toggleSearchModal = this.toggleSearchModal.bind(this);
     this.clearMap = this.clearMap.bind(this);
     this.reloadMap = this.reloadMap.bind(this);
+    this.handleDistanceChange = this.handleDistanceChange.bind(this);
   }
 
   generateRequestURL() {
@@ -67,21 +70,21 @@ class Map extends Component {
     var url = window.location.origin + this.generateRequestURL();
 
     axios.get(url).then((res) => {
-      const data = res.data;
+      let data = res.data;
       this.globalData = data;
-      console.log(data);
       this.geocoder.on("result", ({ result }) => {
         const searchResult = result.geometry;
         // Loop through sites and calculate distance to geocoder address
-        for (const loc of data.loc) {
-          loc.distance = turf.distance(
+        for (let i = 0; i < data.loc.length; i++) {
+          const turfDistance = turf.distance(
             searchResult,
-            [loc.longitude, loc.latitude],
+            [data.loc[i].longitude, data.loc[i].latitude],
             { units: "miles" }
           );
+          data.loc[i] = { ...data.loc[i], ...{ distance: turfDistance } };
         }
         // filter array by distance in field
-        const dist = parseInt(this.state.maxDistance); //get distance from text field
+        const dist = parseInt(this.maxDistance); //get distance from text field
         const data_ = data.loc.filter((d) => d.distance < dist);
         // get count of sites within radius
         const sitesInFocus = data_.length;
@@ -106,7 +109,7 @@ class Map extends Component {
         ];
         this.map.fitBounds(bbox); //, {padding: 600});
         // Draw circle of radius
-        this.myCircle = new mapboxgl.MapboxCircle(
+        this.myCircle = new MapboxCircle(
           { lat: c[1], lng: c[0] },
           dist * 1610,
           {
@@ -114,7 +117,7 @@ class Map extends Component {
           }
         ).addTo(this.map);
         // Clear map and re-draw with different colors
-        this.markerList = this.clearMap(this.markerList);
+        this.markerList = []; //this.clearMap(this.markerList);
         this.plotMarkers(data, this.props.destination_name, sitesInFocus);
         // Change record totals
         this.setState({ siteCount: sitesInFocus });
@@ -160,7 +163,6 @@ class Map extends Component {
       }
       let phone_number =
         data[i].phone1 != null ? data[i].phone1 : data[i].phone;
-      console.log(data[i]);
       if (phone_number.includes(" ")) {
         phone_number = phone_number.slice(0, 12);
       }
@@ -178,7 +180,7 @@ class Map extends Component {
               phone_number +
               "</a><br><a href=" +
               data[i].website1 +
-              ">Website</a>"
+              " target='_blank'>Website</a>"
           )
         )
         .addTo(this.map);
@@ -211,17 +213,22 @@ class Map extends Component {
 
   // function to clear map
   clearMap() {
-    for (var i = 0; i < this.markerList.length; i++) {
-      this.markerList[i].remove();
-    }
+    // for (var i = 0; i < this.markerList.length; i++) {
+    //   this.markerList[i].remove();
+    // }
     this.markerList = [];
   }
 
   reloadMap() {
-    this.markerList = this.clearMap(this.markerList);
+    this.markerList = []; //this.clearMap(this.markerList);
     this.plotMarkers(this.globalData, this.props.destination_name);
     this.myCircle.remove();
     this.geocoder.clear();
+  }
+
+  handleDistanceChange(e) {
+    console.log(e);
+    this.maxDistance = e.target.value;
   }
 
   render() {
@@ -242,17 +249,14 @@ class Map extends Component {
           <input
             name="distance"
             id="distance"
-            value="5"
+            defaultValue="5"
             type="number"
             style={{ width: 40 }}
+            onChange={this.handleDistanceChange}
           ></input>
           <br />
           <br />
-          <div
-            id="geocodeWidget"
-            style={{ width: "calc(100% - 14px)" }}
-            // dangerouslySetInnerHTML={{ __html: this.state.geocoderElement }}
-          ></div>
+          <div id="geocodeWidget" style={{ width: "calc(100% - 14px)" }}></div>
           <br />
           <button id="clearSearch" onClick={this.reloadMap}>
             Start Over &#10005;

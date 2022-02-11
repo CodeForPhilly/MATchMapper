@@ -66,7 +66,7 @@ class MapPage extends Component {
         destination_name: "name1",
       },
       mapKey: 0,
-      maxDistance: "5",
+      //   maxDistance: "5",
       showSearchByAddress: false,
       isLoading: false,
     };
@@ -87,7 +87,7 @@ class MapPage extends Component {
     this.makeRequest = this.makeRequest.bind(this);
     this.request_URL_from_params = this.request_URL_from_params.bind(this);
     this.applyFilters = this.applyFilters.bind(this);
-    this.distanceChanged = this.distanceChanged.bind(this);
+    // this.distanceChanged = this.distanceChanged.bind(this);
     this.toggleSearchByAddress = this.toggleSearchByAddress.bind(this);
   }
 
@@ -269,9 +269,9 @@ class MapPage extends Component {
     );
   }
 
-  distanceChanged(e) {
-    this.setState({ maxDistance: e.target.value });
-  }
+  //   distanceChanged(e) {
+  //     this.setState({ maxDistance: e.target.value });
+  //   }
 
   toggleSearchByAddress() {
     this.setState({ showSearchByAddress: !this.state.showSearchByAddress });
@@ -292,6 +292,7 @@ class MapPage extends Component {
           <Map
             mapParams={this.state.mapParams}
             tableInfo={this.state.table_info}
+            // maxDistance={this.state.maxDistance}
             ref={this.map}
             showSearchModal={this.state.showSearchByAddress}
           >
