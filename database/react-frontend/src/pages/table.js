@@ -208,6 +208,7 @@ class TablePage extends Component {
     render(){
         var a = new Date(this.state.table_info.update_recency * 1000)
         var update_recency = (a.getMonth() + 1) + "/" + (a.getDate() + 1) + "/" + a.getFullYear()
+
         if (this.state.isLoaded) {
             return(
                 <div id="body">
@@ -293,9 +294,9 @@ class TablePage extends Component {
                                         <TableCell visibility={this.state.column_visibility} className="nowrap col_WHICHMAT">
                                             <p className="cellText">
                                                 {site.mat_avail === "Unclear" && <span>"None confirmed"<br/></span>}
-                                                Buprenorphine: <b>{ site.bu }</b><br/>
-                                                Naltrexone/Vivitrol: <b>{ site.nu }</b><br/>
-                                                Methadone: <b>{site.mu }</b>
+                                                Buprenorphine: <b>{ site.bu ? "Yes" : "No" }</b><br/>
+                                                Naltrexone/Vivitrol: <b>{ site.nu ? "Yes" : "No"  }</b><br/>
+                                                Methadone: <b>{site.mu ? "Yes" : "No"  }</b>
                                             </p>
                                         </TableCell>
                                         <TableCell visibility={this.state.column_visibility} className="nowrap col_BUPRENORPHINE">
