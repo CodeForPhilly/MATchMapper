@@ -220,7 +220,6 @@ class MapPage extends Component {
   }
 
   applyFilters(groups, sortingInfo, keyword) {
-    console.log("apply");
     var included_values = [];
     var excluded_values = [];
     for (var group of groups) {
