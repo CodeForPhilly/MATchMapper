@@ -117,7 +117,7 @@ class Map extends Component {
           }
         ).addTo(this.map);
         // Clear map and re-draw with different colors
-        this.markerList = []; //this.clearMap(this.markerList);
+        this.clearMap(this.markerList);
         this.plotMarkers(data, this.props.destination_name, sitesInFocus);
         // Change record totals
         this.setState({ siteCount: sitesInFocus });
@@ -213,14 +213,14 @@ class Map extends Component {
 
   // function to clear map
   clearMap() {
-    // for (var i = 0; i < this.markerList.length; i++) {
-    //   this.markerList[i].remove();
-    // }
+    for (var i = 0; i < this.markerList.length; i++) {
+      this.markerList[i].remove();
+    }
     this.markerList = [];
   }
 
   reloadMap() {
-    this.markerList = []; //this.clearMap(this.markerList);
+    this.clearMap(this.markerList);
     this.plotMarkers(this.globalData, this.props.destination_name);
     this.myCircle.remove();
     this.geocoder.clear();
