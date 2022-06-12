@@ -24,7 +24,7 @@ class AboutPage extends Component {
                         healthcare providers making referrals, and public health officials seeking to understand treatment availability. 
                         Please do not hesitate to <a href="mailto:matchmapper.philadelphia@gmail.com">contact us</a> with questions and
                         suggestions.</p>
-                        <p align='center'><img src={skyline} width="85%"/></p>
+                        <p align='center'><img src={skyline} width="95%"/></p>
                     <h2 id="data-sources"><br/>Data Sources</h2>
                     <p>MATchMapper builds on the excellent work of existing projects to produce an extensive, up-to-date database of
                         treatment resources. The original data sources can be found below:</p>
@@ -79,7 +79,7 @@ class AboutPage extends Component {
                         <li>Luke Shi</li>
                     </ul>
                     <p align="center">
-                        <a href="https://www.matchmapper.org/table/sites_all"><img src={logo} width="15%"/></a>
+                        <a href="https://www.matchmapper.org/table/sites_all"><img src={logo} height="25%"/></a>
                     </p>
                 </div>
             </div>
