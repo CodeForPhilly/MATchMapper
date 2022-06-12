@@ -25,7 +25,7 @@ class AboutPage extends Component {
                         Please do not hesitate to <a href="mailto:matchmapper.philadelphia@gmail.com">contact us</a> with questions and
                         suggestions.</p>
                         <p align='center'><img src={skyline} width="85%"/></p>
-                    <h2 id="data-sources"></br>Data Sources</h2>
+                    <h2 id="data-sources"><br/>Data Sources</h2>
                     <p>MATchMapper builds on the excellent work of existing projects to produce an extensive, up-to-date database of
                         treatment resources. The original data sources can be found below:</p>
                     <h3 id="philadelphia-department-of-behavioral-health-and-intellectual-disability-services">Philadelphia Department
@@ -42,11 +42,11 @@ class AboutPage extends Component {
                     <p><a href="https://healthfederation.org/Members" rel="noopener" target="_blank">Community Health Center Directory</a></p>
                     <h3 id="health-resources-and-services-administration">Health Resources and Services Administration</h3>
                     <p><a href="https://findahealthcenter.hrsa.gov" rel="noopener" target="_blank">Federally Qualified Health Center Finder</a></p>
-                    <h2 id="user-guide"></br>User Guide</h2>
+                    <h2 id="user-guide"><br/>User Guide</h2>
                     <p><a href="https://docs.google.com/presentation/d/e/2PACX-1vRcWxA8n3wrlI-rcedAdyZoA5f15Ce-aKfw8WJWGG8U7zW076zjU85BQcmeQynySCH7b3Y7Qu2UUkTD/pub?start=false&loop=false&delayms=3000" rel="noopener" target="_blank">
                         Open in separate tab</a></p>
                     <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRcWxA8n3wrlI-rcedAdyZoA5f15Ce-aKfw8WJWGG8U7zW076zjU85BQcmeQynySCH7b3Y7Qu2UUkTD/embed?start=false&loop=true&delayms=5000" frameborder="0" width="96%" height="480" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
-                    <h2 id="the-team"></br>The Team</h2>
+                    <h2 id="the-team"><br/>The Team</h2>
                     <p><a href="https://codeforphilly.org/projects/matchmapper" rel="noopener" target="_blank">MATchMapper</a> is a project of <a
                             href="https://codeforphilly.org" rel="noopener" target="_blank">Code for Philly</a>, the local chapter of <a
                             href="https://www.codeforamerica.org" rel="noopener" target="_blank">Code for America</a>, a nation-wide not-for-profit network of

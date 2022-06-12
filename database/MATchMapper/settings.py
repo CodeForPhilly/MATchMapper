@@ -26,7 +26,7 @@ SECRET_KEY = '&zyg&xjv8mm&lv(d#3^biq7hs@!j&o!ye8sx^7#hzftk0_0n8b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1','matchmapper-dev.herokuapp.com','dev.matchmapper.org']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1','matchmapper-philly.herokuapp.com','www.matchmapper.org', 'matchmapper.org']
 
 # Application definition
 
@@ -94,13 +94,13 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': os.environ["DEVDBNAME"],
+        'NAME': os.environ["DBNAME"],
 
-        'USER': os.environ["DEVDBUSER"],
+        'USER': os.environ["DBUSER"],
 
-        'PASSWORD': os.environ["DEVDBPASSWORD"],
+        'PASSWORD': os.environ["DBPASSWORD"],
 
-        'HOST': os.environ["DEVDBHOST"],
+        'HOST': os.environ["DBHOST"],
 
         'PORT': os.environ["DBPORT"],
 
