@@ -43,9 +43,9 @@ class AboutPage extends Component {
                     <h3 id="health-resources-and-services-administration">Health Resources and Services Administration</h3>
                     <p><a href="https://findahealthcenter.hrsa.gov" rel="noopener" target="_blank">Federally Qualified Health Center Finder</a></p>
                     <h2 id="user-guide"><br/>User Guide</h2>
-                    <p><a href="https://docs.google.com/presentation/d/e/2PACX-1vRcWxA8n3wrlI-rcedAdyZoA5f15Ce-aKfw8WJWGG8U7zW076zjU85BQcmeQynySCH7b3Y7Qu2UUkTD/pub?start=false&loop=false&delayms=3000" rel="noopener" target="_blank">
+                    <p><a href="https://docs.google.com/presentation/d/e/2PACX-1vQ5X7Cmsh7vmvMREnR1_Vg7c5zTfnnvl58ZRe1h3pMTo1W92fdWvlobBRiH0Zvyhu4KVLKgg-myBeje/pub?start=false&loop=false&delayms=3000" rel="noopener" target="_blank">
                         Open in separate tab</a></p>
-                    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRcWxA8n3wrlI-rcedAdyZoA5f15Ce-aKfw8WJWGG8U7zW076zjU85BQcmeQynySCH7b3Y7Qu2UUkTD/embed?start=false&loop=true&delayms=5000" frameborder="0" width="96%" height="480" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+                    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQ5X7Cmsh7vmvMREnR1_Vg7c5zTfnnvl58ZRe1h3pMTo1W92fdWvlobBRiH0Zvyhu4KVLKgg-myBeje/embed?start=false&loop=true&delayms=5000" frameborder="0" width="96%" height="480" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
                     <h2 id="the-team"><br/>The Team</h2>
                     <p><a href="https://codeforphilly.org/projects/matchmapper" rel="noopener" target="_blank">MATchMapper</a> is a project of <a
                             href="https://codeforphilly.org" rel="noopener" target="_blank">Code for Philly</a>, the local chapter of <a
